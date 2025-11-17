@@ -9,6 +9,9 @@ import type { Header } from '@/payload-types'
 import { Logo } from '@/components/Logo/Logo'
 import { HeaderNav } from './Nav'
 
+import { SearchIcon } from 'lucide-react'
+import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
+
 interface HeaderClientProps {
   data: Header
 }
@@ -30,12 +33,24 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   }, [headerTheme])
 
   return (
-    <header className="container relative z-20   " {...(theme ? { 'data-theme': theme } : {})}>
-      <div className="py-8 flex justify-between">
+    <header className="container py-4 relative z-20" {...(theme ? { 'data-theme': theme } : {})}>
+      <div className="flex items-center justify-between">
         <Link href="/">
-          <Logo loading="eager" priority="high" className="invert dark:invert-0" />
+          <Logo />
         </Link>
-        <HeaderNav data={data} />
+        <div className="py-8 mx-auto">
+          <HeaderNav data={data} />
+        </div>
+        <div className="items-center flex gap-3">
+          <Link
+            href="/search"
+            className="h-8 w-8 inline-flex items-center justify-center hover:bg-muted transition-colors"
+          >
+            <span className="sr-only">Search</span>
+            <SearchIcon className="w-5 text-primary" />
+          </Link>
+          <ThemeSelector className="hidden sm:flex" />
+        </div>
       </div>
     </header>
   )

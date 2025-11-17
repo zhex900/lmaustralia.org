@@ -1,51 +1,58 @@
 'use client'
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import React, { useState } from 'react'
+import React from 'react'
+import { Moon, Sun, Laptop } from 'lucide-react'
 
 import type { Theme } from './types'
 
 import { useTheme } from '..'
 import { themeLocalStorageKey } from './types'
+import clsx from 'clsx'
 
-export const ThemeSelector: React.FC = () => {
+interface ThemeSelectorProps {
+  className?: string
+}
+
+export const ThemeSelector: React.FC<ThemeSelectorProps> = ({ className }) => {
   const { setTheme } = useTheme()
-  const [value, setValue] = useState('')
+  const [value, setValue] = React.useState<'auto' | Theme>('auto')
 
-  const onThemeChange = (themeToSet: Theme & 'auto') => {
-    if (themeToSet === 'auto') {
+  const setThemeMode = (mode: 'auto' | Theme) => {
+    if (mode === 'auto') {
       setTheme(null)
       setValue('auto')
     } else {
-      setTheme(themeToSet)
-      setValue(themeToSet)
+      setTheme(mode)
+      setValue(mode)
     }
   }
 
+  const cycle = () => {
+    const next: 'auto' | Theme = value === 'auto' ? 'light' : value === 'light' ? 'dark' : 'auto'
+    setThemeMode(next)
+  }
+
   React.useEffect(() => {
-    const preference = window.localStorage.getItem(themeLocalStorageKey)
+    const preference = window.localStorage.getItem(themeLocalStorageKey) as Theme | null
     setValue(preference ?? 'auto')
   }, [])
 
+  const label = value === 'auto' ? 'System (Auto)' : value === 'light' ? 'Light' : 'Dark'
+  const Icon = value === 'auto' ? Laptop : value === 'light' ? Sun : Moon
+
   return (
-    <Select onValueChange={onThemeChange} value={value}>
-      <SelectTrigger
-        aria-label="Select a theme"
-        className="w-auto bg-transparent gap-2 pl-0 md:pl-3 border-none"
-      >
-        <SelectValue placeholder="Theme" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="auto">Auto</SelectItem>
-        <SelectItem value="light">Light</SelectItem>
-        <SelectItem value="dark">Dark</SelectItem>
-      </SelectContent>
-    </Select>
+    <button
+      type="button"
+      className={clsx(
+        'h-8 w-8 inline-flex items-center justify-center hover:bg-muted transition-colors',
+        className,
+      )}
+      onClick={cycle}
+      aria-label={label}
+      title={label}
+    >
+      <Icon className="h-4 w-4" />
+      <span className="sr-only">{label}</span>
+    </button>
   )
 }
