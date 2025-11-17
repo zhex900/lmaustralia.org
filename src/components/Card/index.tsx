@@ -37,9 +37,15 @@ export const Card: React.FC<{
       )}
       ref={card.ref}
     >
-      <div className="relative w-full ">
-        {!metaImage && <div className="">No image</div>}
-        {metaImage && typeof metaImage !== 'string' && <Media resource={metaImage} size="33vw" />}
+      <div className="relative w-full h-48 md:h-56 lg:h-64 overflow-hidden">
+        {!metaImage && (
+          <div className="h-full w-full bg-muted/40 flex items-center justify-center text-sm text-muted-foreground">
+            No image
+          </div>
+        )}
+        {metaImage && typeof metaImage !== 'string' && (
+          <Media fill imgClassName="object-cover" resource={metaImage} size="33vw" />
+        )}
       </div>
       <div className="p-4">
         {showCategories && hasCategories && (
@@ -48,17 +54,10 @@ export const Card: React.FC<{
               <div>
                 {categories?.map((category, index) => {
                   if (typeof category === 'object') {
-                    const { title: titleFromCategory } = category
-
-                    const categoryTitle = titleFromCategory || 'Untitled category'
-
                     const isLast = index === categories.length - 1
 
                     return (
-                      <Fragment key={index}>
-                        {categoryTitle}
-                        {!isLast && <Fragment>, &nbsp;</Fragment>}
-                      </Fragment>
+                      <Fragment key={index}>{!isLast && <Fragment>, &nbsp;</Fragment>}</Fragment>
                     )
                   }
 

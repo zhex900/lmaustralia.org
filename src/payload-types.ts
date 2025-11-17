@@ -492,6 +492,8 @@ export interface ContentBlock {
   columns?:
     | {
         size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
+        media?: (number | null) | Media;
+        columnClassName?: string | null;
         richText?: {
           root: {
             type: string;
@@ -530,6 +532,7 @@ export interface ContentBlock {
         id?: string | null;
       }[]
     | null;
+  className?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'content';
@@ -1134,6 +1137,8 @@ export interface ContentBlockSelect<T extends boolean = true> {
     | T
     | {
         size?: T;
+        media?: T;
+        columnClassName?: T;
         richText?: T;
         enableLink?: T;
         link?:
@@ -1148,6 +1153,7 @@ export interface ContentBlockSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  className?: T;
   id?: T;
   blockName?: T;
 }

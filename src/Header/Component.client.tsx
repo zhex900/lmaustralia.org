@@ -22,18 +22,18 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   const { headerTheme, setHeaderTheme } = useHeaderTheme()
   const pathname = usePathname()
 
-  useEffect(() => {
-    setHeaderTheme(null)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname])
+  // useEffect(() => {
+  //   setHeaderTheme(null)
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [pathname])
 
-  useEffect(() => {
-    if (headerTheme && headerTheme !== theme) setTheme(headerTheme)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [headerTheme])
+  // useEffect(() => {
+  //   if (headerTheme && headerTheme !== theme) setTheme(headerTheme)
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [headerTheme])
 
   return (
-    <header className="container py-4 relative z-20" {...(theme ? { 'data-theme': theme } : {})}>
+    <header className="px-5 md:px-10 py-4 z-20 " {...(theme ? { 'data-theme': theme } : {})}>
       <div className="flex items-center justify-between">
         <Link href="/">
           <Logo />

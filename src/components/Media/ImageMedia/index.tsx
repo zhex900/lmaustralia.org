@@ -60,7 +60,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
     <picture className={cn(pictureClassName)}>
       <NextImage
         alt={alt || ''}
-        className={cn(imgClassName)}
+        className={cn(imgClassName, 'rounded-lg')}
         fill={fill}
         height={!fill ? height : undefined}
         placeholder="blur"
