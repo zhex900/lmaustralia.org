@@ -33,23 +33,28 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   // }, [headerTheme])
 
   return (
-    <header className="px-5 md:px-10 py-4 z-20 " {...(theme ? { 'data-theme': theme } : {})}>
-      <div className="flex items-center justify-between">
+    <header className="px-5 md:px-10 py-8 z-20 " {...(theme ? { 'data-theme': theme } : {})}>
+      <div className="grid grid-cols-[auto_1fr_auto] items-center gap-4">
+        {/* Left: Logo */}
         <Link href="/">
           <Logo />
         </Link>
-        <div className="py-8 mx-auto">
+
+        {/* Center: Nav */}
+        <div className="mx lg:mx-auto">
           <HeaderNav data={data} />
         </div>
-        <div className="items-center flex gap-3">
+
+        {/* Right: Utilities */}
+        <div className="items-center hidden md:flex gap-3 justify-end">
           <Link
             href="/search"
             className="h-8 w-8 inline-flex items-center justify-center hover:bg-muted transition-colors"
           >
             <span className="sr-only">Search</span>
-            <SearchIcon className="w-5 text-primary" />
+            <SearchIcon className="w-7 h-7 text-primary" />
           </Link>
-          <ThemeSelector className="hidden sm:flex" />
+          <ThemeSelector className="flex" />
         </div>
       </div>
     </header>

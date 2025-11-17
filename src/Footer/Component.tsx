@@ -6,25 +6,70 @@ import type { Footer } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
 import { Logo } from '@/components/Logo/Logo'
+import { site } from '@/constants'
 
 export async function Footer() {
   const footerData: Footer = await getCachedGlobal('footer', 1)()
 
   const navItems = footerData?.navItems || []
 
+  console.log(navItems)
   return (
-    <footer className="mt-auto border-t border-border bg-black dark:bg-card text-white">
-      <div className="container py-8 gap-8 flex flex-col md:flex-row md:justify-between">
-        <Link className="flex items-center" href="/">
-          <Logo />
-        </Link>
+    <footer className="bg-gray-900 text-gray-300">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <Link className="flex items-center" href="/">
+            <Logo />
+          </Link>
 
-        <div className="flex flex-col-reverse items-start md:flex-row gap-4 md:items-center">
-          <nav className="flex flex-col md:flex-row gap-4">
-            {navItems.map(({ link }, i) => {
-              return <CMSLink className="text-white" key={i} {...link} />
-            })}
-          </nav>
+          <div>
+            <h4 className="text-white font-semibold mb-4">Quick Links</h4>
+            <ul className="space-y-2 text-sm">
+              {navItems.map(({ link, id }, i) => {
+                return (
+                  <li key={id}>
+                    <Link href={link.url || ''} className="hover:text-sky-400 transition-colors">
+                      {link.label}
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-white font-semibold mb-4">Participation</h4>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link href="#" className="hover:text-sky-400 transition-colors">
+                  Expression of interest
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-sky-400 transition-colors">
+                  Prayer
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-sky-400 transition-colors">
+                  Giving
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-white font-semibold mb-4">Connect</h4>
+            <Link href="#" className="hover:text-sky-400 transition-colors">
+              Enquire now
+            </Link>
+          </div>
+        </div>
+
+        <div className="border-t border-gray-800 mt-8 pt-8 text-sm text-center">
+          <p>
+            &copy; {new Date().getFullYear()} {site.name}. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

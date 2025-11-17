@@ -51,7 +51,7 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = ({ className }) => {
       aria-label={label}
       title={label}
     >
-      <Icon className="h-4 w-4" />
+      <Icon className="h-7 w-7" />
       <span className="sr-only">{label}</span>
     </button>
   )

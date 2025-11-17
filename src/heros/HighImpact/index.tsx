@@ -23,7 +23,7 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
     'w-[110%] left-1/2 -translate-x-1/2 -top-24',
     'sm:w-[95%] sm:-top-28',
     'md:w-[67%] md:left-[8rem] md:translate-x-0 md:-top-[10rem]',
-    'lg:w-[67%] lg:left-[16em] lg:-top-[13em]',
+    'lg:w-[67%] lg:left-[12em] lg:top-[5em]',
     'xl:w-[90%] xl:left-[3em] xl:-top-[10em]',
     '2xl:w-[70%] 2xl:left-[10em] 2xl:-top-[1em]',
   )
