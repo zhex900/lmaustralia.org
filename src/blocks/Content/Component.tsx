@@ -29,23 +29,24 @@ export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
 
             return (
               <div
-                className={cn(`col-span-4 lg:col-span-${colsSpanClasses[size!]}`, {
+                className={cn(`col-span-4 lg:col-span-${colsSpanClasses[size!]} flex flex-col`, {
                   'md:col-span-2': size !== 'full',
-                  'flex items-center justify-center': media,
+                  'items-center justify-center': media,
                   [columnClassName as string]: columnClassName,
                 })}
                 key={index}
               >
                 <div
-                  className={cn({
+                  className={cn('flex-1', {
                     'grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 items-center justify-center':
                       media,
+                    'flex flex-col': !media,
                   })}
                 >
                   {media && <Media resource={media} />}
                   {richText && <RichText data={richText} enableGutter={false} />}
-                  {enableLink && <CMSLink {...link} />}
                 </div>
+                {enableLink && <CMSLink {...link} className="mt-auto" />}
               </div>
             )
           })}

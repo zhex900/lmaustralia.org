@@ -14,6 +14,7 @@ import {
 import { CodeBlock, CodeBlockProps } from '@/blocks/Code/Component'
 
 import type {
+  ArchiveBlock as ArchiveBlockProps,
   BannerBlock as BannerBlockProps,
   CallToActionBlock as CTABlockProps,
   MediaBlock as MediaBlockProps,
@@ -21,10 +22,13 @@ import type {
 import { BannerBlock } from '@/blocks/Banner/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { cn } from '@/utilities/ui'
+import { ArchiveBlockClient } from '@/blocks/ArchiveBlock/Component.client'
 
 type NodeTypes =
   | DefaultNodeTypes
-  | SerializedBlockNode<CTABlockProps | MediaBlockProps | BannerBlockProps | CodeBlockProps>
+  | SerializedBlockNode<
+      CTABlockProps | MediaBlockProps | BannerBlockProps | CodeBlockProps | ArchiveBlockProps
+    >
 
 const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
   const { value, relationTo } = linkNode.fields.doc!
@@ -39,6 +43,7 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
   ...defaultConverters,
   ...LinkJSXConverter({ internalDocToHref }),
   blocks: {
+    archive: ({ node }) => <ArchiveBlockClient {...node.fields} />,
     banner: ({ node }) => <BannerBlock className="col-start-2 mb-4" {...node.fields} />,
     mediaBlock: ({ node }) => (
       <MediaBlock
