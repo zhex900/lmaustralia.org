@@ -18,13 +18,6 @@ export const CallToAction: Block = {
   interfaceName: 'CallToActionBlock',
   fields: [
     {
-      name: 'name',
-      type: 'text',
-      defaultValue: '',
-      label: 'Block element name (optional)',
-      required: false,
-    },
-    {
       name: 'richText',
       type: 'richText',
       editor: lexicalEditor({

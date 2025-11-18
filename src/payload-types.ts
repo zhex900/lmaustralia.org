@@ -441,7 +441,6 @@ export interface User {
  * via the `definition` "CallToActionBlock".
  */
 export interface CallToActionBlock {
-  name?: string | null;
   richText?: {
     root: {
       type: string;
@@ -490,7 +489,6 @@ export interface CallToActionBlock {
  * via the `definition` "ContentBlock".
  */
 export interface ContentBlock {
-  name?: string | null;
   columns?:
     | {
         size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
@@ -544,7 +542,6 @@ export interface ContentBlock {
  * via the `definition` "MediaBlock".
  */
 export interface MediaBlock {
-  name?: string | null;
   media: number | Media;
   id?: string | null;
   blockName?: string | null;
@@ -555,7 +552,6 @@ export interface MediaBlock {
  * via the `definition` "ArchiveBlock".
  */
 export interface ArchiveBlock {
-  name?: string | null;
   introContent?: {
     root: {
       type: string;
@@ -1113,7 +1109,6 @@ export interface PagesSelect<T extends boolean = true> {
  * via the `definition` "CallToActionBlock_select".
  */
 export interface CallToActionBlockSelect<T extends boolean = true> {
-  name?: T;
   richText?: T;
   links?:
     | T
@@ -1138,7 +1133,6 @@ export interface CallToActionBlockSelect<T extends boolean = true> {
  * via the `definition` "ContentBlock_select".
  */
 export interface ContentBlockSelect<T extends boolean = true> {
-  name?: T;
   columns?:
     | T
     | {
@@ -1168,7 +1162,6 @@ export interface ContentBlockSelect<T extends boolean = true> {
  * via the `definition` "MediaBlock_select".
  */
 export interface MediaBlockSelect<T extends boolean = true> {
-  name?: T;
   media?: T;
   id?: T;
   blockName?: T;
@@ -1178,7 +1171,6 @@ export interface MediaBlockSelect<T extends boolean = true> {
  * via the `definition` "ArchiveBlock_select".
  */
 export interface ArchiveBlockSelect<T extends boolean = true> {
-  name?: T;
   introContent?: T;
   populateBy?: T;
   relationTo?: T;

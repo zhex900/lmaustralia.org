@@ -60,7 +60,7 @@ export async function Footer() {
 
           <div>
             <h4 className="text-white font-semibold mb-4">Connect</h4>
-            <Link href="#" className="hover:text-sky-400 transition-colors">
+            <Link href="/contact" className="hover:text-sky-400 transition-colors text-sm">
               Enquire now
             </Link>
           </div>

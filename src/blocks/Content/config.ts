@@ -96,13 +96,6 @@ export const Content: Block = {
   interfaceName: 'ContentBlock',
   fields: [
     {
-      name: 'name',
-      type: 'text',
-      defaultValue: '',
-      label: 'Block element name (optional)',
-      required: false,
-    },
-    {
       name: 'columns',
       type: 'array',
       admin: {

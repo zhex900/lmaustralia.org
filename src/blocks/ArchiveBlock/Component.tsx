@@ -12,7 +12,14 @@ export const ArchiveBlock: React.FC<
     id?: string
   }
 > = async (props) => {
-  const { name, categories, introContent, limit: limitFromProps, populateBy, selectedDocs } = props
+  const {
+    blockName,
+    categories,
+    introContent,
+    limit: limitFromProps,
+    populateBy,
+    selectedDocs,
+  } = props
 
   const limit = limitFromProps || 3
 
@@ -53,7 +60,7 @@ export const ArchiveBlock: React.FC<
   }
 
   return (
-    <div className="" {...(name ? { id: name.toLowerCase().replace(/ /g, '-') } : {})}>
+    <div className="" {...(blockName ? { id: blockName.toLowerCase().replace(/ /g, '-') } : {})}>
       {introContent && (
         <div className="container mb-16">
           <RichText className="ms-0 max-w-[48rem]" data={introContent} enableGutter={false} />

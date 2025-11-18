@@ -40,7 +40,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
           <CMSLink
             {...sub.link}
             appearance="inline"
-            className="text-sm opacity-80 hover:opacity-100"
+            className="text-sm opacity-80 hover:opacity-100 hover:text-sky-400 transition-colors"
           />
         </li>
       ))}
@@ -84,7 +84,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
         {open && (
           <div
             id="mobile-nav"
-            className="fixed inset-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:hidden"
+            className="fixed inset-0 z-40 bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/40 lg:hidden"
           >
             <div className="absolute inset-x-0 top-0 p-4 flex justify-end">
               <button
@@ -103,7 +103,11 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
 
                   return (
                     <li key={i}>
-                      <CMSLink {...link} appearance="inline" className="font-medium" />
+                      <CMSLink
+                        {...link}
+                        appearance="inline"
+                        className="font-medium hover:text-sky-400 transition-colors"
+                      />
                       {hasSubs(item) && <SubListMobile items={subNavItems} />}
                     </li>
                   )
