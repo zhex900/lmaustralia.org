@@ -49,10 +49,10 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
         <div className="items-center hidden md:flex gap-3 justify-end">
           <Link
             href="/search"
-            className="h-8 w-8 inline-flex items-center justify-center hover:bg-muted transition-colors"
+            className="h-8 w-8 inline-flex items-center justify-center rounded-md hover:bg-muted transition-colors"
           >
             <span className="sr-only">Search</span>
-            <SearchIcon className="w-7 h-7 text-primary" />
+            <SearchIcon className="w-5 h-5 text-primary" />
           </Link>
           <ThemeSelector className="flex" />
         </div>

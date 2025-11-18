@@ -8,7 +8,7 @@ import { CMSLink } from '../../components/Link'
 import { Media } from '@/components/Media'
 
 export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
-  const { columns, className } = props
+  const { columns, className, name } = props
 
   const colsSpanClasses = {
     full: '12',
@@ -17,8 +17,11 @@ export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
     twoThirds: '8',
   }
   return (
-    <div className={cn('', className)}>
-      <div className="px-10 py-16 grid grid-cols-4 lg:grid-cols-12 gap-y-8 gap-x-16">
+    <div
+      className={cn('container', className)}
+      {...(name ? { id: name.toLowerCase().replace(/ /g, '-') } : {})}
+    >
+      <div className="grid grid-cols-4 lg:grid-cols-12 gap-y-8 gap-x-16">
         {columns &&
           columns.length > 0 &&
           columns.map((col, index) => {

@@ -58,13 +58,13 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
             if (hasSubs(item)) {
               return (
                 <div key={i} className="relative group">
-                  <CMSLink {...link} appearance="link" className="text-xl" />
+                  <CMSLink {...link} appearance="link" className="text-md" />
                   <SubListDesktop items={subNavItems} />
                 </div>
               )
             }
 
-            return <CMSLink key={i} {...link} appearance="link" className="text-xl" />
+            return <CMSLink key={i} {...link} appearance="link" className="text-md" />
           })}
         </nav>
 
@@ -77,7 +77,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
           aria-controls="mobile-nav"
           onClick={() => setOpen((v) => !v)}
         >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-10 w-10" />}
+          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
 
         {/* Mobile overlay nav */}
@@ -93,7 +93,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
                 aria-label="Close navigation"
                 onClick={() => setOpen(false)}
               >
-                <X className="h-10 w-10" />
+                <X className="h-5 w-5" />
               </button>
             </div>
             <div className="px-6 pt-16 pb-8">
