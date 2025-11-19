@@ -9,16 +9,6 @@ export const HeroAustraliaMap = () => {
   const [topOffset, setTopOffset] = React.useState<number>(0)
   React.useEffect(() => {
     const updateTopOffset = () => {
-      const coordinates = {
-        windowWidth: window.innerWidth,
-        windowHeight: window.innerHeight,
-        y: window.innerHeight / 2,
-        center: {
-          x: centerPx.x,
-          y: centerPx.y,
-        },
-      }
-      const offset = coordinates.windowHeight / 2 - coordinates.center.y
       setTopOffset(-100 + window.innerHeight / 2 - centerPx.y)
     }
     updateTopOffset()
