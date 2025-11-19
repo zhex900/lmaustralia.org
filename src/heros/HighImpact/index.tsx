@@ -6,7 +6,7 @@ import type { Page } from '@/payload-types'
 import { CMSLink } from '@/components/Link'
 import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
-import { HeroAustraliaMap } from '@/components/Maps/HeroAustraliaMap'
+import { HeroAustraliaMap } from '@/components/Maps'
 
 export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText }) => {
   return (

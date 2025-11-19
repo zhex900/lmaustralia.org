@@ -5,7 +5,7 @@ import type { Category, Post } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 import { formatAuthors } from '@/utilities/formatAuthors'
-import { CityMap } from '@/components/Maps/CityMap'
+import { CityMap } from '@/components/Maps'
 
 export const PostHero: React.FC<{
   post: Post
