@@ -5,6 +5,7 @@ import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
+import { resendAdapter } from '@payloadcms/email-resend'
 import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
@@ -15,6 +16,7 @@ import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
+import { site } from './constants'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -95,4 +97,9 @@ export default buildConfig({
     },
     tasks: [],
   },
+  email: resendAdapter({
+    defaultFromAddress: site.email,
+    defaultFromName: site.name,
+    apiKey: process.env.RESEND_API_KEY!,
+  }),
 })
