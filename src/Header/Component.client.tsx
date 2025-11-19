@@ -31,7 +31,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
         </div>
 
         {/* Right: Utilities */}
-        <div className="items-center hidden md:flex gap-3 justify-end">
+        <div className="items-center flex gap-3 justify-end">
           <Link
             href="/search"
             className="h-8 w-8 inline-flex items-center justify-center rounded-md hover:bg-muted transition-colors"

@@ -36,10 +36,16 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
     </div>
   )
 
-  const SubListMobile = ({ items }: { items: SubNavItem[] }) => (
+  const SubListMobile = ({
+    items,
+    onLinkClick,
+  }: {
+    items: SubNavItem[]
+    onLinkClick: () => void
+  }) => (
     <ul className="mt-2 ml-4 space-y-2 border-l pl-3">
       {items.map((sub, j) => (
-        <li key={sub.id || j}>
+        <li key={sub.id || j} onClick={onLinkClick}>
           <CMSLink
             {...sub.link}
             appearance="inline"
@@ -105,13 +111,15 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
                   const { link, subNavItems } = item
 
                   return (
-                    <li key={item.id || i}>
+                    <li key={item.id || i} onClick={() => setOpen(false)}>
                       <CMSLink
                         {...link}
                         appearance="inline"
                         className="font-medium hover:text-sky-400 transition-colors"
                       />
-                      {hasSubs(item) && subNavItems && <SubListMobile items={subNavItems} />}
+                      {hasSubs(item) && subNavItems && (
+                        <SubListMobile items={subNavItems} onLinkClick={() => setOpen(false)} />
+                      )}
                     </li>
                   )
                 })}
