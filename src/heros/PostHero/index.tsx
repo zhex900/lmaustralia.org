@@ -15,7 +15,6 @@ export const PostHero: React.FC<{
   const hasAuthors =
     populatedAuthors && populatedAuthors.length > 0 && formatAuthors(populatedAuthors) !== ''
 
-  console.log(post)
   //what category is the post in?
   const category = categories?.[0] as Category
   const isCity = category?.slug === 'cities'

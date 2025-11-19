@@ -8,37 +8,29 @@ import RichText from '@/components/RichText'
 
 export const MediumImpactHero: React.FC<Page['hero']> = ({ links, media, richText }) => {
   return (
-    <div className="">
-      <div className="container mb-8">
-        {richText && <RichText className="mb-6" data={richText} enableGutter={false} />}
-
-        {Array.isArray(links) && links.length > 0 && (
-          <ul className="flex gap-4">
-            {links.map(({ link }, i) => {
-              return (
-                <li key={i}>
-                  <CMSLink {...link} />
-                </li>
-              )
-            })}
-          </ul>
-        )}
+    <div className="relative flex items-end">
+      <div className="container z-10 relative lg:grid lg:grid-cols-[1fr_48rem_1fr] text-white pb-8">
+        <div className="col-start-1 col-span-1 md:col-start-2 md:col-span-2">
+          {richText && <RichText className="mb-6" data={richText} enableGutter={false} />}
+          {Array.isArray(links) && links.length > 0 && (
+            <ul className="flex gap-4">
+              {links.map(({ link }, i) => {
+                return (
+                  <li key={i}>
+                    <CMSLink {...link} />
+                  </li>
+                )
+              })}
+            </ul>
+          )}
+        </div>
       </div>
-      <div className="container ">
+
+      <div className="min-h-[28vh] select-none">
         {media && typeof media === 'object' && (
-          <div>
-            <Media
-              className="-mx-4 md:-mx-8 2xl:-mx-16"
-              imgClassName=""
-              priority
-              resource={media}
-            />
-            {media?.caption && (
-              <div className="mt-3">
-                <RichText data={media.caption} enableGutter={false} />
-              </div>
-            )}
-          </div>
+          <>
+            <Media fill priority imgClassName="-z-10 object-cover brightness-50" resource={media} />
+          </>
         )}
       </div>
     </div>

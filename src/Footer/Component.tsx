@@ -15,7 +15,7 @@ export async function Footer() {
 
   console.log(navItems)
   return (
-    <footer className="bg-gray-900 text-gray-300 mt-10">
+    <footer className="bg-gray-900 text-gray-300 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <Link className="flex items-center" href="/">
@@ -41,17 +41,20 @@ export async function Footer() {
             <h4 className="text-white font-semibold mb-4">Participation</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="#" className="hover:text-sky-400 transition-colors">
+                <Link
+                  href="/expression-of-interest"
+                  className="hover:text-sky-400 transition-colors"
+                >
                   Expression of interest
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-sky-400 transition-colors">
-                  Prayer
+                <Link href="/posts/praying" className="hover:text-sky-400 transition-colors">
+                  Praying
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-sky-400 transition-colors">
+                <Link href="/posts/giving" className="hover:text-sky-400 transition-colors">
                   Giving
                 </Link>
               </li>

@@ -1,10 +1,16 @@
 import type { Field } from 'payload'
 
 import {
+  AlignFeature,
+  BlockquoteFeature,
+  ChecklistFeature,
   FixedToolbarFeature,
   HeadingFeature,
   InlineToolbarFeature,
   lexicalEditor,
+  OrderedListFeature,
+  TextStateFeature,
+  UnorderedListFeature,
 } from '@payloadcms/richtext-lexical'
 
 import { linkGroup } from '@/fields/linkGroup'
@@ -48,6 +54,12 @@ export const hero: Field = {
             HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
             FixedToolbarFeature(),
             InlineToolbarFeature(),
+            AlignFeature(),
+            BlockquoteFeature(),
+            ChecklistFeature(),
+            OrderedListFeature(),
+            UnorderedListFeature(),
+            TextStateFeature(),
           ]
         },
       }),

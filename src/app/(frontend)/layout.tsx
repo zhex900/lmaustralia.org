@@ -26,7 +26,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
-      <body className="bg-gradient-to-r from-indigo-50 to-orange-100  dark:from-slate-800 dark:to-orange-950">
+      <body className="bg-gradient-to-r from-indigo-50 to-orange-100  dark:from-slate-800 dark:to-orange-950 flex flex-col min-h-screen">
         <Providers>
           <AdminBar
             adminBarProps={{
@@ -35,7 +35,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           />
 
           <Header />
-          {children}
+          <main className="flex-1">{children}</main>
           {/* Debug breakpoint badge (dev only) */}
           {process.env.NODE_ENV === 'development' && (
             <div className="fixed bottom-2 right-2 z-50 rounded bg-black/70 text-white px-2 py-1 text-xs">
