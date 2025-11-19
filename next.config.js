@@ -9,8 +9,20 @@ const NEXT_PUBLIC_SERVER_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    qualities: [100, 75],
+    unoptimized: process.env.NODE_ENV === 'development',
     remotePatterns: [
-      ...[NEXT_PUBLIC_SERVER_URL /* 'https://example.com' */].map((item) => {
+      {
+        hostname: 'localhost',
+        protocol: 'http',
+        port: '3000',
+      },
+      {
+        hostname: '127.0.0.1',
+        protocol: 'http',
+        port: '3000',
+      },
+      ...[NEXT_PUBLIC_SERVER_URL /* 'https://example.com' */].filter(Boolean).map((item) => {
         const url = new URL(item)
 
         return {
