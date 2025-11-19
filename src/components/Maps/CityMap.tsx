@@ -1,3 +1,5 @@
+'use client'
+
 import { AustraliaMap } from './AustraliaMap'
 
 export const CityMap = ({ slug }: { slug: string }) => {
