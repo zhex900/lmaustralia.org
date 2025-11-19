@@ -1,3 +1,4 @@
+import { site } from '@/constants'
 import type { RequiredDataFromCollectionSlug } from 'payload'
 
 // Used for pre-seeded content so that the homepage is not empty
@@ -19,7 +20,7 @@ export const homeStatic: RequiredDataFromCollectionSlug<'pages'> = {
                 format: 0,
                 mode: 'normal',
                 style: '',
-                text: 'Payload Website Template',
+                text: site.title,
                 version: 1,
               },
             ],
@@ -81,7 +82,7 @@ export const homeStatic: RequiredDataFromCollectionSlug<'pages'> = {
   },
   meta: {
     description: 'An open-source website built with Payload and Next.js.',
-    title: 'Payload Website Template',
+    title: site.title,
   },
   title: 'Home',
   layout: [],

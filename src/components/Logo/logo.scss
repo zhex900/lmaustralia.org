@@ -1,0 +1,46 @@
+.logo {
+  img {
+    max-height: 200px;
+    margin: auto;
+  }
+
+  h1 {
+    margin: 3rem auto;
+    text-align: center;
+  }
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; // space-x-2
+}
+
+.logo-main {
+  font-size: 3rem; // text-3xl (30px)
+  line-height: 2.25rem;
+  font-weight: 700; // font-bold
+}
+
+.icon-main {
+  //   font-size: 0.7rem; // text-3xl (30px)
+  //   line-height: 2.25rem;
+  //   font-weight: 700; // font-bold
+}
+
+.logo-accent {
+  color: rgb(253 186 116); // text-orange-300
+}
+
+.logo-subtitle {
+  border-left: 2px solid rgb(253 186 116); // border-l-2 border-l-orange-300
+  font-size: 0.75rem; // text-xs (12px)
+  line-height: 1rem;
+  color: rgb(107 114 128); // text-gray-500
+}
+
+.logo-subtitle-content {
+  display: flex;
+  flex-direction: column;
+  padding-left: 0.5rem; // pl-2
+}
