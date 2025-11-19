@@ -1,5 +1,3 @@
-'use client'
-
 import { cn } from '@/utilities/ui'
 import au from './au.svg'
 import React from 'react'

@@ -1,3 +1,5 @@
-export * from './CityMap'
-export * from './AustraliaMap'
-export * from './HeroAustraliaMap'
+import { CityMap } from './CityMap'
+import { AustraliaMap } from './AustraliaMap'
+import { HeroAustraliaMap } from './HeroAustraliaMap'
+
+export { CityMap, AustraliaMap, HeroAustraliaMap }
