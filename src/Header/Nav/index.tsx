@@ -7,19 +7,22 @@ import type { Header as HeaderType } from '@/payload-types'
 import { CMSLink } from '@/components/Link'
 import { Menu, X } from 'lucide-react'
 
+type NavItem = NonNullable<HeaderType['navItems']>[number]
+type SubNavItem = NonNullable<NavItem['subNavItems']>[number]
+
 export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
   const navItems = data?.navItems || []
   const [open, setOpen] = React.useState(false)
 
-  const hasSubs = (item: any) => Array.isArray(item?.subNavItems) && item.subNavItems.length > 0
+  const hasSubs = (item: NavItem) => Array.isArray(item?.subNavItems) && item.subNavItems.length > 0
 
-  const SubListDesktop = ({ items }: { items: any[] }) => (
+  const SubListDesktop = ({ items }: { items: SubNavItem[] }) => (
     <div className="absolute left-0 top-full hidden group-hover:block">
       <div className="pt-2">
         <div className="rounded-md border bg-popover text-popover-foreground shadow">
           <ul className="min-w-[12rem] p-2">
-            {items.map((sub: any, j: number) => (
-              <li key={j}>
+            {items.map((sub, j) => (
+              <li key={sub.id || j}>
                 <CMSLink
                   {...sub.link}
                   appearance="link"
@@ -33,10 +36,10 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
     </div>
   )
 
-  const SubListMobile = ({ items }: { items: any[] }) => (
+  const SubListMobile = ({ items }: { items: SubNavItem[] }) => (
     <ul className="mt-2 ml-4 space-y-2 border-l pl-3">
-      {items.map((sub: any, j: number) => (
-        <li key={j}>
+      {items.map((sub, j) => (
+        <li key={sub.id || j}>
           <CMSLink
             {...sub.link}
             appearance="inline"
@@ -53,18 +56,18 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
         {/* Desktop nav (centered by parent container) */}
         <nav className="hidden lg:flex gap-4 md:gap-12 items-center">
           {navItems.map((item, i) => {
-            const { link, subNavItems } = item as any
+            const { link, subNavItems } = item
 
-            if (hasSubs(item)) {
+            if (hasSubs(item) && subNavItems) {
               return (
-                <div key={i} className="relative group">
+                <div key={item.id || i} className="relative group">
                   <CMSLink {...link} appearance="link" className="text-md" />
                   <SubListDesktop items={subNavItems} />
                 </div>
               )
             }
 
-            return <CMSLink key={i} {...link} appearance="link" className="text-md" />
+            return <CMSLink key={item.id || i} {...link} appearance="link" className="text-md" />
           })}
         </nav>
 
@@ -99,16 +102,16 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
             <div className="px-6 pt-16 pb-8">
               <ul className="space-y-3 text-lg">
                 {navItems.map((item, i) => {
-                  const { link, subNavItems } = item as any
+                  const { link, subNavItems } = item
 
                   return (
-                    <li key={i}>
+                    <li key={item.id || i}>
                       <CMSLink
                         {...link}
                         appearance="inline"
                         className="font-medium hover:text-sky-400 transition-colors"
                       />
-                      {hasSubs(item) && <SubListMobile items={subNavItems} />}
+                      {hasSubs(item) && subNavItems && <SubListMobile items={subNavItems} />}
                     </li>
                   )
                 })}

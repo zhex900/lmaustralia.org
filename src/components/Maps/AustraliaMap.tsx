@@ -30,9 +30,6 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
     }: AustraliaMapProps,
     ref,
   ) => {
-    // Use the SVG as a CSS mask so we can control the fill via background color
-    const src = (au as any)?.src || (au as unknown as string)
-
     return (
       <div className="relative pointer-events-none">
         <div
@@ -48,11 +45,11 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
             height: '100%',
             aspectRatio: `${aspectRatio.width} / ${aspectRatio.height}`,
             // Mask using the SVG so the background color shows through
-            WebkitMaskImage: `url(${src})`,
+            WebkitMaskImage: `url(${au.src})`,
             WebkitMaskRepeat: 'no-repeat',
             WebkitMaskSize: 'contain',
             WebkitMaskPosition: 'center',
-            maskImage: `url(${src})`,
+            maskImage: `url(${au.src})`,
             maskRepeat: 'no-repeat',
             maskSize: 'contain',
             maskPosition: 'center',

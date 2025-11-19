@@ -19,13 +19,12 @@ export const HeroAustraliaMap = () => {
         },
       }
       const offset = coordinates.windowHeight / 2 - coordinates.center.y
-      console.log({ offset }, coordinates)
       setTopOffset(-100 + window.innerHeight / 2 - centerPx.y)
     }
     updateTopOffset()
     window.addEventListener('resize', updateTopOffset)
     return () => window.removeEventListener('resize', updateTopOffset)
-  }, [centerPx.y])
+  }, [centerPx.y, centerPx.x])
 
   React.useEffect(() => {
     const el = mapRef.current

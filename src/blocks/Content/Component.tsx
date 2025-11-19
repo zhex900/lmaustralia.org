@@ -9,7 +9,7 @@ import { Media } from '@/components/Media'
 
 export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
   const { columns, className, blockName } = props
-  console.log(props)
+
   const colsSpanClasses = {
     full: '12',
     half: '6',

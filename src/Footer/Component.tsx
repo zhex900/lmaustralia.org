@@ -4,7 +4,6 @@ import React from 'react'
 
 import type { Footer } from '@/payload-types'
 
-import { CMSLink } from '@/components/Link'
 import { Logo } from '@/components/Logo/Logo'
 import { site } from '@/constants'
 
@@ -13,7 +12,6 @@ export async function Footer() {
 
   const navItems = footerData?.navItems || []
 
-  console.log(navItems)
   return (
     <footer className="bg-gray-900 text-gray-300 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -25,7 +23,7 @@ export async function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm">
-              {navItems.map(({ link, id }, i) => {
+              {navItems.map(({ link, id }) => {
                 return (
                   <li key={id}>
                     <Link href={link.url || ''} className="hover:text-sky-400 transition-colors">
