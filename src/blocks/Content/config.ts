@@ -13,9 +13,14 @@ import {
   UnorderedListFeature,
   OrderedListFeature,
   TextStateFeature,
+  BlocksFeature,
 } from '@payloadcms/richtext-lexical'
 
 import { link } from '@/fields/link'
+import { Banner } from '../Banner/config'
+import { MediaBlock } from '../MediaBlock/config'
+import { Archive } from '../ArchiveBlock/config'
+import { CallToAction } from '../CallToAction/config'
 
 const columnFields: Field[] = [
   {
@@ -62,6 +67,7 @@ const columnFields: Field[] = [
           ...rootFeatures,
           IndentFeature(),
           HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
+          BlocksFeature({ blocks: [Banner, MediaBlock, Archive, CallToAction] }),
           FixedToolbarFeature(),
           InlineToolbarFeature(),
           AlignFeature(),
