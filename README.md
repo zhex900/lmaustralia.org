@@ -98,6 +98,34 @@ Basic access control is setup to limit access to various content based based on 
 
 For more details on how to extend this functionality, see the [Payload Access Control](https://payloadcms.com/docs/access-control/overview#access-control) docs.
 
+## Geo-restriction
+
+The `/admin` route is geo-restricted to Australia only. This is implemented via Next.js middleware that checks the request's country code using geolocation headers from your hosting provider (Vercel or Cloudflare).
+
+### How it works
+
+- Requests to `/admin` are checked for their country of origin
+- Only requests from Australia (AU) are allowed
+- Localhost/development requests are allowed (no country detected)
+- Non-Australian IPs receive a 403 Forbidden response
+
+### Testing
+
+For testing purposes, you can bypass geo-restriction by setting:
+
+```bash
+ADMIN_BYPASS_GEO=true
+```
+
+in your `.env` file. This allows access from any location.
+
+### Supported Providers
+
+The middleware automatically detects geolocation from:
+- **Vercel**: Uses `x-vercel-ip-country` header
+- **Cloudflare**: Uses `CF-IPCountry` header
+- **Custom**: Supports `x-country-code` header for testing
+
 ## Layout Builder
 
 Create unique page layouts for any type of content using a powerful layout builder. This template comes pre-configured with the following layout building blocks:
