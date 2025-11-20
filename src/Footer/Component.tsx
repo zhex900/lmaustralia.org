@@ -47,12 +47,12 @@ export async function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/posts/praying" className="hover:text-sky-400 transition-colors">
+                <Link href="/praying" className="hover:text-sky-400 transition-colors">
                   Praying
                 </Link>
               </li>
               <li>
-                <Link href="/posts/giving" className="hover:text-sky-400 transition-colors">
+                <Link href="/giving" className="hover:text-sky-400 transition-colors">
                   Giving
                 </Link>
               </li>
