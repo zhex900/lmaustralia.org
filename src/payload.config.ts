@@ -102,4 +102,8 @@ export default buildConfig({
     defaultFromName: site.name,
     apiKey: process.env.RESEND_API_KEY!,
   }),
+  graphQL: {
+    disablePlaygroundInProduction: true,
+    disable: true,
+  },
 })
