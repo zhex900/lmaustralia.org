@@ -5,6 +5,7 @@ import {
   InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
+import { TextFontFamilyFeature } from 'payload-lexical-typography'
 
 export const Banner: Block = {
   slug: 'banner',
@@ -25,8 +26,13 @@ export const Banner: Block = {
       name: 'content',
       type: 'richText',
       editor: lexicalEditor({
-        features: ({ rootFeatures }) => {
-          return [...rootFeatures, FixedToolbarFeature(), InlineToolbarFeature()]
+        features: ({ defaultFeatures }) => {
+          return [
+            ...defaultFeatures,
+            TextFontFamilyFeature(),
+            FixedToolbarFeature(),
+            InlineToolbarFeature(),
+          ]
         },
       }),
       label: false,

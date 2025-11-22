@@ -8,6 +8,9 @@ const config = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
+
+    './payload/**/*.{ts,tsx}',
+    './payload.config.{ts,tsx}',
   ],
   darkMode: ['selector', '[data-theme="dark"]'],
   plugins: [tailwindcssAnimate, typography],
@@ -25,6 +28,11 @@ const config = {
     'bg-success/30',
     'border-warning',
     'bg-warning/30',
+    // 'bg-gradient-to-r from-slate-900 to-slate-700',
+    { pattern: /^bg-gradient-to-/ },
+    { pattern: /^from-/ },
+    { pattern: /^to-/ },
+    { pattern: /^via-/ },
   ],
   theme: {
     container: {

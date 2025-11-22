@@ -5,8 +5,14 @@ import type { Page } from '@/payload-types'
 import { CMSLink } from '@/components/Link'
 import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
+import { cn } from '@/utilities/ui'
 
-export const MediumImpactHero: React.FC<Page['hero']> = ({ links, media, richText }) => {
+export const MediumImpactHero: React.FC<Page['hero']> = ({
+  links,
+  media,
+  richText,
+  backgroundClass,
+}) => {
   return (
     <div className="px-2 md:px-4 lg:px-6 relative">
       <div className="container flex items-end">
@@ -27,7 +33,8 @@ export const MediumImpactHero: React.FC<Page['hero']> = ({ links, media, richTex
           </div>
         </div>
 
-        <div className="min-h-[28vh] select-none">
+        <div className="min-h-[28vh] select-none ">
+          <div className={cn(backgroundClass, 'absolute top-0 left-0 w-full h-full')}></div>
           {media && typeof media === 'object' && (
             <>
               <Media

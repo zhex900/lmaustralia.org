@@ -78,10 +78,10 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
               }}
             >
               <span className="relative inline-flex items-center justify-center w-10 h-10">
-                <span className="absolute inline-flex h-3 w-3 rounded-full bg-red-500/40 animate-ping"></span>
-                <span className="absolute inline-flex h-3 w-3 rounded-full bg-red-600 animate-pulse"></span>
+                <span className="absolute inline-flex h-3 w-3 rounded-full bg-red-500/40 dark:bg-slate-200/40 animate-ping"></span>
+                <span className="absolute inline-flex h-3 w-3 rounded-full bg-red-600 dark:bg-slate-300 animate-pulse"></span>
                 {showPinLabel && (
-                  <span className="absolute -top-2 left-1/2 -translate-x-1/2 text-xs whitespace-nowrap">
+                  <span className="absolute -top-2 left-1/2 -translate-x-1/2 text-sm whitespace-nowrap">
                     {pin.name}
                   </span>
                 )}

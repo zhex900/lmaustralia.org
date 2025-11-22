@@ -65,7 +65,7 @@ export const ArchiveBlock: React.FC<
       {...(blockName ? { id: blockName.toLowerCase().replace(/ /g, '-') } : {})}
     >
       {introContent && (
-        <div className="container mb-16">
+        <div className="mb-16">
           <RichText className="ms-0 max-w-[48rem]" data={introContent} enableGutter={false} />
         </div>
       )}

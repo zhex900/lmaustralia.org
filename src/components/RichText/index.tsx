@@ -10,6 +10,7 @@ import {
   LinkJSXConverter,
   RichText as ConvertRichText,
 } from '@payloadcms/richtext-lexical/react'
+import { TypographyJSXConverters } from 'payload-lexical-typography/converters'
 
 import { CodeBlock, CodeBlockProps } from '@/blocks/Code/Component'
 
@@ -41,6 +42,7 @@ const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
 
 const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) => ({
   ...defaultConverters,
+  ...TypographyJSXConverters,
   ...LinkJSXConverter({ internalDocToHref }),
   blocks: {
     archive: ({ node }) => <ArchiveBlockClient {...node.fields} />,
@@ -76,7 +78,8 @@ export default function RichText(props: Props) {
         {
           container: enableGutter,
           'max-w-none': !enableGutter,
-          'mx-auto prose md:prose-md dark:prose-invert': enableProse,
+          //mx-auto
+          'prose md:prose-md dark:prose-invert': enableProse,
         },
         className,
       )}
