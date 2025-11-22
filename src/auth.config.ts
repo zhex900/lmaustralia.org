@@ -1,7 +1,26 @@
 import type { NextAuthConfig } from 'next-auth'
 import Resend from 'next-auth/providers/resend'
 import { site } from './constants'
+import { send } from './emails/login-link-email'
 
+export async function sendVerificationRequest(params: {
+  identifier: string
+  provider: any
+  url: string
+  theme: any
+}) {
+  const { identifier: email, url } = params
+  console.log('Using custom email template for:', email)
+
+  try {
+    // Use custom email template from login-link-email.tsx
+    await send({ email, url: new URL(url) })
+    console.log('Custom email sent successfully')
+  } catch (error) {
+    console.error('Error sending custom email:', error)
+    throw error
+  }
+}
 // Ensure secret is always defined
 const secret =
   process.env.AUTH_SECRET ||
@@ -14,7 +33,7 @@ if (!secret) {
 
 // Ensure Resend API key is set
 const resendApiKey = process.env.RESEND_API_KEY || process.env.AUTH_RESEND_KEY
-console.log({ resendApiKey })
+
 if (!resendApiKey) {
   throw new Error('RESEND_API_KEY or AUTH_RESEND_KEY must be set')
 }
@@ -29,13 +48,7 @@ export const authConfig: NextAuthConfig = {
     Resend({
       apiKey: resendApiKey,
       from: process.env.EMAIL_FROM || site.email,
-      // Optional: Add domain verification
-      // Make sure the domain in the 'from' email is verified in your Resend account
+      sendVerificationRequest,
     }),
   ],
-  secret,
-  pages: {
-    signIn: '/admin/login',
-    error: '/admin/login',
-  },
 }
