@@ -23,6 +23,7 @@ const dirname = path.dirname(filename)
 
 export default buildConfig({
   admin: {
+    autoRefresh: true,
     meta: {
       titleSuffix: '| LMAU',
       icons: '/favicon.svg',
