@@ -8,7 +8,6 @@ export function middleware(request: NextRequest) {
   if (pathname.startsWith('/admin')) {
     // Get country from various sources
     const country = getCountryFromRequest(request)
-    console.log({ country })
     // Allow access if:
     // 1. Country is Australia (AU)
     // 2. Localhost/development (no country detected)
