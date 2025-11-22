@@ -9,7 +9,6 @@ export async function sendVerificationRequest(params: {
   theme: any
 }) {
   const { identifier: email, url } = params
-  console.log('Using custom email template for:', email)
 
   try {
     // Use custom email template from login-link-email.tsx
@@ -20,4 +19,3 @@ export async function sendVerificationRequest(params: {
     throw error
   }
 }
-

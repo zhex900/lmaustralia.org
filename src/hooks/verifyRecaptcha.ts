@@ -21,7 +21,6 @@ export async function verifyRecaptcha(token: string): Promise<ReCaptchaResponse>
     },
     body: `secret=${secretKey}&response=${token}`,
   })
-
   if (!response.ok) {
     throw new Error('Failed to verify reCAPTCHA')
   }
