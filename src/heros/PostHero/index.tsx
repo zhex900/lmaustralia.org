@@ -1,6 +1,5 @@
-import { formatDateTime } from 'src/utilities/formatDateTime'
 import React from 'react'
-
+import { cn } from '@/utilities/ui'
 import type { Category, Post } from '@/payload-types'
 
 import { Media } from '@/components/Media'
@@ -10,7 +9,7 @@ import { CityMap } from '@/components/Maps'
 export const PostHero: React.FC<{
   post: Post
 }> = ({ post }) => {
-  const { categories, heroImage, populatedAuthors, publishedAt, title, slug } = post
+  const { categories, heroImage, populatedAuthors, backgroundClass, title, slug } = post
 
   const hasAuthors =
     populatedAuthors && populatedAuthors.length > 0 && formatAuthors(populatedAuthors) !== ''
@@ -31,23 +30,25 @@ export const PostHero: React.FC<{
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1">
                   <p className="text-sm">Author</p>
-
+                  <script>…</script>
                   <p>{formatAuthors(populatedAuthors)}</p>
                 </div>
               </div>
             )}
-            {publishedAt && (
+            {/* {publishedAt && (
               <div className="flex flex-col gap-1">
                 <p className="text-sm">Date Published</p>
 
                 <time dateTime={publishedAt}>{formatDateTime(publishedAt)}</time>
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </div>
 
       <div className="min-h-[28vh] select-none">
+        <div className={cn(backgroundClass, 'absolute top-0 left-0 w-full h-full')}></div>
+
         {heroImage && typeof heroImage !== 'string' && (
           <>
             <Media

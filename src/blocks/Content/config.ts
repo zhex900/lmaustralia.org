@@ -15,7 +15,7 @@ import {
   TextStateFeature,
   BlocksFeature,
 } from '@payloadcms/richtext-lexical'
-
+import { TextFontFamilyFeature } from 'payload-lexical-typography'
 import { link } from '@/fields/link'
 import { Banner } from '../Banner/config'
 import { MediaBlock } from '../MediaBlock/config'
@@ -62,9 +62,9 @@ const columnFields: Field[] = [
     name: 'richText',
     type: 'richText',
     editor: lexicalEditor({
-      features: ({ rootFeatures }) => {
+      features: ({ defaultFeatures }) => {
         return [
-          ...rootFeatures,
+          ...defaultFeatures,
           IndentFeature(),
           HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
           BlocksFeature({ blocks: [Banner, MediaBlock, Archive, CallToAction] }),
@@ -77,6 +77,7 @@ const columnFields: Field[] = [
           OrderedListFeature(),
           UnorderedListFeature(),
           TextStateFeature(),
+          TextFontFamilyFeature(),
         ]
       },
     }),

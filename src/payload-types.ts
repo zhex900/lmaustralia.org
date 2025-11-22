@@ -157,6 +157,7 @@ export interface Page {
   id: number;
   title: string;
   hero: {
+    backgroundClass?: string | null;
     type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
     richText?: {
       root: {
@@ -226,6 +227,7 @@ export interface Post {
   id: number;
   title: string;
   heroImage?: (number | null) | Media;
+  backgroundClass?: string | null;
   content: {
     root: {
       type: string;
@@ -1065,6 +1067,7 @@ export interface PagesSelect<T extends boolean = true> {
   hero?:
     | T
     | {
+        backgroundClass?: T;
         type?: T;
         richText?: T;
         links?:
@@ -1201,6 +1204,7 @@ export interface FormBlockSelect<T extends boolean = true> {
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
   heroImage?: T;
+  backgroundClass?: T;
   content?: T;
   relatedPosts?: T;
   categories?: T;

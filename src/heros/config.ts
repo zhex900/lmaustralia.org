@@ -20,6 +20,12 @@ export const hero: Field = {
   type: 'group',
   fields: [
     {
+      name: 'backgroundClass',
+      type: 'text',
+      label: 'Background Class',
+      required: false,
+    },
+    {
       name: 'type',
       type: 'select',
       defaultValue: 'lowImpact',

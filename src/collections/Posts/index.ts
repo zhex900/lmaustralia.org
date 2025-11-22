@@ -37,6 +37,7 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { slugField } from 'payload'
+import { TextFontFamilyFeature } from 'payload-lexical-typography'
 
 export const Posts: CollectionConfig<'posts'> = {
   slug: 'posts',
@@ -93,12 +94,18 @@ export const Posts: CollectionConfig<'posts'> = {
               relationTo: 'media',
             },
             {
+              name: 'backgroundClass',
+              type: 'text',
+              label: 'Background Class',
+              required: false,
+            },
+            {
               name: 'content',
               type: 'richText',
               editor: lexicalEditor({
-                features: ({ rootFeatures }) => {
+                features: ({ defaultFeatures }) => {
                   return [
-                    ...rootFeatures,
+                    ...defaultFeatures,
                     HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
                     BlocksFeature({ blocks: [Banner, Code, MediaBlock, Archive] }),
                     FixedToolbarFeature(),
@@ -113,6 +120,7 @@ export const Posts: CollectionConfig<'posts'> = {
                     LinkFeature(),
                     BlockquoteFeature(),
                     AlignFeature(),
+                    TextFontFamilyFeature(),
                   ]
                 },
               }),
