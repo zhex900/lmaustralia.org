@@ -13,6 +13,8 @@ import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { Page, Post } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
 import { site } from '@/constants'
+import { authjsPlugin } from 'payload-authjs'
+import { authConfig } from '@/auth.config'
 
 const generateTitle: GenerateTitle<Post | Page> = ({ doc }) => {
   return doc?.title ? `${doc.title} | ${site.name}` : site.title
@@ -98,5 +100,8 @@ export const plugins: Plugin[] = [
         return [...defaultFields, ...searchFields]
       },
     },
+  }),
+  authjsPlugin({
+    authjsConfig: authConfig,
   }),
 ]

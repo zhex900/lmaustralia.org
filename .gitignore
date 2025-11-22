@@ -22,3 +22,5 @@ node_modules/
 
 # Sentry Config File
 .env.sentry-build-plugin
+prod-db.dump
+migrate_users_id_to_varchar.sql
