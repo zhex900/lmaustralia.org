@@ -44,6 +44,19 @@ const nextConfig = {
   },
   reactStrictMode: true,
   redirects,
+  experimental: {
+    optimizeCss: true,
+    legacyBrowsers: false,
+    optimizePackageImports: [],
+  },
+  // Optimize CSS loading
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
+  },
+  // Reduce CSS bundle size and optimize loading
+  swcMinify: true,
+  // Disable source maps in production to reduce bundle size
+  productionBrowserSourceMaps: false,
 }
 
 // Wrap with Payload first

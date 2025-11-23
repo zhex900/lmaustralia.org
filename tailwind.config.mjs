@@ -12,6 +12,11 @@ const config = {
     './payload/**/*.{ts,tsx}',
     './payload.config.{ts,tsx}',
   ],
+
+  // Optimize CSS output
+  corePlugins: {
+    preflight: true,
+  },
   darkMode: ['selector', '[data-theme="dark"]'],
   plugins: [tailwindcssAnimate, typography],
   prefix: '',

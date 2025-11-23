@@ -47,7 +47,8 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
     src = getMediaUrl(url, cacheTag)
   }
 
-  const loading = loadingFromProps || (!priority ? 'lazy' : undefined)
+  // For LCP optimization: when priority is true, loading should be undefined (eager) and fetchPriority should be high
+  const loading = loadingFromProps || (priority ? undefined : 'lazy')
 
   // NOTE: this is used by the browser to determine which image to download at different screen sizes
   const sizes = sizeFromProps
@@ -66,6 +67,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
         placeholder="blur"
         blurDataURL={placeholderBlur}
         priority={priority}
+        fetchPriority={priority ? 'high' : undefined}
         quality={100}
         loading={loading}
         sizes={sizes}
