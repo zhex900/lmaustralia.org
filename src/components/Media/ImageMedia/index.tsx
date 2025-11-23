@@ -68,7 +68,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
         blurDataURL={placeholderBlur}
         priority={priority}
         fetchPriority={priority ? 'high' : undefined}
-        quality={100}
+        quality={priority ? 90 : 75} // Optimize quality: high for priority images, lower for lazy-loaded
         loading={loading}
         sizes={sizes}
         src={src}

@@ -93,13 +93,14 @@
   }
 }
 
+/* Optimize initial paint - reduce FOUC */
 html {
-  opacity: 0;
+  visibility: hidden;
 }
 
 html[data-theme='dark'],
 html[data-theme='light'] {
-  opacity: initial;
+  visibility: visible;
 }
 
 .grecaptcha-badge {

@@ -10,7 +10,10 @@ const NEXT_PUBLIC_SERVER_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    qualities: [100, 75],
+    formats: ['image/avif', 'image/webp'], // Use modern formats for better compression
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days cache
     unoptimized: process.env.NODE_ENV === 'development',
     remotePatterns: [
       {
@@ -45,18 +48,25 @@ const nextConfig = {
   reactStrictMode: true,
   redirects,
   experimental: {
-    optimizeCss: true,
-    legacyBrowsers: false,
-    optimizePackageImports: [],
+    optimizePackageImports: [
+      '@payloadcms/admin-bar',
+      '@vercel/analytics',
+      '@vercel/speed-insights',
+      'lucide-react',
+      '@radix-ui/react-select',
+      '@radix-ui/react-checkbox',
+      '@radix-ui/react-label',
+    ],
   },
   // Optimize CSS loading
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
   },
-  // Reduce CSS bundle size and optimize loading
-  swcMinify: true,
   // Disable source maps in production to reduce bundle size
   productionBrowserSourceMaps: false,
+  // Optimize output
+  poweredByHeader: false,
+  compress: true,
 }
 
 // Wrap with Payload first
