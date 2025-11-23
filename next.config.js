@@ -36,19 +36,20 @@ const nextConfig = {
       }),
     ],
   },
-  webpack: (webpackConfig) => {
-    webpackConfig.resolve.extensionAlias = {
-      '.cjs': ['.cts', '.cjs'],
-      '.js': ['.ts', '.tsx', '.js', '.jsx'],
-      '.mjs': ['.mts', '.mjs'],
-    }
+  // webpack: (webpackConfig) => {
+  //   webpackConfig.resolve.extensionAlias = {
+  //     '.cjs': ['.cts', '.cjs'],
+  //     '.js': ['.ts', '.tsx', '.js', '.jsx'],
+  //     '.mjs': ['.mts', '.mjs'],
+  //   }
 
-    return webpackConfig
-  },
+  //   return webpackConfig
+  // },
   reactStrictMode: true,
   redirects,
   experimental: {
     forceSwcTransforms: true,
+    swcPlugins: [], // ensures no babel fallback
     optimizePackageImports: [
       '@payloadcms/admin-bar',
       '@vercel/analytics',
