@@ -48,6 +48,7 @@ const nextConfig = {
   reactStrictMode: true,
   redirects,
   experimental: {
+    forceSwcTransforms: true,
     optimizePackageImports: [
       '@payloadcms/admin-bar',
       '@vercel/analytics',
