@@ -1,5 +1,5 @@
 'use client'
-import type { FormFieldBlock, Form as FormType } from '@payloadcms/plugin-form-builder/types'
+import type { Form as FormType } from '@payloadcms/plugin-form-builder/types'
 
 import { useRouter } from 'next/navigation'
 import React, { useCallback, useState } from 'react'
@@ -11,6 +11,7 @@ import type { DefaultTypedEditorState } from '@payloadcms/richtext-lexical'
 import { fields } from './fields'
 import { getClientSideURL } from '@/utilities/getURL'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
+import { ReCaptchaProvider } from '@/providers/ReCaptcha'
 
 export type FormBlockType = {
   blockName?: string
@@ -20,21 +21,21 @@ export type FormBlockType = {
   introContent?: DefaultTypedEditorState
 }
 
-export const FormBlock: React.FC<
-  {
-    id?: string
-  } & FormBlockType
-> = (props) => {
+// Inner component that uses the reCAPTCHA hook (must be inside ReCaptchaProvider)
+const FormContent: React.FC<{
+  formFromProps: FormType
+  formMethods: ReturnType<typeof useForm<Record<string, any>>>
+  enableIntro: boolean
+  introContent?: DefaultTypedEditorState
+}> = ({ formFromProps, formMethods, enableIntro, introContent }) => {
   const {
-    enableIntro,
-    form: formFromProps,
-    form: { id: formID, confirmationMessage, confirmationType, redirect, submitButtonLabel } = {},
-    introContent,
-  } = props
+    id: formID,
+    confirmationMessage,
+    confirmationType,
+    redirect,
+    submitButtonLabel,
+  } = formFromProps
 
-  const formMethods = useForm({
-    defaultValues: formFromProps.fields,
-  })
   const {
     control,
     formState: { errors },
@@ -49,7 +50,7 @@ export const FormBlock: React.FC<
   const { executeRecaptcha } = useGoogleReCaptcha()
 
   const onSubmit = useCallback(
-    (data: FormFieldBlock[]) => {
+    (data: Record<string, any>) => {
       let loadingTimerID: ReturnType<typeof setTimeout>
       const submitForm = async () => {
         setError(undefined)
@@ -178,5 +179,28 @@ export const FormBlock: React.FC<
         </FormProvider>
       </div>
     </div>
+  )
+}
+
+export const FormBlock: React.FC<
+  {
+    id?: string
+  } & FormBlockType
+> = (props) => {
+  const { enableIntro, form: formFromProps, introContent } = props
+
+  const formMethods = useForm<Record<string, any>>({
+    defaultValues: formFromProps.fields,
+  })
+
+  return (
+    <ReCaptchaProvider>
+      <FormContent
+        formFromProps={formFromProps}
+        formMethods={formMethods}
+        enableIntro={enableIntro}
+        introContent={introContent}
+      />
+    </ReCaptchaProvider>
   )
 }
