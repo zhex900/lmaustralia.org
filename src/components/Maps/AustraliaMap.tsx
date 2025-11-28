@@ -48,8 +48,6 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
             src={au}
             alt="Australia map"
             fill
-            priority
-            fetchPriority="high"
             sizes={`${width === '100%' ? '100vw' : width}`}
             className="object-contain"
             style={{
