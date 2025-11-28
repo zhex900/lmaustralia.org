@@ -6,7 +6,7 @@ import React from 'react'
 import type { Page, Post } from '@/payload-types'
 
 type CMSLinkType = {
-  appearance?: 'inline' | ButtonProps['variant']
+  appearance?: 'inline' | ButtonProps['variant'] | 'outline-solid'
   children?: React.ReactNode
   className?: string
   label?: string | null
