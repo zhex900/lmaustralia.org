@@ -37,12 +37,7 @@ export const MediumImpactHero: React.FC<Page['hero']> = ({
           <div className={cn(backgroundClass, 'absolute top-0 left-0 w-full h-full')}></div>
           {media && typeof media === 'object' && (
             <>
-              <Media
-                fill
-                priority
-                imgClassName="-z-10 object-cover brightness-50"
-                resource={media}
-              />
+              <Media fill imgClassName="-z-10 object-cover brightness-50" resource={media} />
             </>
           )}
         </div>

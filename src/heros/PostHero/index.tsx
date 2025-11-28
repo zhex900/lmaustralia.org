@@ -51,12 +51,7 @@ export const PostHero: React.FC<{
 
         {heroImage && typeof heroImage !== 'string' && (
           <>
-            <Media
-              fill
-              priority
-              imgClassName="-z-10 object-cover brightness-50"
-              resource={heroImage}
-            />
+            <Media fill imgClassName="-z-10 object-cover brightness-50" resource={heroImage} />
           </>
         )}
         {isCity && (
