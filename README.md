@@ -122,6 +122,7 @@ in your `.env` file. This allows access from any location.
 ### Supported Providers
 
 The middleware automatically detects geolocation from:
+
 - **Vercel**: Uses `x-vercel-ip-country` header
 - **Cloudflare**: Uses `CF-IPCountry` header
 - **Custom**: Supports `x-country-code` header for testing
