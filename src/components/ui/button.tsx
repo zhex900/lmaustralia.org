@@ -19,6 +19,8 @@ const buttonVariants = cva(
         sm: 'h-9 rounded px-3',
       },
       variant: {
+        'outline-solid':
+          'border border-border bg-background hover:bg-card hover:text-accent-foreground',
         default: 'bg-primary text-primary-foreground hover:bg-primary/90',
         destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
         ghost: 'hover:bg-card hover:text-accent-foreground',

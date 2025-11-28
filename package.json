@@ -103,7 +103,10 @@
       "sharp",
       "esbuild",
       "unrs-resolver"
-    ]
+    ],
+    "overrides": {
+      "baseline-browser-mapping": "latest"
+    }
   },
   "overrides": {
     "@types/react": "19.2.7",
