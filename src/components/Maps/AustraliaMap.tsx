@@ -1,6 +1,7 @@
 import { cn } from '@/utilities/ui'
 import au from './au.svg'
 import React from 'react'
+import NextImage from 'next/image'
 import { PinName, pinPositions } from './pins'
 
 const aspectRatio = {
@@ -32,29 +33,47 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
       <div className="relative pointer-events-none">
         <div
           ref={ref}
-          className={cn(
-            'bg-orange-200/60 dark:bg-red-500/60',
-            debug && 'border border-dashed border-red-500',
-            className,
-          )}
+          className={cn('relative', debug && 'border border-dashed border-red-500', className)}
           style={{
             // Maintain aspect ratio of the source (1000 x 966)
             width,
             height: '100%',
             aspectRatio: `${aspectRatio.width} / ${aspectRatio.height}`,
-            // Mask using the SVG so the background color shows through
-            WebkitMaskImage: `url(${au.src})`,
-            WebkitMaskRepeat: 'no-repeat',
-            WebkitMaskSize: 'contain',
-            WebkitMaskPosition: 'center',
-            maskImage: `url(${au.src})`,
-            maskRepeat: 'no-repeat',
-            maskSize: 'contain',
-            maskPosition: 'center',
-            // Ensure it doesn't intercept pointer events when used as background
             pointerEvents: 'none',
           }}
-        />
+        >
+          {/* SVG image - optimized for LCP with priority loading */}
+          {/* Using Next.js Image ensures it's discoverable in HTML and optimized */}
+          <NextImage
+            src={au}
+            alt="Australia map"
+            fill
+            priority
+            fetchPriority="high"
+            sizes={`${width === '100%' ? '100vw' : width}`}
+            className="object-contain"
+            style={{
+              position: 'absolute',
+              zIndex: 0,
+            }}
+          />
+          {/* Colored background with mask - maintains original visual effect */}
+          <div
+            className="absolute inset-0 bg-orange-200/60 dark:bg-red-500/60"
+            aria-hidden="true"
+            style={{
+              zIndex: 1,
+              WebkitMaskImage: `url(${au.src})`,
+              WebkitMaskRepeat: 'no-repeat',
+              WebkitMaskSize: 'contain',
+              WebkitMaskPosition: 'center',
+              maskImage: `url(${au.src})`,
+              maskRepeat: 'no-repeat',
+              maskSize: 'contain',
+              maskPosition: 'center',
+            }}
+          />
+        </div>
 
         {debug && (
           <div className="pointer-events-none absolute inset-0">
