@@ -1,138 +1,180 @@
-import { cn } from '@/utilities/ui'
-import au from './au.svg'
-import React from 'react'
-import NextImage from 'next/image'
-import { PinName, pinPositions, latLngToSvgCoords } from './pins'
-import { AUSTRALIA_BOUNDS, SVG_WIDTH, SVG_HEIGHT } from './constants'
+'use client'
 
-const aspectRatio = {
-  width: SVG_WIDTH,
-  height: SVG_HEIGHT,
-}
+import { cn } from '@/utilities/ui'
+import React, { useRef, useEffect, useState } from 'react'
+import Map, { Source, Layer, Marker, type MapRef } from 'react-map-gl/mapbox'
+import 'mapbox-gl/dist/mapbox-gl.css'
+import { PinName, pinPositions } from './pins'
+import { AUSTRALIA_CENTER, AUSTRALIA_BOUNDS_COORDS } from './constants'
+import australia from './australia.json'
+import { createPulsingDot } from './createPulsingDot'
+
+const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || ''
 
 type AustraliaMapProps = {
   showPinLabel?: boolean
-  width?: string
   className?: string
   // which pins to show, default is all
   pins?: 'all' | PinName[]
   debug?: boolean
+  children?: React.ReactNode
 }
 
 export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
-  (
-    {
-      showPinLabel = true,
-      width = '100%',
-      className,
-      pins = 'all',
-      debug = false,
-    }: AustraliaMapProps,
-    ref,
-  ) => {
-    return (
-      <div className="relative pointer-events-none">
+  ({ showPinLabel = true, className, pins = 'all', children }: AustraliaMapProps, ref) => {
+    const mapRef = useRef<MapRef | null>(null)
+    const [mapKey, setMapKey] = useState(0)
+
+    // Reload map on screen size changes by remounting with new key
+    useEffect(() => {
+      const handleResize = () => {
+        // Force remount by changing key to reload the map
+        setMapKey((prev) => prev + 1)
+      }
+
+      window.addEventListener('resize', handleResize)
+
+      return () => {
+        window.removeEventListener('resize', handleResize)
+      }
+    }, [])
+
+    // Use center and bounds from constants
+    const center = AUSTRALIA_CENTER
+    const bounds = AUSTRALIA_BOUNDS_COORDS
+
+    // Filter pins to show
+    const pinsToShow = pinPositions.filter(
+      (pin) => pins === 'all' || (Array.isArray(pins) && pins.includes(pin.name)),
+    )
+
+    // Pins GeoJSON FeatureCollection
+    const pinsGeoJson = {
+      type: 'FeatureCollection' as const,
+      features: pinsToShow.map((pin) => ({
+        type: 'Feature' as const,
+        properties: {
+          name: pin.name,
+          href: pin.href,
+        },
+        geometry: {
+          type: 'Point' as const,
+          coordinates: [pin.lng, pin.lat],
+        },
+      })),
+    }
+
+    if (!MAPBOX_TOKEN) {
+      console.warn('NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN is not set. Mapbox map will not render.')
+      return (
         <div
           ref={ref}
-          className={cn('relative', debug && 'border border-dashed border-red-500', className)}
-          style={{
-            // Maintain aspect ratio of the source (1000 x 966)
-            width,
-            height: '100%',
-            aspectRatio: `${aspectRatio.width} / ${aspectRatio.height}`,
-            pointerEvents: 'none',
-          }}
+          className={cn('flex items-center justify-center bg-gray-100 dark:bg-gray-800', className)}
+          style={{ width: '100%', aspectRatio: '1000 / 966' }}
         >
-          {/* SVG image - optimized for LCP with priority loading */}
-          {/* Using Next.js Image ensures it's discoverable in HTML and optimized */}
-          <NextImage
-            src={au}
-            alt="Australia map"
-            fill
-            sizes={`${width === '100%' ? '100vw' : width}`}
-            className="object-contain"
-            style={{
-              position: 'absolute',
-              zIndex: 0,
-            }}
-          />
-          {/* Colored background with mask - maintains original visual effect */}
-          <div
-            className="absolute inset-0 bg-orange-200/60 dark:bg-red-500/60"
-            aria-hidden="true"
-            style={{
-              zIndex: 1,
-              WebkitMaskImage: `url(${au.src})`,
-              WebkitMaskRepeat: 'no-repeat',
-              WebkitMaskSize: 'contain',
-              WebkitMaskPosition: 'center',
-              maskImage: `url(${au.src})`,
-              maskRepeat: 'no-repeat',
-              maskSize: 'contain',
-              maskPosition: 'center',
-            }}
-          />
-
-          {/* Australia bounds border - shows the geographic bounding box */}
-          {(() => {
-            // Calculate the four corners of the bounding box
-            const topLeft = latLngToSvgCoords(AUSTRALIA_BOUNDS.maxLat, AUSTRALIA_BOUNDS.minLng) // Northwest corner
-            const topRight = latLngToSvgCoords(AUSTRALIA_BOUNDS.maxLat, AUSTRALIA_BOUNDS.maxLng) // Northeast corner
-            const bottomLeft = latLngToSvgCoords(AUSTRALIA_BOUNDS.minLat, AUSTRALIA_BOUNDS.minLng) // Southwest corner
-            const bottomRight = latLngToSvgCoords(AUSTRALIA_BOUNDS.minLat, AUSTRALIA_BOUNDS.maxLng) // Southeast corner
-
-            const boxWidth = topRight.x - topLeft.x
-            const boxHeight = bottomLeft.y - topLeft.y
-
-            return (
-              <div
-                className="absolute pointer-events-none border-2 border-blue-500/70 dark:border-blue-400/70 bg-blue-500/5 dark:bg-blue-400/5"
-                style={{
-                  left: `${(topLeft.x / aspectRatio.width) * 100}%`,
-                  top: `${(topLeft.y / aspectRatio.height) * 100}%`,
-                  width: `${(boxWidth / aspectRatio.width) * 100}%`,
-                  height: `${(boxHeight / aspectRatio.height) * 100}%`,
-                  zIndex: 5,
-                }}
-                aria-hidden="true"
-              />
-            )
-          })()}
+          <p className="text-gray-500 dark:text-gray-400">Mapbox access token not configured</p>
         </div>
-
-        {debug && (
-          <div className="pointer-events-none absolute inset-0">
-            {/* Vertical line */}
-            <span className="absolute left-1/2 top-0 -translate-x-1/2 h-full w-px bg-red-500/60"></span>
-            {/* Horizontal line */}
-            <span className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-px bg-red-500/60"></span>
-          </div>
-        )}
-
-        {pinPositions
-          .filter((pin) => pins === 'all' || (Array.isArray(pins) && pins.includes(pin.name)))
-          .map((pin) => (
-            <span
-              key={pin.name}
-              className="absolute pointer-events-none"
-              style={{
-                left: `${(pin.coords.x / aspectRatio.width) * 100}%`,
-                top: `${(pin.coords.y / aspectRatio.height) * 100}%`,
-                transform: 'translate(-50%, -50%)',
-                zIndex: 10,
+      )
+    }
+    // <div className="relative pointer-events-none" style={{ width }}>
+    return (
+      <div
+        ref={ref}
+        className={cn('relative', className)}
+        style={{
+          width: '100%',
+          // height: '100vh',
+          aspectRatio: '1000 / 966',
+          pointerEvents: 'none',
+        }}
+      >
+        <Map
+          key={mapKey}
+          ref={mapRef}
+          mapboxAccessToken={MAPBOX_TOKEN}
+          initialViewState={{
+            longitude: center[0],
+            latitude: center[1],
+            zoom: 4,
+            bounds,
+            fitBoundsOptions: {
+              padding: 20,
+              maxZoom: 6,
+            },
+          }}
+          style={{ width: '100%', height: '100%' }}
+          onLoad={() => {
+            // Create pulsing dot after map loads
+            if (mapRef.current) {
+              const map = mapRef.current.getMap()
+              createPulsingDot(map)
+            }
+          }}
+          mapStyle={{
+            version: 8,
+            name: 'Empty Transparent',
+            sources: {},
+            layers: [
+              {
+                id: 'background',
+                type: 'background',
+                paint: {
+                  'background-color': 'transparent',
+                },
+              },
+            ],
+            glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
+          }}
+          interactive={false}
+          attributionControl={false}
+        >
+          {/* Australia Outline */}
+          <Source id="australia" type="geojson" data={australia as any}>
+            <Layer
+              id="australia-fill"
+              type="fill"
+              paint={{
+                'fill-color': '#FF0000',
+                'fill-opacity': 0.5,
               }}
-            >
-              <span className="relative inline-flex items-center justify-center w-10 h-10">
-                <span className="absolute inline-flex h-3 w-3 rounded-full bg-red-500/40 dark:bg-slate-200/40 animate-ping"></span>
-                <span className="absolute inline-flex h-3 w-3 rounded-full bg-red-600 dark:bg-slate-300 animate-pulse"></span>
-                {showPinLabel && (
-                  <span className="absolute -top-2 left-1/2 -translate-x-1/2 text-sm whitespace-nowrap">
-                    {pin.name}
-                  </span>
-                )}
-              </span>
-            </span>
-          ))}
+            />
+          </Source>
+          {/* Center Content */}
+          {children && (
+            <Marker longitude={center[0]} latitude={center[1]} anchor="center">
+              {children}
+            </Marker>
+          )}
+          <Source id="pins" type="geojson" data={pinsGeoJson}>
+            <Layer
+              id="pin-pulsing-dots"
+              type="symbol"
+              layout={{
+                'icon-image': 'pulsing-dot',
+                'icon-size': 0.5,
+                'icon-anchor': 'center',
+              }}
+            />
+
+            {/* Pin labels - render last (on top of dots) */}
+            {showPinLabel && (
+              <Layer
+                id="pin-labels"
+                type="symbol"
+                layout={{
+                  'text-field': ['get', 'name'],
+                  'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
+                  'text-offset': [0, -1.2],
+                  'text-anchor': 'bottom',
+                  'text-size': 14,
+                }}
+                paint={{
+                  'text-color': '#ffffff',
+                }}
+              />
+            )}
+          </Source>
+        </Map>
       </div>
     )
   },
