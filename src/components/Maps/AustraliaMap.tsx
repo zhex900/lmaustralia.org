@@ -13,6 +13,7 @@ const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || ''
 
 type AustraliaMapProps = {
   showPinLabel?: boolean
+  pinSize?: number
   className?: string
   // which pins to show, default is all
   pins?: 'all' | PinName[]
@@ -20,8 +21,19 @@ type AustraliaMapProps = {
   children?: React.ReactNode
 }
 
+const defaultPinSize = 0.5
+
 export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
-  ({ showPinLabel = true, className, pins = 'all', children }: AustraliaMapProps, ref) => {
+  (
+    {
+      showPinLabel = true,
+      pinSize = defaultPinSize,
+      className,
+      pins = 'all',
+      children,
+    }: AustraliaMapProps,
+    ref,
+  ) => {
     const mapRef = useRef<MapRef | null>(null)
     const [mapKey, setMapKey] = useState(0)
 
@@ -151,7 +163,7 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
               type="symbol"
               layout={{
                 'icon-image': 'pulsing-dot',
-                'icon-size': 0.5,
+                'icon-size': pinSize,
                 'icon-anchor': 'center',
               }}
             />
