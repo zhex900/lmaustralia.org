@@ -2,11 +2,12 @@ import { cn } from '@/utilities/ui'
 import au from './au.svg'
 import React from 'react'
 import NextImage from 'next/image'
-import { PinName, pinPositions } from './pins'
+import { PinName, pinPositions, latLngToSvgCoords } from './pins'
+import { AUSTRALIA_BOUNDS, SVG_WIDTH, SVG_HEIGHT } from './constants'
 
 const aspectRatio = {
-  width: 1000,
-  height: 966,
+  width: SVG_WIDTH,
+  height: SVG_HEIGHT,
 }
 
 type AustraliaMapProps = {
@@ -71,6 +72,32 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
               maskPosition: 'center',
             }}
           />
+
+          {/* Australia bounds border - shows the geographic bounding box */}
+          {(() => {
+            // Calculate the four corners of the bounding box
+            const topLeft = latLngToSvgCoords(AUSTRALIA_BOUNDS.maxLat, AUSTRALIA_BOUNDS.minLng) // Northwest corner
+            const topRight = latLngToSvgCoords(AUSTRALIA_BOUNDS.maxLat, AUSTRALIA_BOUNDS.maxLng) // Northeast corner
+            const bottomLeft = latLngToSvgCoords(AUSTRALIA_BOUNDS.minLat, AUSTRALIA_BOUNDS.minLng) // Southwest corner
+            const bottomRight = latLngToSvgCoords(AUSTRALIA_BOUNDS.minLat, AUSTRALIA_BOUNDS.maxLng) // Southeast corner
+
+            const boxWidth = topRight.x - topLeft.x
+            const boxHeight = bottomLeft.y - topLeft.y
+
+            return (
+              <div
+                className="absolute pointer-events-none border-2 border-blue-500/70 dark:border-blue-400/70 bg-blue-500/5 dark:bg-blue-400/5"
+                style={{
+                  left: `${(topLeft.x / aspectRatio.width) * 100}%`,
+                  top: `${(topLeft.y / aspectRatio.height) * 100}%`,
+                  width: `${(boxWidth / aspectRatio.width) * 100}%`,
+                  height: `${(boxHeight / aspectRatio.height) * 100}%`,
+                  zIndex: 5,
+                }}
+                aria-hidden="true"
+              />
+            )
+          })()}
         </div>
 
         {debug && (
@@ -92,6 +119,7 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
                 left: `${(pin.coords.x / aspectRatio.width) * 100}%`,
                 top: `${(pin.coords.y / aspectRatio.height) * 100}%`,
                 transform: 'translate(-50%, -50%)',
+                zIndex: 10,
               }}
             >
               <span className="relative inline-flex items-center justify-center w-10 h-10">
