@@ -85,31 +85,53 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
       const container = containerRef.current || (typeof ref === 'object' && ref?.current)
       if (!container || shouldLoadMap) return
 
-      // Use Intersection Observer with a small delay to defer loading
+      // Use Intersection Observer with a larger delay to defer loading
       const observer = new IntersectionObserver(
         (entries) => {
           if (entries[0]?.isIntersecting) {
             // Load CSS immediately (non-blocking)
             loadMapboxCSS()
 
-            // Defer JS loading until browser is idle
-            if (window.requestIdleCallback) {
-              window.requestIdleCallback(
-                () => {
-                  setShouldLoadMap(true)
-                },
-                { timeout: 2000 },
-              )
-            } else {
-              setTimeout(() => {
-                setShouldLoadMap(true)
-              }, 100)
+            // Defer JS loading more aggressively - wait for multiple idle periods
+            const loadMap = () => {
+              if (window.requestIdleCallback) {
+                window.requestIdleCallback(
+                  () => {
+                    // Double-check if still in viewport before loading
+                    if (
+                      container &&
+                      container.getBoundingClientRect().top < window.innerHeight + 100
+                    ) {
+                      setShouldLoadMap(true)
+                    }
+                  },
+                  { timeout: 3000 }, // Increased timeout
+                )
+              } else {
+                // Fallback: delay longer
+                setTimeout(() => {
+                  if (
+                    container &&
+                    container.getBoundingClientRect().top < window.innerHeight + 100
+                  ) {
+                    setShouldLoadMap(true)
+                  }
+                }, 500)
+              }
             }
+
+            // Wait for page to be fully interactive
+            if (document.readyState === 'complete') {
+              loadMap()
+            } else {
+              window.addEventListener('load', loadMap, { once: true })
+            }
+
             observer.disconnect()
           }
         },
         {
-          rootMargin: '50px', // Start loading 50px before entering viewport
+          rootMargin: '100px', // Increased margin - start loading earlier
         },
       )
 
@@ -198,7 +220,36 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
           pointerEvents: 'none',
         }}
       >
-        {shouldLoadMap ? (
+        {/* Static placeholder for better LCP - renders immediately */}
+        {!shouldLoadMap && (
+          <div
+            className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800"
+            aria-hidden="true"
+          >
+            {/* Simple SVG placeholder matching map aspect ratio */}
+            <svg
+              viewBox="0 0 1000 966"
+              className="w-full h-full"
+              preserveAspectRatio="xMidYMid meet"
+            >
+              {/* Australia-like shape placeholder */}
+              <path
+                d="M200 300 L400 200 L600 250 L750 400 L800 600 L700 750 L500 850 L300 800 L150 600 Z"
+                fill="#FF0000"
+                fillOpacity="0.3"
+                className="animate-pulse"
+              />
+            </svg>
+            {children && (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                {children}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Map loads when ready */}
+        {shouldLoadMap && (
           <Map
             key={mapKey}
             ref={mapRef}
@@ -286,10 +337,6 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
               )}
             </Source>
           </Map>
-        ) : (
-          <div className="flex items-center justify-center w-full h-full bg-gray-100 dark:bg-gray-800">
-            <div className="text-gray-500 dark:text-gray-400">Loading map...</div>
-          </div>
         )}
       </div>
     )
