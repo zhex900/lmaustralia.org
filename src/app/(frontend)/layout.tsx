@@ -28,7 +28,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
-      <body className="bg-gradient-to-r from-indigo-50 to-orange-100  dark:from-slate-800 dark:to-orange-950 flex flex-col min-h-screen">
+      <body className="bg-linear-to-r from-indigo-50 to-orange-100  dark:from-slate-800 dark:to-orange-950 flex flex-col min-h-screen">
         <Providers>
           <AdminBar
             adminBarProps={{

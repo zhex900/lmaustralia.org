@@ -19,8 +19,8 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
   const SubListDesktop = ({ items }: { items: SubNavItem[] }) => (
     <div className="absolute left-0 top-full hidden group-hover:block">
       <div className="pt-2">
-        <div className="rounded-md border bg-popover text-popover-foreground shadow">
-          <ul className="min-w-[12rem] p-2">
+        <div className="rounded-md border bg-popover text-popover-foreground shadow-sm">
+          <ul className="min-w-48 p-2">
             {items.map((sub, j) => (
               <li key={sub.id || j}>
                 <CMSLink
@@ -93,7 +93,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
         {open && (
           <div
             id="mobile-nav"
-            className="fixed inset-0 z-40 bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/40 lg:hidden"
+            className="fixed inset-0 z-40 bg-background/85 backdrop-blur-sm supports-backdrop-filter:bg-background/40 lg:hidden"
           >
             <div className="absolute inset-x-0 top-0 p-4 flex justify-end">
               <button

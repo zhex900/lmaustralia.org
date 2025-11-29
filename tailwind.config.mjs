@@ -28,7 +28,7 @@ const config = {
     'bg-success/30',
     'border-warning',
     'bg-warning/30',
-    // 'bg-gradient-to-r from-slate-900 to-slate-700',
+    // 'bg-linear-to-r from-slate-900 to-slate-700',
     { pattern: /^bg-gradient-to-/ },
     { pattern: /^from-/ },
     { pattern: /^to-/ },

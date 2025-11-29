@@ -37,7 +37,7 @@ export const HeroAustraliaMap = () => {
 
   return (
     <div
-      className="absolute z-0 left-1/2 -translate-x-1/2 w-[100%] lg:w-[80%] xl:w-[70%] 2xl:w-[60%] pointer-events-none"
+      className="absolute z-0 left-1/2 -translate-x-1/2 w-full lg:w-[80%] xl:w-[70%] 2xl:w-[60%] pointer-events-none"
       style={{ top: `${topOffset}px` }}
     >
       <AustraliaMap ref={mapRef} />

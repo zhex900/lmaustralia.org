@@ -64,7 +64,7 @@ export const ArchiveBlockClient: React.FC<
     <div className="" {...(blockName ? { id: blockName.toLowerCase().replace(/ /g, '-') } : {})}>
       {introContent && (
         <div className="container mb-16">
-          <RichText className="ms-0 max-w-[48rem]" data={introContent} enableGutter={false} />
+          <RichText className="ms-0 max-w-3xl" data={introContent} enableGutter={false} />
         </div>
       )}
       {loading ? (
