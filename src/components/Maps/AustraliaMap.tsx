@@ -8,7 +8,25 @@ import australia from './australia.json'
 import { createPulsingDot } from './createPulsingDot'
 import dynamic from 'next/dynamic'
 
-// Lazy load Mapbox components and CSS
+// Load Mapbox CSS asynchronously (non-blocking)
+const loadMapboxCSS = () => {
+  if (typeof window === 'undefined') return
+
+  const existingLink = document.querySelector('link[href*="mapbox-gl"]')
+  if (existingLink) return
+
+  const link = document.createElement('link')
+  link.rel = 'stylesheet'
+  link.href = 'https://api.mapbox.com/mapbox-gl-js/v3.16.0/mapbox-gl.css'
+  link.crossOrigin = 'anonymous'
+  // Use media="print" trick to load CSS asynchronously
+  link.media = 'print'
+  link.onload = () => {
+    link.media = 'all'
+  }
+  document.head.appendChild(link)
+}
+
 const Map = dynamic(() => import('react-map-gl/mapbox').then((mod) => mod.default), {
   ssr: false,
   loading: () => (
@@ -31,23 +49,6 @@ const Marker = dynamic(() => import('react-map-gl/mapbox').then((mod) => mod.Mar
 })
 
 import type { MapRef } from 'react-map-gl/mapbox'
-
-// Component to load Mapbox CSS dynamically
-const MapboxCSSLoader = () => {
-  useEffect(() => {
-    // Check if CSS is already loaded
-    const existingLink = document.querySelector('link[href*="mapbox-gl"]')
-    if (existingLink) return
-
-    // Load CSS from CDN (avoids TypeScript errors with CSS imports)
-    const link = document.createElement('link')
-    link.rel = 'stylesheet'
-    link.href = 'https://api.mapbox.com/mapbox-gl-js/v3.16.0/mapbox-gl.css'
-    link.crossOrigin = 'anonymous'
-    document.head.appendChild(link)
-  }, [])
-  return null
-}
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || ''
 
@@ -76,9 +77,53 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
   ) => {
     const mapRef = useRef<MapRef | null>(null)
     const [mapKey, setMapKey] = useState(0)
+    const [shouldLoadMap, setShouldLoadMap] = useState(false)
+    const containerRef = useRef<HTMLDivElement | null>(null)
+
+    // Use Intersection Observer to only load map when it's in viewport
+    useEffect(() => {
+      const container = containerRef.current || (typeof ref === 'object' && ref?.current)
+      if (!container || shouldLoadMap) return
+
+      // Use Intersection Observer with a small delay to defer loading
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting) {
+            // Load CSS immediately (non-blocking)
+            loadMapboxCSS()
+
+            // Defer JS loading until browser is idle
+            if (window.requestIdleCallback) {
+              window.requestIdleCallback(
+                () => {
+                  setShouldLoadMap(true)
+                },
+                { timeout: 2000 },
+              )
+            } else {
+              setTimeout(() => {
+                setShouldLoadMap(true)
+              }, 100)
+            }
+            observer.disconnect()
+          }
+        },
+        {
+          rootMargin: '50px', // Start loading 50px before entering viewport
+        },
+      )
+
+      observer.observe(container)
+
+      return () => {
+        observer.disconnect()
+      }
+    }, [ref, shouldLoadMap])
 
     // Reload map on screen size changes by remounting with new key
     useEffect(() => {
+      if (!shouldLoadMap) return
+
       const handleResize = () => {
         // Force remount by changing key to reload the map
         setMapKey((prev) => prev + 1)
@@ -89,7 +134,7 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
       return () => {
         window.removeEventListener('resize', handleResize)
       }
-    }, [])
+    }, [shouldLoadMap])
 
     // Use center and bounds from constants
     const center = AUSTRALIA_CENTER
@@ -129,9 +174,22 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
       )
     }
     // <div className="relative pointer-events-none" style={{ width }}>
+    // Combine refs
+    const setRefs = React.useCallback(
+      (node: HTMLDivElement | null) => {
+        containerRef.current = node
+        if (typeof ref === 'function') {
+          ref(node)
+        } else if (ref) {
+          ref.current = node
+        }
+      },
+      [ref],
+    )
+
     return (
       <div
-        ref={ref}
+        ref={setRefs}
         className={cn('relative', className)}
         style={{
           width: '100%',
@@ -140,94 +198,99 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
           pointerEvents: 'none',
         }}
       >
-        <MapboxCSSLoader />
-        <Map
-          key={mapKey}
-          ref={mapRef}
-          mapboxAccessToken={MAPBOX_TOKEN}
-          initialViewState={{
-            longitude: center[0],
-            latitude: center[1],
-            zoom: 4,
-            bounds,
-            fitBoundsOptions: {
-              padding: 20,
-              maxZoom: 6,
-            },
-          }}
-          style={{ width: '100%', height: '100%' }}
-          onLoad={() => {
-            // Create pulsing dot after map loads
-            if (mapRef.current) {
-              const map = mapRef.current.getMap()
-              createPulsingDot(map)
-            }
-          }}
-          mapStyle={{
-            version: 8,
-            name: 'Empty Transparent',
-            sources: {},
-            layers: [
-              {
-                id: 'background',
-                type: 'background',
-                paint: {
-                  'background-color': 'transparent',
-                },
+        {shouldLoadMap ? (
+          <Map
+            key={mapKey}
+            ref={mapRef}
+            mapboxAccessToken={MAPBOX_TOKEN}
+            initialViewState={{
+              longitude: center[0],
+              latitude: center[1],
+              zoom: 4,
+              bounds,
+              fitBoundsOptions: {
+                padding: 20,
+                maxZoom: 6,
               },
-            ],
-            glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
-          }}
-          interactive={false}
-          attributionControl={false}
-        >
-          {/* Australia Outline */}
-          <Source id="australia" type="geojson" data={australia as any}>
-            <Layer
-              id="australia-fill"
-              type="fill"
-              paint={{
-                'fill-color': '#FF0000',
-                'fill-opacity': 0.5,
-              }}
-            />
-          </Source>
-          {/* Center Content */}
-          {children && (
-            <Marker longitude={center[0]} latitude={center[1]} anchor="center">
-              {children}
-            </Marker>
-          )}
-          <Source id="pins" type="geojson" data={pinsGeoJson}>
-            <Layer
-              id="pin-pulsing-dots"
-              type="symbol"
-              layout={{
-                'icon-image': 'pulsing-dot',
-                'icon-size': pinSize,
-                'icon-anchor': 'center',
-              }}
-            />
-
-            {/* Pin labels - render last (on top of dots) */}
-            {showPinLabel && (
+            }}
+            style={{ width: '100%', height: '100%' }}
+            onLoad={() => {
+              // Create pulsing dot after map loads
+              if (mapRef.current) {
+                const map = mapRef.current.getMap()
+                createPulsingDot(map)
+              }
+            }}
+            mapStyle={{
+              version: 8,
+              name: 'Empty Transparent',
+              sources: {},
+              layers: [
+                {
+                  id: 'background',
+                  type: 'background',
+                  paint: {
+                    'background-color': 'transparent',
+                  },
+                },
+              ],
+              glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
+            }}
+            interactive={false}
+            attributionControl={false}
+          >
+            {/* Australia Outline */}
+            <Source id="australia" type="geojson" data={australia as any}>
               <Layer
-                id="pin-labels"
-                type="symbol"
-                layout={{
-                  'text-field': ['get', 'name'],
-                  'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
-                  'text-offset': [0, -1.2],
-                  'text-anchor': 'bottom',
-                  'text-size': 14,
-                }}
+                id="australia-fill"
+                type="fill"
                 paint={{
-                  'text-color': '#ffffff',
+                  'fill-color': '#FF0000',
+                  'fill-opacity': 0.5,
                 }}
               />
+            </Source>
+            {/* Center Content */}
+            {children && (
+              <Marker longitude={center[0]} latitude={center[1]} anchor="center">
+                {children}
+              </Marker>
             )}
-          </Source>
-        </Map>
+            <Source id="pins" type="geojson" data={pinsGeoJson}>
+              <Layer
+                id="pin-pulsing-dots"
+                type="symbol"
+                layout={{
+                  'icon-image': 'pulsing-dot',
+                  'icon-size': pinSize,
+                  'icon-anchor': 'center',
+                }}
+              />
+
+              {/* Pin labels - render last (on top of dots) */}
+              {showPinLabel && (
+                <Layer
+                  id="pin-labels"
+                  type="symbol"
+                  layout={{
+                    'text-field': ['get', 'name'],
+                    'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
+                    'text-offset': [0, -1.2],
+                    'text-anchor': 'bottom',
+                    'text-size': 14,
+                  }}
+                  paint={{
+                    'text-color': '#ffffff',
+                  }}
+                />
+              )}
+            </Source>
+          </Map>
+        ) : (
+          <div className="flex items-center justify-center w-full h-full bg-gray-100 dark:bg-gray-800">
+            <div className="text-gray-500 dark:text-gray-400">Loading map...</div>
+          </div>
+        )}
       </div>
     )
   },
