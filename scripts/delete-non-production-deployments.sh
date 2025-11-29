@@ -103,9 +103,17 @@ echo -e "${YELLOW}🗑️  Preview deployments: ${PREVIEW_COUNT}${NC}"
 echo -e "${YELLOW}🗑️  Failed production deployments: ${PROD_ERROR_COUNT}${NC}"
 
 # Create keep list file
+# Always keep at least the latest production deployment, plus up to KEEP_COUNT-1 more
 KEEP_LIST="$TEMP_DIR/keep_list.txt"
+LATEST_DEPLOYMENT=""
 if [ -f "$PROD_READY" ] && [ "$PROD_READY_COUNT" -gt 0 ]; then
-    head -n "$KEEP_COUNT" "$PROD_READY" | awk '{print $2}' > "$KEEP_LIST"
+    # Extract the latest deployment URL for explicit protection (must be kept)
+    LATEST_DEPLOYMENT=$(head -n 1 "$PROD_READY" | awk '{print $2}')
+    
+    # Get the latest production deployment (first line) and up to KEEP_COUNT more
+    # This ensures the latest is always kept, even if KEEP_COUNT is 0
+    LATEST_COUNT=$((KEEP_COUNT > 0 ? KEEP_COUNT : 1))
+    head -n "$LATEST_COUNT" "$PROD_READY" | awk '{print $2}' > "$KEEP_LIST"
 fi
 
 # Find deployments to delete
@@ -127,9 +135,12 @@ while IFS= read -r line; do
         # Delete failed production deployments
         DELETE_THIS=true
     elif [ "$ENV" = "Production" ] && echo "$STATUS" | grep -q "Ready"; then
+        # Never delete the latest production deployment
+        if [ -n "$LATEST_DEPLOYMENT" ] && [ "$DEPLOYMENT_URL" = "$LATEST_DEPLOYMENT" ]; then
+            DELETE_THIS=false
         # Delete production Ready deployments that are NOT in the keep list
         # (i.e., older than the last KEEP_COUNT successful production deployments)
-        if [ ! -f "$KEEP_LIST" ] || ! grep -q "^${DEPLOYMENT_URL}$" "$KEEP_LIST"; then
+        elif [ ! -f "$KEEP_LIST" ] || ! grep -q "^${DEPLOYMENT_URL}$" "$KEEP_LIST"; then
             DELETE_THIS=true
         fi
     fi

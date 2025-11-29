@@ -61,6 +61,9 @@ export default process.env.NODE_ENV === 'production'
 
         // Only print logs for uploading source maps in CI
         silent: !process.env.CI,
+
+        // Disable telemetry to prevent errors (as shown in error message)
+        telemetry: false,
       },
       {
         // For all available options, see:
