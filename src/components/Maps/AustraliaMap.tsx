@@ -7,6 +7,7 @@ import { AUSTRALIA_CENTER, AUSTRALIA_BOUNDS_COORDS } from './constants'
 import australia from './australia.json'
 import { createPulsingDot } from './createPulsingDot'
 import dynamic from 'next/dynamic'
+import { AustraliaMapPlaceholder } from './AustraliaMapPlaceholder'
 
 // Load Mapbox CSS asynchronously (non-blocking)
 const loadMapboxCSS = () => {
@@ -215,40 +216,14 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
         className={cn('relative', className)}
         style={{
           width: '100%',
-          // height: '100vh',
           aspectRatio: '1000 / 966',
           pointerEvents: 'none',
         }}
       >
-        {/* Static placeholder for better LCP - renders immediately */}
-        {!shouldLoadMap && (
-          <div
-            className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800"
-            aria-hidden="true"
-          >
-            {/* Simple SVG placeholder matching map aspect ratio */}
-            <svg
-              viewBox="0 0 1000 966"
-              className="w-full h-full"
-              preserveAspectRatio="xMidYMid meet"
-            >
-              {/* Australia-like shape placeholder */}
-              <path
-                d="M200 300 L400 200 L600 250 L750 400 L800 600 L700 750 L500 850 L300 800 L150 600 Z"
-                fill="#FF0000"
-                fillOpacity="0.3"
-                className="animate-pulse"
-              />
-            </svg>
-            {children && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                {children}
-              </div>
-            )}
-          </div>
-        )}
+        {/* Server-rendered placeholder for better LCP - renders immediately */}
+        {!shouldLoadMap && <AustraliaMapPlaceholder>{children}</AustraliaMapPlaceholder>}
 
-        {/* Map loads when ready */}
+        {/* Map loads when ready - client-side only */}
         {shouldLoadMap && (
           <Map
             key={mapKey}
