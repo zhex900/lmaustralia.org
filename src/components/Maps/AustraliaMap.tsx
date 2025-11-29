@@ -2,12 +2,52 @@
 
 import { cn } from '@/utilities/ui'
 import React, { useRef, useEffect, useState } from 'react'
-import Map, { Source, Layer, Marker, type MapRef } from 'react-map-gl/mapbox'
-import 'mapbox-gl/dist/mapbox-gl.css'
 import { PinName, pinPositions } from './pins'
 import { AUSTRALIA_CENTER, AUSTRALIA_BOUNDS_COORDS } from './constants'
 import australia from './australia.json'
 import { createPulsingDot } from './createPulsingDot'
+import dynamic from 'next/dynamic'
+
+// Lazy load Mapbox components and CSS
+const Map = dynamic(() => import('react-map-gl/mapbox').then((mod) => mod.default), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center w-full h-full bg-gray-100 dark:bg-gray-800">
+      <div className="text-gray-500 dark:text-gray-400">Loading map...</div>
+    </div>
+  ),
+})
+
+const Source = dynamic(() => import('react-map-gl/mapbox').then((mod) => mod.Source), {
+  ssr: false,
+})
+
+const Layer = dynamic(() => import('react-map-gl/mapbox').then((mod) => mod.Layer), {
+  ssr: false,
+})
+
+const Marker = dynamic(() => import('react-map-gl/mapbox').then((mod) => mod.Marker), {
+  ssr: false,
+})
+
+import type { MapRef } from 'react-map-gl/mapbox'
+
+// Component to load Mapbox CSS dynamically
+const MapboxCSSLoader = () => {
+  useEffect(() => {
+    // Check if CSS is already loaded
+    const existingLink = document.querySelector('link[href*="mapbox-gl"]')
+    if (existingLink) return
+
+    // Load CSS from CDN (avoids TypeScript errors with CSS imports)
+    const link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.href = 'https://api.mapbox.com/mapbox-gl-js/v3.16.0/mapbox-gl.css'
+    link.crossOrigin = 'anonymous'
+    document.head.appendChild(link)
+  }, [])
+  return null
+}
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || ''
 
@@ -100,6 +140,7 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
           pointerEvents: 'none',
         }}
       >
+        <MapboxCSSLoader />
         <Map
           key={mapKey}
           ref={mapRef}
