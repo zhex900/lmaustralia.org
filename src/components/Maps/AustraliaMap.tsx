@@ -1,70 +1,26 @@
-'use client'
-
+import React from 'react'
+import * as d3 from 'd3-geo'
 import { cn } from '@/utilities/ui'
-import React, { useRef, useEffect, useState } from 'react'
 import { PinName, pinPositions } from './pins'
-import { AUSTRALIA_CENTER, AUSTRALIA_BOUNDS_COORDS } from './constants'
-import australia from './australia.json'
-import { createPulsingDot } from './createPulsingDot'
-import dynamic from 'next/dynamic'
-import { AustraliaMapPlaceholder } from './AustraliaMapPlaceholder'
-
-// Load Mapbox CSS asynchronously (non-blocking)
-const loadMapboxCSS = () => {
-  if (typeof window === 'undefined') return
-
-  const existingLink = document.querySelector('link[href*="mapbox-gl"]')
-  if (existingLink) return
-
-  const link = document.createElement('link')
-  link.rel = 'stylesheet'
-  link.href = 'https://api.mapbox.com/mapbox-gl-js/v3.16.0/mapbox-gl.css'
-  link.crossOrigin = 'anonymous'
-  // Use media="print" trick to load CSS asynchronously
-  link.media = 'print'
-  link.onload = () => {
-    link.media = 'all'
-  }
-  document.head.appendChild(link)
-}
-
-const Map = dynamic(() => import('react-map-gl/mapbox').then((mod) => mod.default), {
-  ssr: false,
-  loading: () => (
-    <div className="flex items-center justify-center w-full h-full bg-gray-100 dark:bg-gray-800">
-      <div className="text-gray-500 dark:text-gray-400">Loading map...</div>
-    </div>
-  ),
-})
-
-const Source = dynamic(() => import('react-map-gl/mapbox').then((mod) => mod.Source), {
-  ssr: false,
-})
-
-const Layer = dynamic(() => import('react-map-gl/mapbox').then((mod) => mod.Layer), {
-  ssr: false,
-})
-
-const Marker = dynamic(() => import('react-map-gl/mapbox').then((mod) => mod.Marker), {
-  ssr: false,
-})
-
-import type { MapRef } from 'react-map-gl/mapbox'
-
-const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || ''
+import { SVG_WIDTH, SVG_HEIGHT } from './constants'
+import australiaGeoJSON from './geojson/australia.json'
+import australiaStatesGeoJSON from './geojson/australian-states.json'
 
 type AustraliaMapProps = {
   showPinLabel?: boolean
   pinSize?: number
   className?: string
-  // which pins to show, default is all
   pins?: 'all' | PinName[]
   debug?: boolean
   children?: React.ReactNode
 }
 
-const defaultPinSize = 0.5
+const defaultPinSize = 1
 
+/**
+ * Server-side rendered Australia map using d3-geo
+ * Renders SVG map with city pins and labels
+ */
 export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
   (
     {
@@ -76,242 +32,110 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
     }: AustraliaMapProps,
     ref,
   ) => {
-    const mapRef = useRef<MapRef | null>(null)
-    const [mapKey, setMapKey] = useState(0)
-    const [shouldLoadMap, setShouldLoadMap] = useState(false)
-    const containerRef = useRef<HTMLDivElement | null>(null)
+    // Create projection that fits Australia
+    const projection = d3.geoMercator().fitSize([SVG_WIDTH, SVG_HEIGHT], australiaGeoJSON as any)
 
-    // Use Intersection Observer to only load map when it's in viewport
-    useEffect(() => {
-      const container = containerRef.current || (typeof ref === 'object' && ref?.current)
-      if (!container || shouldLoadMap) return
-
-      // Use Intersection Observer with a larger delay to defer loading
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0]?.isIntersecting) {
-            // Load CSS immediately (non-blocking)
-            loadMapboxCSS()
-
-            // Defer JS loading more aggressively - wait for multiple idle periods
-            const loadMap = () => {
-              if (window.requestIdleCallback) {
-                window.requestIdleCallback(
-                  () => {
-                    // Double-check if still in viewport before loading
-                    if (
-                      container &&
-                      container.getBoundingClientRect().top < window.innerHeight + 100
-                    ) {
-                      setShouldLoadMap(true)
-                    }
-                  },
-                  { timeout: 3000 }, // Increased timeout
-                )
-              } else {
-                // Fallback: delay longer
-                setTimeout(() => {
-                  if (
-                    container &&
-                    container.getBoundingClientRect().top < window.innerHeight + 100
-                  ) {
-                    setShouldLoadMap(true)
-                  }
-                }, 500)
-              }
-            }
-
-            // Wait for page to be fully interactive
-            if (document.readyState === 'complete') {
-              loadMap()
-            } else {
-              window.addEventListener('load', loadMap, { once: true })
-            }
-
-            observer.disconnect()
-          }
-        },
-        {
-          rootMargin: '100px', // Increased margin - start loading earlier
-        },
-      )
-
-      observer.observe(container)
-
-      return () => {
-        observer.disconnect()
-      }
-    }, [ref, shouldLoadMap])
-
-    // Reload map on screen size changes by remounting with new key
-    useEffect(() => {
-      if (!shouldLoadMap) return
-
-      const handleResize = () => {
-        // Force remount by changing key to reload the map
-        setMapKey((prev) => prev + 1)
-      }
-
-      window.addEventListener('resize', handleResize)
-
-      return () => {
-        window.removeEventListener('resize', handleResize)
-      }
-    }, [shouldLoadMap])
-
-    // Use center and bounds from constants
-    const center = AUSTRALIA_CENTER
-    const bounds = AUSTRALIA_BOUNDS_COORDS
+    // Create path generator
+    const path = d3.geoPath(projection)
 
     // Filter pins to show
     const pinsToShow = pinPositions.filter(
       (pin) => pins === 'all' || (Array.isArray(pins) && pins.includes(pin.name)),
     )
 
-    // Pins GeoJSON FeatureCollection
-    const pinsGeoJson = {
-      type: 'FeatureCollection' as const,
-      features: pinsToShow.map((pin) => ({
-        type: 'Feature' as const,
-        properties: {
-          name: pin.name,
-          href: pin.href,
-        },
-        geometry: {
-          type: 'Point' as const,
-          coordinates: [pin.lng, pin.lat],
-        },
-      })),
-    }
+    // Convert pin positions to SVG coordinates
+    const pinNodes = pinsToShow.map((pin) => {
+      // d3-geo expects [longitude, latitude] format
+      const coords: [number, number] = [pin.lng, pin.lat]
+      const projected = projection(coords)
+      return {
+        name: pin.name,
+        href: pin.href,
+        x: projected ? projected[0] : 0,
+        y: projected ? projected[1] : 0,
+        labelOffsetX: pin?.labelOffsetX || 0,
+      }
+    })
 
-    if (!MAPBOX_TOKEN) {
-      console.warn('NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN is not set. Mapbox map will not render.')
-      return (
-        <div
-          ref={ref}
-          className={cn('flex items-center justify-center bg-gray-100 dark:bg-gray-800', className)}
-          style={{ width: '100%', aspectRatio: '1000 / 966' }}
-        >
-          <p className="text-gray-500 dark:text-gray-400">Mapbox access token not configured</p>
-        </div>
-      )
-    }
-    // <div className="relative pointer-events-none" style={{ width }}>
-    // Combine refs
-    const setRefs = React.useCallback(
-      (node: HTMLDivElement | null) => {
-        containerRef.current = node
-        if (typeof ref === 'function') {
-          ref(node)
-        } else if (ref) {
-          ref.current = node
-        }
-      },
-      [ref],
-    )
+    // Calculate pin radius based on pinSize prop (scaled to SVG)
+    const pinRadius = (pinSize * SVG_WIDTH) / 100
 
     return (
       <div
-        ref={setRefs}
+        ref={ref}
         className={cn('relative', className)}
         style={{
           width: '100%',
-          aspectRatio: '1000 / 966',
+          aspectRatio: `${SVG_WIDTH} / ${SVG_HEIGHT}`,
           pointerEvents: 'none',
         }}
       >
-        {/* Server-rendered placeholder for better LCP - renders immediately */}
-        {!shouldLoadMap && <AustraliaMapPlaceholder>{children}</AustraliaMapPlaceholder>}
+        <svg
+          width="100%"
+          height="100%"
+          viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
+          preserveAspectRatio="xMidYMid meet"
+          className="w-full h-full"
+        >
+          {/* Transparent background layer */}
+          <rect width={SVG_WIDTH} height={SVG_HEIGHT} fill="transparent" />
 
-        {/* Map loads when ready - client-side only */}
-        {shouldLoadMap && (
-          <Map
-            key={mapKey}
-            ref={mapRef}
-            mapboxAccessToken={MAPBOX_TOKEN}
-            initialViewState={{
-              longitude: center[0],
-              latitude: center[1],
-              zoom: 4,
-              bounds,
-              fitBoundsOptions: {
-                padding: 20,
-                maxZoom: 6,
-              },
-            }}
-            style={{ width: '100%', height: '100%' }}
-            onLoad={() => {
-              // Create pulsing dot after map loads
-              if (mapRef.current) {
-                const map = mapRef.current.getMap()
-                createPulsingDot(map)
-              }
-            }}
-            mapStyle={{
-              version: 8,
-              name: 'Empty Transparent',
-              sources: {},
-              layers: [
-                {
-                  id: 'background',
-                  type: 'background',
-                  paint: {
-                    'background-color': 'transparent',
-                  },
-                },
-              ],
-              glyphs: 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
-            }}
-            interactive={false}
-            attributionControl={false}
-          >
-            {/* Australia Outline */}
-            <Source id="australia" type="geojson" data={australia as any}>
-              <Layer
-                id="australia-fill"
-                type="fill"
-                paint={{
-                  'fill-color': '#FF0000',
-                  'fill-opacity': 0.5,
-                }}
+          {/* Australia outline */}
+          <path
+            d={path(australiaGeoJSON as any) || ''}
+            fill="#FF0000"
+            fillOpacity="0.5"
+            stroke="transparent"
+            strokeWidth={0}
+          />
+
+          {/* State boundaries */}
+          {australiaStatesGeoJSON.type === 'FeatureCollection' &&
+            australiaStatesGeoJSON.features.map((feature: any, index: number) => (
+              <path
+                key={`state-${index}`}
+                d={path(feature.geometry) || ''}
+                fill="none"
+                stroke="#ffffff"
+                strokeWidth={1}
+                strokeOpacity={0.25}
               />
-            </Source>
-            {/* Center Content */}
-            {children && (
-              <Marker longitude={center[0]} latitude={center[1]} anchor="center">
-                {children}
-              </Marker>
-            )}
-            <Source id="pins" type="geojson" data={pinsGeoJson}>
-              <Layer
-                id="pin-pulsing-dots"
-                type="symbol"
-                layout={{
-                  'icon-image': 'pulsing-dot',
-                  'icon-size': pinSize,
-                  'icon-anchor': 'center',
-                }}
+            ))}
+
+          {/* City pins */}
+          {pinNodes.map((pin, index) => (
+            <g key={pin.name}>
+              {/* Pin dot */}
+              <circle
+                cx={pin.x}
+                cy={pin.y}
+                r={pinRadius}
+                fill="rgba(107, 114, 128, 1)"
+                stroke="white"
+                strokeWidth={2}
+                className="animate-pulse"
               />
 
-              {/* Pin labels - render last (on top of dots) */}
+              {/* Pin label */}
               {showPinLabel && (
-                <Layer
-                  id="pin-labels"
-                  type="symbol"
-                  layout={{
-                    'text-field': ['get', 'name'],
-                    'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
-                    'text-offset': [0, -1.2],
-                    'text-anchor': 'bottom',
-                    'text-size': 14,
-                  }}
-                  paint={{
-                    'text-color': '#ffffff',
-                  }}
-                />
+                <text
+                  x={pin.x + pin.labelOffsetX}
+                  y={pin.y - pinRadius - 15}
+                  fill="currentColor"
+                  textAnchor="middle"
+                  className="text-black dark:text-white text-[24px] sm:text-[12px] md:text-[14px] lg:text-[16px]"
+                >
+                  {pin.name}
+                </text>
               )}
-            </Source>
-          </Map>
+            </g>
+          ))}
+        </svg>
+
+        {children && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-auto">
+            {children}
+          </div>
         )}
       </div>
     )

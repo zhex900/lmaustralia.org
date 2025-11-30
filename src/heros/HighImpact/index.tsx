@@ -10,10 +10,10 @@ import { AustraliaMap } from '@/components/Maps'
 export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText }) => {
   return (
     <div className="min-h-screen relative flex items-end">
-      <div className="absolute lg:w-[80%] xl:w-[70%] 2xl:w-[60%] z-0 left-1/2 top-[45%] -translate-x-1/2 -translate-y-1/2 w-full pointer-events-none">
+      <div className="absolute w-[95%] sm:w-[90%] md:w-[85%] lg:w-[70%] xl:w-[50%] 2xl:w-[45%] z-0 left-1/2 top-[30%] -translate-x-1/2 -translate-y-1/2  pointer-events-none">
         <AustraliaMap>
           {richText && (
-            <div className="relative max-w-3xl flex flex-col justify-between h-full">
+            <div className=" max-w-3xl">
               <RichText className="mt-30 mx-10" data={richText} enableGutter={false} />
               <div className="z-10 absolute -bottom-8 left-0 w-full flex items-center justify-center">
                 {Array.isArray(links) && links.length > 0 && (

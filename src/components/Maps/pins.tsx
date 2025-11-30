@@ -5,12 +5,14 @@ export const pinPositions: {
   href: string
   lat: number // Latitude
   lng: number // Longitude
+  labelOffsetX?: number
 }[] = [
   {
     name: 'Newcastle',
     href: '/posts/newcastle',
     lat: -32.9283, // Newcastle, NSW latitude
     lng: 151.7817, // Newcastle, NSW longitude
+    labelOffsetX: -15,
   },
   {
     name: 'Cairns',
