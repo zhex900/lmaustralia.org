@@ -8,8 +8,9 @@ import RichText from '@/components/RichText'
 import { AustraliaMap } from '@/components/Maps'
 
 export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText }) => {
+  //100% of the viewport height minus the height of the header
   return (
-    <div className="h-[calc(100dvh-150px)] relative flex items-end border-2 border-red-500">
+    <div className="h-[calc(100dvh-112px)] relative flex items-end ">
       <div className="absolute w-[95%] sm:w-[90%] md:w-[85%] lg:w-[70%] xl:w-[50%] 2xl:w-[45%] z-0 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2  pointer-events-none">
         <AustraliaMap>
           {richText && (
