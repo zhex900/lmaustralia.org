@@ -84,7 +84,7 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
           <path
             d={path(australiaGeoJSON as any) || ''}
             fill="#FF0000"
-            fillOpacity="0.5"
+            fillOpacity="0.4"
             stroke="transparent"
             strokeWidth={0}
           />
