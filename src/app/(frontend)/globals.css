@@ -123,8 +123,3 @@ html[data-theme='light'] {
 .grecaptcha-badge {
   visibility: hidden;
 }
-
-.mapboxgl-ctrl-logo,
-.mapboxgl-ctrl-bottom-right {
-  display: none !important;
-}
