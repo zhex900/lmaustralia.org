@@ -1,110 +1,142 @@
-import { cn } from '@/utilities/ui'
-import au from './au.svg'
 import React from 'react'
-import NextImage from 'next/image'
+import * as d3 from 'd3-geo'
+import { cn } from '@/utilities/ui'
 import { PinName, pinPositions } from './pins'
-
-const aspectRatio = {
-  width: 1000,
-  height: 966,
-}
+import { SVG_WIDTH, SVG_HEIGHT } from './constants'
+import australiaGeoJSON from './geojson/australia.json'
+import australiaStatesGeoJSON from './geojson/australian-states.json'
 
 type AustraliaMapProps = {
   showPinLabel?: boolean
-  width?: string
+  pinSize?: number
   className?: string
-  // which pins to show, default is all
   pins?: 'all' | PinName[]
   debug?: boolean
+  children?: React.ReactNode
 }
 
+const defaultPinSize = 1
+
+/**
+ * Server-side rendered Australia map using d3-geo
+ * Renders SVG map with city pins and labels
+ */
 export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
   (
     {
       showPinLabel = true,
-      width = '100%',
+      pinSize = defaultPinSize,
       className,
       pins = 'all',
-      debug = false,
+      children,
     }: AustraliaMapProps,
     ref,
   ) => {
-    return (
-      <div className="relative pointer-events-none">
-        <div
-          ref={ref}
-          className={cn('relative', debug && 'border border-dashed border-red-500', className)}
-          style={{
-            // Maintain aspect ratio of the source (1000 x 966)
-            width,
-            height: '100%',
-            aspectRatio: `${aspectRatio.width} / ${aspectRatio.height}`,
-            pointerEvents: 'none',
-          }}
-        >
-          {/* SVG image - optimized for LCP with priority loading */}
-          {/* Using Next.js Image ensures it's discoverable in HTML and optimized */}
-          <NextImage
-            src={au}
-            alt="Australia map"
-            fill
-            sizes={`${width === '100%' ? '100vw' : width}`}
-            className="object-contain"
-            style={{
-              position: 'absolute',
-              zIndex: 0,
-            }}
-          />
-          {/* Colored background with mask - maintains original visual effect */}
-          <div
-            className="absolute inset-0 bg-orange-200/60 dark:bg-red-500/60"
-            aria-hidden="true"
-            style={{
-              zIndex: 1,
-              WebkitMaskImage: `url(${au.src})`,
-              WebkitMaskRepeat: 'no-repeat',
-              WebkitMaskSize: 'contain',
-              WebkitMaskPosition: 'center',
-              maskImage: `url(${au.src})`,
-              maskRepeat: 'no-repeat',
-              maskSize: 'contain',
-              maskPosition: 'center',
-            }}
-          />
-        </div>
+    // Create projection that fits Australia
+    const projection = d3.geoMercator().fitSize([SVG_WIDTH, SVG_HEIGHT], australiaGeoJSON as any)
 
-        {debug && (
-          <div className="pointer-events-none absolute inset-0">
-            {/* Vertical line */}
-            <span className="absolute left-1/2 top-0 -translate-x-1/2 h-full w-px bg-red-500/60"></span>
-            {/* Horizontal line */}
-            <span className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-px bg-red-500/60"></span>
+    // Create path generator
+    const path = d3.geoPath(projection)
+
+    // Filter pins to show
+    const pinsToShow = pinPositions.filter(
+      (pin) => pins === 'all' || (Array.isArray(pins) && pins.includes(pin.name)),
+    )
+
+    // Convert pin positions to SVG coordinates
+    const pinNodes = pinsToShow.map((pin) => {
+      // d3-geo expects [longitude, latitude] format
+      const coords: [number, number] = [pin.lng, pin.lat]
+      const projected = projection(coords)
+      return {
+        name: pin.name,
+        href: pin.href,
+        x: projected ? projected[0] : 0,
+        y: projected ? projected[1] : 0,
+        labelOffsetX: pin?.labelOffsetX || 0,
+      }
+    })
+
+    // Calculate pin radius based on pinSize prop (scaled to SVG)
+    const pinRadius = (pinSize * SVG_WIDTH) / 100
+
+    return (
+      <div
+        ref={ref}
+        className={cn('relative', className)}
+        style={{
+          width: '100%',
+          aspectRatio: `${SVG_WIDTH} / ${SVG_HEIGHT}`,
+          pointerEvents: 'none',
+        }}
+      >
+        <svg
+          width="100%"
+          height="100%"
+          viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
+          preserveAspectRatio="xMidYMid meet"
+          className="w-full h-full"
+        >
+          {/* Transparent background layer */}
+          <rect width={SVG_WIDTH} height={SVG_HEIGHT} fill="transparent" />
+
+          {/* Australia outline */}
+          <path
+            d={path(australiaGeoJSON as any) || ''}
+            fill="#FF0000"
+            fillOpacity="0.5"
+            stroke="transparent"
+            strokeWidth={0}
+          />
+
+          {/* State boundaries */}
+          {australiaStatesGeoJSON.type === 'FeatureCollection' &&
+            australiaStatesGeoJSON.features.map((feature: any, index: number) => (
+              <path
+                key={`state-${index}`}
+                d={path(feature.geometry) || ''}
+                fill="none"
+                stroke="#ffffff"
+                strokeWidth={1}
+                strokeOpacity={0.25}
+              />
+            ))}
+
+          {/* City pins */}
+          {pinNodes.map((pin, index) => (
+            <g key={pin.name}>
+              {/* Pin dot */}
+              <circle
+                cx={pin.x}
+                cy={pin.y}
+                r={pinRadius}
+                fill="rgba(107, 114, 128, 1)"
+                stroke="white"
+                strokeWidth={2}
+                className="animate-pulse"
+              />
+
+              {/* Pin label */}
+              {showPinLabel && (
+                <text
+                  x={pin.x + pin.labelOffsetX}
+                  y={pin.y - pinRadius - 15}
+                  fill="currentColor"
+                  textAnchor="middle"
+                  className="text-black dark:text-white text-[24px] sm:text-[12px] md:text-[14px] lg:text-[16px]"
+                >
+                  {pin.name}
+                </text>
+              )}
+            </g>
+          ))}
+        </svg>
+
+        {children && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-auto">
+            {children}
           </div>
         )}
-
-        {pinPositions
-          .filter((pin) => pins === 'all' || (Array.isArray(pins) && pins.includes(pin.name)))
-          .map((pin) => (
-            <span
-              key={pin.name}
-              className="absolute pointer-events-none"
-              style={{
-                left: `${(pin.coords.x / aspectRatio.width) * 100}%`,
-                top: `${(pin.coords.y / aspectRatio.height) * 100}%`,
-                transform: 'translate(-50%, -50%)',
-              }}
-            >
-              <span className="relative inline-flex items-center justify-center w-10 h-10">
-                <span className="absolute inline-flex h-3 w-3 rounded-full bg-red-500/40 dark:bg-slate-200/40 animate-ping"></span>
-                <span className="absolute inline-flex h-3 w-3 rounded-full bg-red-600 dark:bg-slate-300 animate-pulse"></span>
-                {showPinLabel && (
-                  <span className="absolute -top-2 left-1/2 -translate-x-1/2 text-sm whitespace-nowrap">
-                    {pin.name}
-                  </span>
-                )}
-              </span>
-            </span>
-          ))}
       </div>
     )
   },
