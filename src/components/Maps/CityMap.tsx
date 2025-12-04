@@ -11,7 +11,9 @@ export const CityMap = ({ slug }: { slug: string }) => {
   const pin = allowedPins[key]
 
   if (pin) {
-    return <AustraliaMap pins={[pin]} pinSize={6} showPinLabel={false} />
+    return (
+      <AustraliaMap pins={[pin]} pinSize={3} showPinLabel={false} mapClassName="fill-amber-200 " />
+    )
   }
   return null
 }

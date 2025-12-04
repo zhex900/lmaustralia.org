@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 
 import { cn } from '@/utilities/ui'
-import { GeistMono } from 'geist/font/mono'
-import { GeistSans } from 'geist/font/sans'
+import { Playfair_Display, Montserrat } from 'next/font/google'
 import React from 'react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { AdminBar } from '@/components/AdminBar'
@@ -18,17 +17,31 @@ import { SentryLoader } from '@/components/SentryLoader'
 import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
 
+const playfairDisplay = Playfair_Display({
+  variable: '--font-playfair-display',
+  weight: ['400', '600'],
+  subsets: ['latin', 'latin-ext'],
+})
+const montserrat = Montserrat({
+  variable: '--font-montserrat',
+  subsets: ['latin', 'latin-ext'],
+})
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
 
   return (
-    <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
+    <html
+      className={cn(playfairDisplay.variable, montserrat.variable)}
+      lang="en"
+      suppressHydrationWarning
+    >
       <head>
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
-      <body className="bg-linear-to-r from-indigo-50 to-orange-100  dark:from-slate-800 dark:to-orange-950 flex flex-col min-h-screen">
+      <body className="bg-linear-to-r from-amber-100 to-teal-100 dark:from-sky-950 dark:to-teal-800 flex flex-col min-h-screen">
         <Providers>
           <AdminBar
             adminBarProps={{

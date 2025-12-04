@@ -13,7 +13,7 @@ export async function Footer() {
   const navItems = footerData?.navItems || []
 
   return (
-    <footer className="bg-gray-900 text-gray-300 mt-auto">
+    <footer className="dark:bg-gray-900 bg-gray-50 dark:text-white text-gray-900 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <Link className="flex items-center" href="/">
@@ -21,7 +21,7 @@ export async function Footer() {
           </Link>
 
           <div>
-            <h4 className="text-white font-semibold mb-4">Quick Links</h4>
+            <h4 className=" font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm">
               {navItems.map(({ link, id }) => {
                 return (

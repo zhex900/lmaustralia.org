@@ -17,6 +17,20 @@ const nextConfig = {
   turbopack: {
     root: __dirname,
   },
+  experimental: {
+    // required for pnpm + client components inside node_modules
+    serverActions: {
+      allowedOrigins: ['*'],
+    },
+  },
+
+  transpilePackages: [
+    '@payloadcms/ui',
+    '@payloadcms/richtext-lexical',
+    '@payloadcms/plugin-seo',
+    '@payloadcms/storage-vercel-blob',
+    'payload-authjs',
+  ],
   images: {
     qualities: [100, 75],
     unoptimized: process.env.NODE_ENV === 'development',
