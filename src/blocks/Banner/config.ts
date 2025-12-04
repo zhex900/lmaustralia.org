@@ -26,10 +26,11 @@ export const Banner: Block = {
       name: 'content',
       type: 'richText',
       editor: lexicalEditor({
-        features: ({ defaultFeatures }) => {
+        features: ({ defaultFeatures, rootFeatures }) => {
           return [
             ...defaultFeatures,
-            TextFontFamilyFeature(),
+            ...rootFeatures,
+            TextFontFamilyFeature() as any,
             FixedToolbarFeature(),
             InlineToolbarFeature(),
           ]

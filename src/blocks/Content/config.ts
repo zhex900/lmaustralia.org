@@ -62,8 +62,9 @@ const columnFields: Field[] = [
     name: 'richText',
     type: 'richText',
     editor: lexicalEditor({
-      features: ({ defaultFeatures }) => {
+      features: ({ defaultFeatures, rootFeatures }) => {
         return [
+          ...rootFeatures,
           ...defaultFeatures,
           IndentFeature(),
           HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
@@ -77,7 +78,7 @@ const columnFields: Field[] = [
           OrderedListFeature(),
           UnorderedListFeature(),
           TextStateFeature(),
-          TextFontFamilyFeature(),
+          TextFontFamilyFeature() as any,
         ]
       },
     }),

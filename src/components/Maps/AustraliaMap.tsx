@@ -83,10 +83,10 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
           {/* Australia outline */}
           <path
             d={path(australiaGeoJSON as any) || ''}
-            fill="#FF0000"
             fillOpacity="0.4"
             stroke="transparent"
             strokeWidth={0}
+            className="fill-teal-800 dark:fill-amber-200"
           />
 
           {/* State boundaries */}
@@ -96,7 +96,7 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
                 key={`state-${index}`}
                 d={path(feature.geometry) || ''}
                 fill="none"
-                stroke="#ffffff"
+                stroke="#000B58"
                 strokeWidth={1}
                 strokeOpacity={0.25}
               />
@@ -110,10 +110,9 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
                 cx={pin.x}
                 cy={pin.y}
                 r={pinRadius}
-                fill="rgba(107, 114, 128, 1)"
-                stroke="white"
-                strokeWidth={2}
-                className="animate-pulse"
+                fill="currentColor"
+                stroke="transparent"
+                className="animate-pulse fill-sky-950 dark:fill-amber-200"
               />
 
               {/* Pin label */}

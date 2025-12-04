@@ -103,8 +103,10 @@ const config = {
         warning: 'hsl(var(--warning))',
       },
       fontFamily: {
-        mono: ['var(--font-geist-mono)'],
-        sans: ['var(--font-geist-sans)'],
+        playfair: ['var(--font-playfair-display)'],
+        montserrat: ['var(--font-montserrat)'],
+        sans: ['var(--font-montserrat)'],
+        mono: ['var(--font-montserrat)'],
       },
       keyframes: {
         'accordion-down': {
@@ -125,7 +127,14 @@ const config = {
               h1: {
                 fontWeight: 'normal',
                 marginBottom: '0.25em',
+                fontFamily: 'var(--font-playfair-display)',
               },
+              // h2: {
+              //   fontFamily: 'var(--font-playfair-display)',
+              // },
+              // h3: {
+              //   fontFamily: 'var(--font-playfair-display)',
+              // },
             },
           ],
         },
