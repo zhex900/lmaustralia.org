@@ -92,6 +92,35 @@ export const plugins: Plugin[] = [
         })
       },
     },
+    beforeEmail: (emailsToSend) => {
+      // Helper function to process comma-separated email addresses
+      // Returns array for multiple addresses, single string for one address
+      const processEmailAddresses = (
+        addresses: string | undefined,
+      ): string | string[] | undefined => {
+        if (!addresses || typeof addresses !== 'string') return addresses
+
+        const processed = addresses
+          .split(',')
+          .map((addr) => addr.trim())
+          .filter((addr) => addr.length > 0)
+
+        // Resend API accepts arrays for multiple recipients, strings for single recipient
+        return processed.length > 1 ? processed : processed[0] || addresses
+      }
+
+      // Process each email configuration to handle multiple CC/BCC addresses
+      // Resend API accepts arrays for CC/BCC when there are multiple recipients
+      return emailsToSend.map((email) => {
+        const processedEmail: any = { ...email }
+
+        // Process CC and BCC addresses
+        processedEmail.cc = processEmailAddresses(email.cc)
+        processedEmail.bcc = processEmailAddresses(email.bcc)
+
+        return processedEmail
+      })
+    },
     formSubmissionOverrides: {
       hooks: {
         beforeValidate: [

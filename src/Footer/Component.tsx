@@ -51,11 +51,6 @@ export async function Footer() {
                   Praying
                 </Link>
               </li>
-              <li>
-                <Link href="/giving" className="hover:text-sky-400 transition-colors">
-                  Giving
-                </Link>
-              </li>
             </ul>
           </div>
 
