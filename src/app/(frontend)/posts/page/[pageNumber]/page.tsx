@@ -18,8 +18,8 @@ type Args = {
   }>
 }
 
-export default async function Page({ params: paramsPromise }: Args) {
-  const { pageNumber } = await paramsPromise
+export default async function Page({ params }: Args) {
+  const { pageNumber } = await params
   const payload = await getPayload({ config: configPromise })
 
   const sanitizedPageNumber = Number(pageNumber)
@@ -63,8 +63,8 @@ export default async function Page({ params: paramsPromise }: Args) {
   )
 }
 
-export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
-  const { pageNumber } = await paramsPromise
+export async function generateMetadata({ params }: Args): Promise<Metadata> {
+  const { pageNumber } = await params
   return {
     title: `${site.name} | Page ${pageNumber || ''}`,
   }

@@ -78,7 +78,7 @@ const columnFields: Field[] = [
           OrderedListFeature(),
           UnorderedListFeature(),
           TextStateFeature(),
-          TextFontFamilyFeature() as any,
+          TextFontFamilyFeature(),
         ]
       },
     }),

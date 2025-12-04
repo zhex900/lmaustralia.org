@@ -13,6 +13,8 @@ type AustraliaMapProps = {
   pins?: 'all' | PinName[]
   debug?: boolean
   children?: React.ReactNode
+  mapClassName?: string
+  pinClassName?: string
 }
 
 const defaultPinSize = 1
@@ -29,6 +31,8 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
       className,
       pins = 'all',
       children,
+      mapClassName = 'fill-teal-800 dark:fill-amber-200',
+      pinClassName = 'dark:fill-sky-950 fill-amber-200',
     }: AustraliaMapProps,
     ref,
   ) => {
@@ -83,10 +87,10 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
           {/* Australia outline */}
           <path
             d={path(australiaGeoJSON as any) || ''}
-            fillOpacity="0.4"
+            fillOpacity="0.6"
             stroke="transparent"
             strokeWidth={0}
-            className="fill-teal-800 dark:fill-amber-200"
+            className={mapClassName}
           />
 
           {/* State boundaries */}
@@ -112,17 +116,17 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
                 r={pinRadius}
                 fill="currentColor"
                 stroke="transparent"
-                className="animate-pulse fill-sky-950 dark:fill-amber-200"
+                className={cn('animate-pulse', pinClassName)}
               />
 
               {/* Pin label */}
               {showPinLabel && (
                 <text
                   x={pin.x + pin.labelOffsetX}
-                  y={pin.y - pinRadius - 15}
+                  y={pin.y - pinRadius - 10}
                   fill="currentColor"
                   textAnchor="middle"
-                  className="text-black dark:text-white text-[24px] sm:text-[12px] md:text-[14px] lg:text-[16px]"
+                  className="text-black dark:text-white text-[27px] md:text-[20px] lg:text-[16px]"
                 >
                   {pin.name}
                 </text>

@@ -4,6 +4,7 @@ import type { Category, Post } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 import { CityMap } from '@/components/Maps'
+import { BackgroundGradientAnimation } from '@/components/ui/background-gradient-animation'
 
 export const PostHero: React.FC<{
   post: Post
@@ -25,11 +26,10 @@ export const PostHero: React.FC<{
 
       <div className="min-h-[28vh] select-none">
         <div className={cn(backgroundClass, 'absolute top-0 left-0 w-full h-full')}></div>
-
-        {heroImage && typeof heroImage !== 'string' && (
-          <>
-            <Media fill imgClassName="-z-10 object-cover brightness-50" resource={heroImage} />
-          </>
+        {heroImage && typeof heroImage !== 'string' ? (
+          <Media fill imgClassName="-z-10 object-cover brightness-70" resource={heroImage} />
+        ) : (
+          <BackgroundGradientAnimation containerClassName="absolute top-0 left-0 w-full h-full" />
         )}
         {isCity && (
           <div className="absolute w-[20%] right-10 bottom-2">

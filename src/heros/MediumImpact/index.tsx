@@ -6,6 +6,7 @@ import { CMSLink } from '@/components/Link'
 import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
 import { cn } from '@/utilities/ui'
+import { BackgroundGradientAnimation } from '@/components/ui/background-gradient-animation'
 
 export const MediumImpactHero: React.FC<Page['hero']> = ({
   links,
@@ -35,10 +36,12 @@ export const MediumImpactHero: React.FC<Page['hero']> = ({
 
         <div className="min-h-[28vh] select-none ">
           <div className={cn(backgroundClass, 'absolute top-0 left-0 w-full h-full')}></div>
-          {media && typeof media === 'object' && (
+          {media && typeof media === 'object' ? (
             <>
               <Media fill imgClassName="-z-10 object-cover brightness-50" resource={media} />
             </>
+          ) : (
+            <BackgroundGradientAnimation containerClassName="absolute top-0 left-0 w-full h-full" />
           )}
         </div>
       </div>

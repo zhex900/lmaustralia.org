@@ -11,11 +11,11 @@ import { site } from '@/constants'
 
 type Args = {
   searchParams: Promise<{
-    q: string
+    q?: string
   }>
 }
-export default async function Page({ searchParams: searchParamsPromise }: Args) {
-  const { q: query } = await searchParamsPromise
+export default async function Page({ searchParams }: Args) {
+  const { q: query } = await searchParams
   const payload = await getPayload({ config: configPromise })
 
   const posts = await payload.find({

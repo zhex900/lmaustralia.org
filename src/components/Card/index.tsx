@@ -33,18 +33,25 @@ export const Card: React.FC<{
     <article
       className={cn(
         'border border-border rounded-lg overflow-hidden bg-card hover:cursor-pointer',
+        'transition-all duration-300 ease-in-out',
+        'hover:shadow-lg hover:-translate-y-1 hover:border-primary/50',
         className,
       )}
       ref={card.ref}
     >
-      <div className="relative w-full h-48 md:h-56 lg:h-64 overflow-hidden">
+      <div className="relative w-full h-48 md:h-56 lg:h-64 overflow-hidden group">
         {!metaImage && (
           <div className="h-full w-full bg-muted/40 flex items-center justify-center text-sm text-muted-foreground">
             No image
           </div>
         )}
         {metaImage && typeof metaImage !== 'string' && (
-          <Media fill imgClassName="object-cover" resource={metaImage} size="33vw" />
+          <Media
+            fill
+            imgClassName="object-cover transition-transform duration-300 ease-in-out group-hover:scale-110"
+            resource={metaImage}
+            size="33vw"
+          />
         )}
       </div>
       <div className="p-4">
@@ -76,7 +83,9 @@ export const Card: React.FC<{
             </h3>
           </div>
         )}
-        {description && <div className="mt-2">{description && <p>{sanitizedDescription}</p>}</div>}
+        {description && (
+          <div className="mt-2 text-justify">{description && <p>{sanitizedDescription}</p>}</div>
+        )}
       </div>
     </article>
   )
