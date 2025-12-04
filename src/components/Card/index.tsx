@@ -7,7 +7,7 @@ import React, { Fragment } from 'react'
 import type { Post } from '@/payload-types'
 
 import { Media } from '@/components/Media'
-
+import { BackgroundGradientAnimation } from '@/components/ui/background-gradient-animation'
 export type CardPostData = Pick<Post, 'slug' | 'categories' | 'meta' | 'title'>
 
 export const Card: React.FC<{
@@ -28,7 +28,11 @@ export const Card: React.FC<{
   const titleToUse = titleFromProps || title
   const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
   const href = `/${relationTo}/${slug}`
-
+  /*
+  <div className="h-full w-full bg-muted/40 flex items-center justify-center text-sm text-muted-foreground">
+            No image
+          </div>
+          */
   return (
     <article
       className={cn(
@@ -41,9 +45,10 @@ export const Card: React.FC<{
     >
       <div className="relative w-full h-48 md:h-56 lg:h-64 overflow-hidden group">
         {!metaImage && (
-          <div className="h-full w-full bg-muted/40 flex items-center justify-center text-sm text-muted-foreground">
-            No image
-          </div>
+          <BackgroundGradientAnimation
+            randomizeColors
+            containerClassName="absolute top-0 left-0 w-full h-full"
+          />
         )}
         {metaImage && typeof metaImage !== 'string' && (
           <Media

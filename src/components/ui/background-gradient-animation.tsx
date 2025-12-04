@@ -17,6 +17,7 @@ export const BackgroundGradientAnimation = ({
   className,
   interactive = true,
   containerClassName,
+  randomizeColors = false,
 }: {
   gradientBackgroundStart?: string
   gradientBackgroundEnd?: string
@@ -32,43 +33,111 @@ export const BackgroundGradientAnimation = ({
   className?: string
   interactive?: boolean
   containerClassName?: string
+  randomizeColors?: boolean
 }) => {
   const interactiveRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const [curX, setCurX] = useState(0)
   const [curY, setCurY] = useState(0)
   const [tgX, setTgX] = useState(0)
   const [tgY, setTgY] = useState(0)
 
+  // Generate random RGB color
+  const generateRandomColor = () => {
+    const r = Math.floor(Math.random() * 256)
+    const g = Math.floor(Math.random() * 256)
+    const b = Math.floor(Math.random() * 256)
+    return `rgb(${r}, ${g}, ${b})`
+  }
+
+  // Generate random colors once per instance when randomizeColors is true
+  const [randomColors] = useState<{
+    gradientBackgroundStart?: string
+    gradientBackgroundEnd?: string
+    firstColor?: string
+    secondColor?: string
+    thirdColor?: string
+    fourthColor?: string
+    fifthColor?: string
+    pointerColor?: string
+  }>(() => {
+    if (randomizeColors) {
+      return {
+        gradientBackgroundStart: generateRandomColor(),
+        gradientBackgroundEnd: generateRandomColor(),
+        firstColor: `${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}`,
+        secondColor: `${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}`,
+        thirdColor: `${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}`,
+        fourthColor: `${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}`,
+        fifthColor: `${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}`,
+        pointerColor: `${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}`,
+      }
+    }
+    return {}
+  })
+
   useEffect(() => {
-    // Only set CSS variables if props are provided (override theme defaults)
-    if (gradientBackgroundStart) {
-      document.body.style.setProperty('--gradient-background-start', gradientBackgroundStart)
+    if (!containerRef.current) return
+
+    // Use random colors if randomizeColors is true, otherwise use provided props
+    const finalGradientBackgroundStart =
+      randomizeColors && randomColors.gradientBackgroundStart
+        ? randomColors.gradientBackgroundStart
+        : gradientBackgroundStart
+    const finalGradientBackgroundEnd =
+      randomizeColors && randomColors.gradientBackgroundEnd
+        ? randomColors.gradientBackgroundEnd
+        : gradientBackgroundEnd
+    const finalFirstColor =
+      randomizeColors && randomColors.firstColor ? randomColors.firstColor : firstColor
+    const finalSecondColor =
+      randomizeColors && randomColors.secondColor ? randomColors.secondColor : secondColor
+    const finalThirdColor =
+      randomizeColors && randomColors.thirdColor ? randomColors.thirdColor : thirdColor
+    const finalFourthColor =
+      randomizeColors && randomColors.fourthColor ? randomColors.fourthColor : fourthColor
+    const finalFifthColor =
+      randomizeColors && randomColors.fifthColor ? randomColors.fifthColor : fifthColor
+    const finalPointerColor =
+      randomizeColors && randomColors.pointerColor ? randomColors.pointerColor : pointerColor
+
+    // Set CSS variables on the container element (scoped to this instance)
+    if (finalGradientBackgroundStart) {
+      containerRef.current.style.setProperty(
+        '--gradient-background-start',
+        finalGradientBackgroundStart,
+      )
     }
-    if (gradientBackgroundEnd) {
-      document.body.style.setProperty('--gradient-background-end', gradientBackgroundEnd)
+    if (finalGradientBackgroundEnd) {
+      containerRef.current.style.setProperty(
+        '--gradient-background-end',
+        finalGradientBackgroundEnd,
+      )
     }
-    if (firstColor) {
-      document.body.style.setProperty('--first-color', firstColor)
+    if (finalFirstColor) {
+      containerRef.current.style.setProperty('--first-color', finalFirstColor)
     }
-    if (secondColor) {
-      document.body.style.setProperty('--second-color', secondColor)
+    if (finalSecondColor) {
+      containerRef.current.style.setProperty('--second-color', finalSecondColor)
     }
-    if (thirdColor) {
-      document.body.style.setProperty('--third-color', thirdColor)
+    if (finalThirdColor) {
+      containerRef.current.style.setProperty('--third-color', finalThirdColor)
     }
-    if (fourthColor) {
-      document.body.style.setProperty('--fourth-color', fourthColor)
+    if (finalFourthColor) {
+      containerRef.current.style.setProperty('--fourth-color', finalFourthColor)
     }
-    if (fifthColor) {
-      document.body.style.setProperty('--fifth-color', fifthColor)
+    if (finalFifthColor) {
+      containerRef.current.style.setProperty('--fifth-color', finalFifthColor)
     }
-    if (pointerColor) {
-      document.body.style.setProperty('--pointer-color', pointerColor)
+    if (finalPointerColor) {
+      containerRef.current.style.setProperty('--pointer-color', finalPointerColor)
     }
-    document.body.style.setProperty('--size', size)
-    document.body.style.setProperty('--blending-value', blendingValue)
+    containerRef.current.style.setProperty('--size', size)
+    containerRef.current.style.setProperty('--blending-value', blendingValue)
   }, [
+    randomizeColors,
+    randomColors,
     gradientBackgroundStart,
     gradientBackgroundEnd,
     firstColor,
@@ -111,6 +180,7 @@ export const BackgroundGradientAnimation = ({
 
   return (
     <div
+      ref={containerRef}
       className={cn(
         'h-screen w-screen relative overflow-hidden top-0 left-0 bg-[linear-gradient(40deg,var(--gradient-background-start),var(--gradient-background-end))]',
         containerClassName,
