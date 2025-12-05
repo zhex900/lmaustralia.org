@@ -70,8 +70,8 @@
     --error: #fecaca;
 
     /* Background Gradient Animation - Light Mode */
-    --gradient-background-start: rgb(240, 215, 105); /* amber-100 */
-    --gradient-background-end: rgb(67, 186, 161); /* teal-100 */
+    --gradient-background-start: rgb(212, 187, 71); /* amber-100 */
+    --gradient-background-end: rgb(60, 166, 143); /* teal-100 */
     --first-color: 253, 235, 158; /* amber-100 */
     --second-color: 204, 251, 241; /* teal-100 */
     --third-color: 153, 246, 228; /* teal-200 */
@@ -115,7 +115,7 @@
     --error: #7f1d1d;
 
     /* Background Gradient Animation - Dark Mode */
-    --gradient-background-start: rgb(0, 49, 97); /* sky-950 */
+    --gradient-background-start: rgb(58, 117, 176); /* sky-950 */
     --gradient-background-end: rgb(0, 106, 103); /* teal-800 */
     --first-color: 0, 49, 97; /* sky-950 */
     --second-color: 0, 106, 103; /* teal-800 */
