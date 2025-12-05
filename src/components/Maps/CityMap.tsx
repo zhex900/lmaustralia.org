@@ -17,7 +17,7 @@ export const CityMap = ({ slug }: { slug: string }) => {
         pinSize={3}
         showPinLabel={false}
         mapClassName="dark:fill-amber-400 fill-teal-300"
-        pinClassName="dark:fill-teal-800 fill-amber-400"
+        pinClassName="dark:fill-red-800 fill-red-400"
       />
     )
   }
