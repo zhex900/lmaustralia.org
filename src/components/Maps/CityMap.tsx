@@ -12,7 +12,13 @@ export const CityMap = ({ slug }: { slug: string }) => {
 
   if (pin) {
     return (
-      <AustraliaMap pins={[pin]} pinSize={3} showPinLabel={false} mapClassName="fill-amber-200 " />
+      <AustraliaMap
+        pins={[pin]}
+        pinSize={3}
+        showPinLabel={false}
+        mapClassName="dark:fill-amber-400 fill-teal-300"
+        pinClassName="dark:fill-teal-800 fill-amber-400"
+      />
     )
   }
   return null

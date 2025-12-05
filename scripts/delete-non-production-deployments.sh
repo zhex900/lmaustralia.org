@@ -115,18 +115,32 @@ if [ -f "$PROD_READY" ] && [ "$PROD_READY_COUNT" -gt 0 ]; then
     CURRENT_PRODUCTION_DEPLOYMENT=$(head -n 1 "$PROD_READY" | awk '{print $2}')
     LATEST_DEPLOYMENT="$CURRENT_PRODUCTION_DEPLOYMENT"
     
-    echo -e "${GREEN}✅ Current production deployment: ${CURRENT_PRODUCTION_DEPLOYMENT}${NC}"
+    # Verify this is actually the active production deployment
+    # Try to get production URL from vercel inspect if available
+    if command -v vercel &> /dev/null && [ -n "$CURRENT_PRODUCTION_DEPLOYMENT" ]; then
+        PROD_URL=$(vercel inspect "$CURRENT_PRODUCTION_DEPLOYMENT" --json 2>/dev/null | grep -o '"url":"[^"]*"' | head -1 | sed 's/"url":"\(.*\)"/\1/' || echo "")
+        if [ -n "$PROD_URL" ]; then
+            echo -e "${GREEN}✅ Current production deployment: ${CURRENT_PRODUCTION_DEPLOYMENT}${NC}"
+            echo -e "${GREEN}   Production URL: ${PROD_URL}${NC}"
+        else
+            echo -e "${GREEN}✅ Current production deployment: ${CURRENT_PRODUCTION_DEPLOYMENT}${NC}"
+        fi
+    else
+        echo -e "${GREEN}✅ Current production deployment: ${CURRENT_PRODUCTION_DEPLOYMENT}${NC}"
+    fi
     
     # Get the latest production deployment (first line) and up to KEEP_COUNT more
     # This ensures the latest is always kept, even if KEEP_COUNT is 0
     LATEST_COUNT=$((KEEP_COUNT > 0 ? KEEP_COUNT : 1))
     head -n "$LATEST_COUNT" "$PROD_READY" | awk '{print $2}' > "$KEEP_LIST"
     
-    # Always add current production to keep list (even if KEEP_COUNT is 0)
+    # ALWAYS add current production to keep list (even if KEEP_COUNT is 0)
+    # This is critical - never delete the active production deployment
     if [ -n "$CURRENT_PRODUCTION_DEPLOYMENT" ]; then
         echo "$CURRENT_PRODUCTION_DEPLOYMENT" >> "$KEEP_LIST"
         # Remove duplicates
         sort -u "$KEEP_LIST" -o "$KEEP_LIST"
+        echo -e "${GREEN}🛡️  Protected: Current production deployment will NEVER be deleted${NC}"
     fi
 fi
 
@@ -149,17 +163,22 @@ while IFS= read -r line; do
         # Delete failed production deployments
         DELETE_THIS=true
     elif [ "$ENV" = "Production" ] && echo "$STATUS" | grep -q "Ready"; then
-        # NEVER delete the current production deployment (actively serving)
+        # CRITICAL: NEVER delete the current production deployment (actively serving)
+        # This is the most important check - protect the active production deployment
         if [ -n "$CURRENT_PRODUCTION_DEPLOYMENT" ] && [ "$DEPLOYMENT_URL" = "$CURRENT_PRODUCTION_DEPLOYMENT" ]; then
             DELETE_THIS=false
-            echo -e "${GREEN}🛡️  Protecting current production deployment: ${DEPLOYMENT_URL}${NC}" >&2
+            echo -e "${GREEN}🛡️  PROTECTED: Current production deployment ${DEPLOYMENT_URL} will NOT be deleted${NC}" >&2
         # Never delete the latest production deployment
         elif [ -n "$LATEST_DEPLOYMENT" ] && [ "$DEPLOYMENT_URL" = "$LATEST_DEPLOYMENT" ]; then
             DELETE_THIS=false
+            echo -e "${GREEN}🛡️  PROTECTED: Latest production deployment ${DEPLOYMENT_URL} will NOT be deleted${NC}" >&2
         # Delete production Ready deployments that are NOT in the keep list
         # (i.e., older than the last KEEP_COUNT successful production deployments)
         elif [ ! -f "$KEEP_LIST" ] || ! grep -q "^${DEPLOYMENT_URL}$" "$KEEP_LIST"; then
             DELETE_THIS=true
+        else
+            # If it's in the keep list, don't delete it
+            DELETE_THIS=false
         fi
     fi
     
@@ -245,6 +264,14 @@ while IFS= read -r line; do
         continue
     fi
     
+    # FINAL SAFETY CHECK: Never delete the current production deployment
+    if [ -n "$CURRENT_PRODUCTION_DEPLOYMENT" ] && [ "$DEPLOYMENT_URL" = "$CURRENT_PRODUCTION_DEPLOYMENT" ]; then
+        echo -e "  ${RED}🚨 SAFETY CHECK FAILED: Attempted to delete current production deployment!${NC}"
+        echo -e "  ${RED}   Skipping ${DEPLOYMENT_URL} for safety${NC}"
+        FAILED=$((FAILED + 1))
+        continue
+    fi
+    
     echo -e "${BLUE}🗑️  Deleting ${DEPLOYMENT_URL}...${NC}"
     
     # Use vercel rm command with --yes flag to skip confirmation
@@ -263,3 +290,8 @@ rm -rf "$TEMP_DIR"
 echo -e "\n${GREEN}✨ Done! Deleted ${DELETED} deployment(s), ${FAILED} failed${NC}"
 KEPT_COUNT=$((PROD_READY_COUNT < KEEP_COUNT ? PROD_READY_COUNT : KEEP_COUNT))
 echo -e "${GREEN}✅ Kept ${KEPT_COUNT} successful production deployment(s)${NC}"
+
+# Final confirmation that current production is protected
+if [ -n "$CURRENT_PRODUCTION_DEPLOYMENT" ]; then
+    echo -e "${GREEN}🛡️  Current production deployment ${CURRENT_PRODUCTION_DEPLOYMENT} is SAFE and was NOT deleted${NC}"
+fi

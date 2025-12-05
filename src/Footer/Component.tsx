@@ -64,7 +64,10 @@ export async function Footer() {
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-sm text-center">
           <p>
-            &copy; {new Date().getFullYear()} {site.name}. All rights reserved.
+            <Link href="/" className="hover:text-sky-400 transition-colors">
+              &copy; {new Date().getFullYear()} {site.name}
+            </Link>
+            . All rights reserved.
           </p>
         </div>
       </div>
