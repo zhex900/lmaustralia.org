@@ -82,8 +82,39 @@ export default async function Page({ searchParams }: Args) {
   )
 }
 
-export function generateMetadata(): Metadata {
+export async function generateMetadata({ searchParams }: Args): Promise<Metadata> {
+  const { q: query } = await searchParams
+  const serverUrl =
+    process.env.NEXT_PUBLIC_SERVER_URL ||
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : 'http://localhost:3000')
+
+  const title = query ? `Search results for "${query}" | ${site.name}` : `Search | ${site.name}`
+  const description = query
+    ? `Search results for "${query}" on ${site.name}`
+    : `Search ${site.name} for posts, articles, and content.`
+
   return {
-    title: `${site.name} | Search`,
+    title,
+    description,
+    robots: {
+      index: false, // Don't index search pages
+      follow: true,
+    },
+    openGraph: {
+      title,
+      description,
+      url: `${serverUrl}/search${query ? `?q=${encodeURIComponent(query)}` : ''}`,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
+    alternates: {
+      canonical: `${serverUrl}/search`,
+    },
   }
 }
