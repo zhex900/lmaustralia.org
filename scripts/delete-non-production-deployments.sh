@@ -126,7 +126,7 @@ if [ -f "$PROD_READY" ] && [ "$PROD_READY_COUNT" -gt 0 ]; then
             echo -e "${GREEN}✅ Current production deployment: ${CURRENT_PRODUCTION_DEPLOYMENT}${NC}"
         fi
     else
-        echo -e "${GREEN}✅ Current production deployment: ${CURRENT_PRODUCTION_DEPLOYMENT}${NC}"
+    echo -e "${GREEN}✅ Current production deployment: ${CURRENT_PRODUCTION_DEPLOYMENT}${NC}"
     fi
     
     # Get the latest production deployment (first line) and up to KEEP_COUNT more

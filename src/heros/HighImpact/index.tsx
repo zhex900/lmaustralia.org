@@ -4,35 +4,48 @@ import type { Page } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
 import { Media } from '@/components/Media'
-import RichText from '@/components/RichText'
 import { AustraliaMap } from '@/components/Maps'
+import { TextGenerateEffect } from '@/components/ui/text-generate-effect'
 
-export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText }) => {
-  //100% of the viewport height minus the height of the header
+export const HighImpactHero: React.FC<Page['hero']> = ({ links, media }) => {
+  const andSymbolClassName = 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl 2xl:text-7xl'
   return (
-    <div className="h-[calc(100dvh-112px)] relative flex items-end ">
-      <div className="absolute w-[95%] sm:w-[90%] md:w-[85%] lg:w-[70%] xl:w-[50%] 2xl:w-[45%] z-0 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2  pointer-events-none">
-        <AustraliaMap>
-          {richText && (
-            <div className=" max-w-3xl">
-              <RichText className="mt-30 mx-10" data={richText} enableGutter={false} />
+    <div className="">
+      <div className="min-h-[calc(100dvh-112px)] h-auto flex items-center justify-center">
+        <div className="min-h-[calc(100dvh-112px)] h-auto px-5  flex flex-col items-center justify-between ">
+          <div className="flex-1 flex flex-col items-center justify-center w-full z-0 pointer-events-none min-h-0">
+            <AustraliaMap className="">
+              <TextGenerateEffect className="px-4 md:px-10 lg:px-15 text-center font-playfair text-4xl sm:text-5xl md:text-6xl lg:text-7xl 2xl:text-8xl absolute -translate-y-1/4">
+                Be fruitful <span className={andSymbolClassName}>&</span> multiply,{' '}
+                <span className={andSymbolClassName}>&</span>{' '}
+                <span className="text-amber-200 dark:text-teal-700 whitespace-nowrap">
+                  fill the earth
+                </span>
+              </TextGenerateEffect>
+            </AustraliaMap>
+          </div>
+          <div className="flex-1 flex flex-col items-center justify-around">
+            <div className="text-center px-4">
+              Learn more about the fresh burden for migration for the Lord’s move in Australia and
+              how you can get involved
             </div>
-          )}
-        </AustraliaMap>
+            <div className=" flex items-center justify-center">
+              {Array.isArray(links) && links.length > 0 && (
+                <ul className="flex justify-center gap-40">
+                  {links.map(({ link }, i) => {
+                    return (
+                      <li key={i}>
+                        <CMSLink {...link} />
+                      </li>
+                    )
+                  })}
+                </ul>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="z-10 absolute bottom-10 left-0 w-full flex items-center justify-center">
-        {Array.isArray(links) && links.length > 0 && (
-          <ul className="flex justify-center gap-40">
-            {links.map(({ link }, i) => {
-              return (
-                <li key={i}>
-                  <CMSLink {...link} />
-                </li>
-              )
-            })}
-          </ul>
-        )}
-      </div>
+
       {media && typeof media === 'object' && (
         <Media fill imgClassName="-z-10 object-cover" resource={media} />
       )}

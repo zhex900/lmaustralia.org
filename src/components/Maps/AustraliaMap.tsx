@@ -130,7 +130,7 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
                   y={pin.y - pinRadius - 10}
                   fill="currentColor"
                   textAnchor="middle"
-                  className="text-black dark:text-white text-[27px] md:text-[20px] lg:text-[16px]"
+                  className="text-black dark:text-white text-[35px] md:text-[20px] lg:text-[16px]"
                 >
                   {pin.name}
                 </text>

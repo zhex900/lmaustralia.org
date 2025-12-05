@@ -93,7 +93,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
         {open && (
           <div
             id="mobile-nav"
-            className="fixed inset-0 z-40 bg-background/85 backdrop-blur-sm supports-backdrop-filter:bg-background/40 lg:hidden"
+            className="fixed inset-0 z-40 bg-background backdrop-blur-sm supports-backdrop-filter:bg-background/60 lg:hidden"
           >
             <div className="absolute inset-x-0 top-0 p-4 flex justify-end">
               <button

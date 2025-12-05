@@ -32,7 +32,7 @@ export const PostHero: React.FC<{
           <BackgroundGradientAnimation containerClassName="absolute top-0 left-0 w-full h-full" />
         )}
         {isCity && (
-          <div className="absolute w-[20%] right-10 bottom-2">
+          <div className="absolute w-[20%] 2xl:w-[15%] right-10 2xl:right-1/4 bottom-2">
             <CityMap slug={slug} />
           </div>
         )}
