@@ -4,17 +4,19 @@ import useClickableCard from '@/utilities/useClickableCard'
 import Link from 'next/link'
 import React, { Fragment } from 'react'
 
-import type { Post } from '@/payload-types'
+import type { Post, Page } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 import { BackgroundGradientAnimation } from '@/components/ui/background-gradient-animation'
-export type CardPostData = Pick<Post, 'slug' | 'categories' | 'meta' | 'title'>
+export type CardPostData = Pick<Post, 'slug' | 'meta' | 'title'> & {
+  categories?: Post['categories']
+}
 
 export const Card: React.FC<{
   alignItems?: 'center'
   className?: string
   doc?: CardPostData
-  relationTo?: 'posts'
+  relationTo?: 'posts' | 'pages'
   showCategories?: boolean
   title?: string
 }> = (props) => {
@@ -27,7 +29,8 @@ export const Card: React.FC<{
   const hasCategories = categories && Array.isArray(categories) && categories.length > 0
   const titleToUse = titleFromProps || title
   const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
-  const href = `/${relationTo}/${slug}`
+  // Pages are routed at root level (/{slug}), posts are at /posts/{slug}
+  const href = relationTo === 'pages' ? `/${slug}` : `/${relationTo}/${slug}`
 
   return (
     <article

@@ -1,4 +1,4 @@
-import type { Post, ArchiveBlock as ArchiveBlockProps } from '@/payload-types'
+import type { Post, Page, ArchiveBlock as ArchiveBlockProps } from '@/payload-types'
 
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
@@ -18,23 +18,26 @@ export const ArchiveBlock: React.FC<
     introContent,
     limit: limitFromProps,
     populateBy,
+    relationTo,
     selectedDocs,
   } = props
 
   const limit = limitFromProps || 3
 
-  let posts: Post[] = []
+  let posts: (Post | Page)[] = []
+  let collectionType: 'posts' | 'pages' = 'posts'
 
   if (populateBy === 'collection') {
     const payload = await getPayload({ config: configPromise })
+    collectionType = relationTo || 'posts'
 
     const flattenedCategories = categories?.map((category) => {
       if (typeof category === 'object') return category.id
       else return category
     })
 
-    const fetchedPosts = await payload.find({
-      collection: 'posts',
+    const fetchedDocs = await payload.find({
+      collection: collectionType,
       depth: 1,
       limit,
       ...(flattenedCategories && flattenedCategories.length > 0
@@ -48,14 +51,26 @@ export const ArchiveBlock: React.FC<
         : {}),
     })
 
-    posts = fetchedPosts.docs
+    posts = fetchedDocs.docs
   } else {
     if (selectedDocs?.length) {
-      const filteredSelectedPosts = selectedDocs.map((post) => {
-        if (typeof post.value === 'object') return post.value
-      }) as Post[]
+      const filteredSelectedDocs = selectedDocs
+        .map((doc) => {
+          if (typeof doc.value === 'object') return doc.value
+          return null
+        })
+        .filter((doc): doc is Post | Page => doc !== null)
 
-      posts = filteredSelectedPosts
+      posts = filteredSelectedDocs
+
+      // Determine collection type from the relationTo property of selectedDocs
+      // All selected docs should be from the same collection, so we check the first one
+      if (selectedDocs.length > 0 && selectedDocs[0].relationTo) {
+        collectionType = selectedDocs[0].relationTo
+      } else if (posts.length > 0) {
+        // Fallback: Check if it's a Page by looking for 'layout' field (pages have layout, posts have content)
+        collectionType = 'layout' in posts[0] ? 'pages' : 'posts'
+      }
     }
   }
 
@@ -69,7 +84,7 @@ export const ArchiveBlock: React.FC<
           <RichText className="ms-0 max-w-3xl" data={introContent} enableGutter={false} />
         </div>
       )}
-      <CollectionArchive posts={posts} />
+      <CollectionArchive posts={posts} relationTo={collectionType} />
     </div>
   )
 }
