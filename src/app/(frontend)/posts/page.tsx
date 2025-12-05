@@ -58,28 +58,7 @@ export default async function Page() {
 }
 
 export function generateMetadata(): Metadata {
-  const serverUrl =
-    process.env.NEXT_PUBLIC_SERVER_URL ||
-    (process.env.VERCEL_PROJECT_PRODUCTION_URL
-      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-      : 'http://localhost:3000')
-
   return {
-    title: `Posts | ${site.name}`,
-    description: `Browse all posts from ${site.name}. Stay updated with the latest news, articles, and updates.`,
-    openGraph: {
-      title: `Posts | ${site.name}`,
-      description: `Browse all posts from ${site.name}`,
-      url: `${serverUrl}/posts`,
-      type: 'website',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: `Posts | ${site.name}`,
-      description: `Browse all posts from ${site.name}`,
-    },
-    alternates: {
-      canonical: `${serverUrl}/posts`,
-    },
+    title: `${site.title}`,
   }
 }

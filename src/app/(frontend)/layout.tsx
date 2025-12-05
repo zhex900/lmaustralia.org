@@ -13,7 +13,6 @@ import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { draftMode } from 'next/headers'
 import { Analytics } from '@vercel/analytics/next'
 import { SentryLoader } from '@/components/SentryLoader'
-import { site } from '@/constants'
 
 import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -75,43 +74,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
 export const metadata: Metadata = {
   metadataBase: new URL(getServerSideURL()),
-  title: {
-    default: "Lord's Move in Australia",
-    template: `%s | ${site.name}`,
-  },
-  description: site.description,
-  keywords: ["Lord's Move", 'Australia', 'Christian', 'Church', 'Ministry'],
-  authors: [{ name: site.name }],
-  creator: site.name,
-  publisher: site.name,
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
   openGraph: mergeOpenGraph(),
   twitter: {
     card: 'summary_large_image',
-    creator: '@lmaustralia',
-    site: '@lmaustralia',
-    title: site.title,
-    description: site.description,
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
-  verification: {
-    // Add verification codes here when available
-    // google: 'your-google-verification-code',
-    // yandex: 'your-yandex-verification-code',
-    // yahoo: 'your-yahoo-verification-code',
+    creator: '@payloadcms',
   },
 }
