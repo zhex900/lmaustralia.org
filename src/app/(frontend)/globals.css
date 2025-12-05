@@ -44,7 +44,10 @@
     --popover: #ffffff;
     --popover-foreground: #0a0a0a;
 
-    --primary: #115e59;
+    --brand-primary: rgb(2, 117, 104); /* #027568 */
+    /* teal-700 */
+    --primary: rgb(2, 117, 104); /* #027568 */
+    /* #115e59; */
     --primary-foreground: #ffffff;
 
     --secondary: #f1f5f9;
@@ -81,6 +84,7 @@
   }
 
   [data-theme='dark'] {
+    /* teal-800 */
     --background: #006a67;
     --foreground: #f8fafc;
 
@@ -90,7 +94,8 @@
 
     --popover: #0a0a0a;
     --popover-foreground: #f8fafc;
-
+    /* amber-200 */
+    --brand-primary: #fde68a;
     --primary: #f8fafc;
     --primary-foreground: #1e293b;
 

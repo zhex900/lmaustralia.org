@@ -1,9 +1,11 @@
 import type { CollectionBeforeChangeHook } from 'payload'
 
 export const syncMetaImage: CollectionBeforeChangeHook = ({ data }) => {
-  // Always sync meta.image with heroImage when heroImage is set
-  // This ensures meta.image stays in sync whenever heroImage is updated
-  if (data.heroImage) {
+  // Only sync meta.image with heroImage when:
+  // 1. heroImage is set
+  // 2. meta.image is not already set (allows manual override)
+  // This allows users to manually set SEO meta images without them being overwritten
+  if (data.heroImage && !data.meta?.image) {
     const heroImageId = typeof data.heroImage === 'object' ? data.heroImage.id : data.heroImage
 
     return {

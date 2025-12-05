@@ -31,8 +31,8 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
       className,
       pins = 'all',
       children,
-      mapClassName = 'fill-teal-800 dark:fill-amber-200',
-      pinClassName = 'dark:fill-sky-950 fill-amber-200',
+      mapClassName = 'fill-[var(--brand-primary)] dark:fill-[var(--brand-primary)]',
+      pinClassName = 'dark:fill-teal-700 fill-amber-200',
     }: AustraliaMapProps,
     ref,
   ) => {
@@ -115,8 +115,12 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
                 cy={pin.y}
                 r={pinRadius}
                 fill="currentColor"
-                stroke="transparent"
-                className={cn('animate-pulse', pinClassName)}
+                stroke="currentColor"
+                strokeWidth={2}
+                className={cn(
+                  'animate-pulse dark:stroke-[var(--brand-primary)] stroke-[var(--brand-primary)]',
+                  pinClassName,
+                )}
               />
 
               {/* Pin label */}
