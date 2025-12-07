@@ -12,10 +12,10 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media }) => {
   return (
     <div className="">
       <div className="min-h-[calc(100dvh-112px)] h-auto flex items-center justify-center">
-        <div className="min-h-[calc(100dvh-112px)] h-auto px-5  flex flex-col items-center justify-between ">
-          <div className="flex-1 flex flex-col items-center justify-center w-full z-0 pointer-events-none min-h-0">
-            <AustraliaMap className="">
-              <TextGenerateEffect className="px-4 md:px-10 lg:px-15 text-center font-playfair text-4xl sm:text-5xl md:text-6xl lg:text-7xl 2xl:text-8xl absolute -translate-y-1/4">
+        <div className="min-h-[calc(100dvh-112px)] h-auto px-5 flex flex-col items-center justify-between ">
+          <div className="z-0 -mt-20 flex-1 flex flex-col items-center justify-center w-full sm:w-[90%] md:w-[70%] xl:w-[90%] pointer-events-none min-h-0">
+            <AustraliaMap className="px-5">
+              <TextGenerateEffect className="px-10 md:px-10 lg:px-15 text-center font-playfair text-3xl md:text-5xl xl:text-6xl absolute -translate-y-1/4">
                 Be fruitful <span className={andSymbolClassName}>&</span> multiply,{' '}
                 <span className={andSymbolClassName}>&</span>{' '}
                 <span className="text-amber-200 dark:text-teal-700 whitespace-nowrap">
@@ -24,14 +24,14 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media }) => {
               </TextGenerateEffect>
             </AustraliaMap>
           </div>
-          <div className="flex-1 flex flex-col items-center justify-around">
+          <div className="-mt-20 flex-1 flex flex-col items-center justify-around">
             <div className="text-center px-4">
               Learn more about the fresh burden for migration for the Lord’s move in Australia and
               how you can get involved
             </div>
-            <div className=" flex items-center justify-center">
+            <div className=" flex items-center justify-center w-full">
               {Array.isArray(links) && links.length > 0 && (
-                <ul className="flex justify-center gap-40">
+                <ul className="flex justify-between gap-10 min-w-1/2">
                   {links.map(({ link }, i) => {
                     return (
                       <li key={i}>

@@ -138,11 +138,24 @@
   html {
     overscroll-behavior-y: none;
     overscroll-behavior-x: none;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+    position: relative;
   }
   body {
     @apply bg-background text-foreground min-h-screen flex flex-col;
     overscroll-behavior-y: none;
     overscroll-behavior-x: none;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+    position: relative;
+  }
+  main {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
   }
 }
 
