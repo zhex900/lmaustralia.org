@@ -5,6 +5,7 @@ import { PinName, pinPositions } from './pins'
 import { SVG_WIDTH, SVG_HEIGHT } from './constants'
 import australiaGeoJSON from './geojson/australia.json'
 import australiaStatesGeoJSON from './geojson/australian-states.json'
+import Link from 'next/link'
 
 type AustraliaMapProps = {
   showPinLabel?: boolean
@@ -41,6 +42,13 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
 
     // Create path generator
     const path = d3.geoPath(projection)
+
+    // Calculate the center of Australia for centering children
+    // Australia's approximate geographic center: [133.7751, -25.2744]
+    const australiaCenter: [number, number] = [133.7751, -25.2744]
+    const projectedCenter = projection(australiaCenter)
+    const mapCenterX = projectedCenter ? projectedCenter[0] : SVG_WIDTH / 2
+    const mapCenterY = projectedCenter ? projectedCenter[1] : SVG_HEIGHT / 2
 
     // Filter pins to show
     const pinsToShow = pinPositions.filter(
@@ -80,6 +88,7 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
           viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
           preserveAspectRatio="xMidYMid meet"
           className="w-full h-full"
+          style={{ pointerEvents: 'none' }}
         >
           {/* Transparent background layer */}
           <rect width={SVG_WIDTH} height={SVG_HEIGHT} fill="transparent" />
@@ -122,23 +131,35 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
                   pinClassName,
                 )}
               />
-
-              {/* Pin label */}
-              {showPinLabel && (
-                <text
-                  x={pin.x + pin.labelOffsetX}
-                  y={pin.y - pinRadius - 10}
-                  fill="currentColor"
-                  textAnchor="middle"
-                  className="text-black dark:text-white text-[2.3em] sm:text-[2em] lg:text-[1.5em]"
-                >
-                  {pin.name}
-                </text>
-              )}
             </g>
           ))}
         </svg>
 
+        {/* Pin labels rendered separately on top layer for clickability */}
+        {showPinLabel && (
+          <svg
+            width="100%"
+            height="100%"
+            viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
+            preserveAspectRatio="xMidYMid meet"
+            className="absolute inset-0 w-full h-full"
+            style={{ pointerEvents: 'none', zIndex: 20 }}
+          >
+            {pinNodes.map((pin) => (
+              <a key={pin.name} href={pin.href} style={{ pointerEvents: 'all', cursor: 'pointer' }}>
+                <text
+                  x={pin.x + pin.labelOffsetX}
+                  y={pin.y - pinRadius - 17}
+                  fill="currentColor"
+                  textAnchor="middle"
+                  className="underline dark:text-white text-[2.3em] sm:text-[2em] lg:text-[1.5em]"
+                >
+                  {pin.name}
+                </text>
+              </a>
+            ))}
+          </svg>
+        )}
         {children && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-auto">
             {children}

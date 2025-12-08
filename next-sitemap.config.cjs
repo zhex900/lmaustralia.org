@@ -2,8 +2,9 @@ const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || process.env.VERCEL_PROJEC
 
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: SITE_URL,
+  siteUrl: `https://${SITE_URL}`,
   generateRobotsTxt: true,
+  generateIndexSitemap: false,
   // exclude: ['/posts-sitemap.xml', '/pages-sitemap.xml', '/*', '/posts/*'],
   robotsTxtOptions: {
     policies: [
