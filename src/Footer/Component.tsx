@@ -39,26 +39,16 @@ export async function Footer() {
             <h4 className="text-white font-semibold mb-4">Participation</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link
-                  href="/expression-of-interest"
-                  className="hover:text-sky-400 transition-colors"
-                >
-                  Expression of interest
+                <Link href="/contact" className="hover:text-sky-400 transition-colors text-sm">
+                  Enquiry
                 </Link>
               </li>
               <li>
                 <Link href="/praying" className="hover:text-sky-400 transition-colors">
-                  Praying
+                  Prayers
                 </Link>
               </li>
             </ul>
-          </div>
-
-          <div>
-            <h4 className="text-white font-semibold mb-4">Connect</h4>
-            <Link href="/contact" className="hover:text-sky-400 transition-colors text-sm">
-              Enquire now
-            </Link>
           </div>
         </div>
 
