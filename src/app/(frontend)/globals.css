@@ -35,6 +35,9 @@
   }
   /* Hex Colors */
   :root {
+    --quote-background: #f5e6aa;
+    --quote-foreground: #ffffff;
+
     --background: #ffffff;
     --foreground: #0a0a0a;
 
@@ -84,6 +87,9 @@
   }
 
   [data-theme='dark'] {
+    --quote-background: #219187;
+    --quote-foreground: #fde68a;
+
     /* teal-800 */
     --background: #006a67;
     --foreground: #f8fafc;

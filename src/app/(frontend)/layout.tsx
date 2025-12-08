@@ -84,9 +84,4 @@ export const metadata: Metadata = {
     statusBarStyle: 'black-translucent',
     title: "Lord's Move in Australia",
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    viewportFit: 'cover',
-  },
 }

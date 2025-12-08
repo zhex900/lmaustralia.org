@@ -22,6 +22,7 @@ const config = {
     'lg:col-span-12',
     'border-border',
     'bg-card',
+    'bg-quote',
     'border-error',
     'bg-error/30',
     'border-success',
@@ -64,6 +65,10 @@ const config = {
         },
         background: 'var(--background)',
         border: 'var(--border)',
+        quote: {
+          DEFAULT: 'var(--quote-background)',
+          foreground: 'var(--quote-foreground)',
+        },
         card: {
           DEFAULT: 'var(--card)',
           foreground: 'var(--card-foreground)',
