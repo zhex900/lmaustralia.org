@@ -43,13 +43,6 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
     // Create path generator
     const path = d3.geoPath(projection)
 
-    // Calculate the center of Australia for centering children
-    // Australia's approximate geographic center: [133.7751, -25.2744]
-    const australiaCenter: [number, number] = [133.7751, -25.2744]
-    const projectedCenter = projection(australiaCenter)
-    const mapCenterX = projectedCenter ? projectedCenter[0] : SVG_WIDTH / 2
-    const mapCenterY = projectedCenter ? projectedCenter[1] : SVG_HEIGHT / 2
-
     // Filter pins to show
     const pinsToShow = pinPositions.filter(
       (pin) => pins === 'all' || (Array.isArray(pins) && pins.includes(pin.name)),
@@ -116,7 +109,7 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
             ))}
 
           {/* City pins */}
-          {pinNodes.map((pin, index) => (
+          {pinNodes.map((pin) => (
             <g key={pin.name}>
               {/* Pin dot */}
               <circle
@@ -149,10 +142,10 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
               <a key={pin.name} href={pin.href} style={{ pointerEvents: 'all', cursor: 'pointer' }}>
                 <text
                   x={pin.x + pin.labelOffsetX}
-                  y={pin.y - pinRadius - 17}
+                  y={pin.y - pinRadius - 15}
                   fill="currentColor"
                   textAnchor="middle"
-                  className="underline dark:text-white text-[2.3em] sm:text-[2em] lg:text-[1.5em]"
+                  className="dark:text-white font-semibold text-[2.3em] sm:text-[2em] lg:text-[1.5em]"
                 >
                   {pin.name}
                 </text>
