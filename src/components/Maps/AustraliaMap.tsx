@@ -17,7 +17,7 @@ type AustraliaMapProps = {
   pinClassName?: string
 }
 
-const defaultPinSize = 1
+const defaultPinSize = 1.5
 
 /**
  * Server-side rendered Australia map using d3-geo
@@ -130,7 +130,7 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
                   y={pin.y - pinRadius - 10}
                   fill="currentColor"
                   textAnchor="middle"
-                  className="text-black dark:text-white text-[35px] md:text-[20px] lg:text-[16px]"
+                  className="text-black dark:text-white text-[2.3em] sm:text-[2em] lg:text-[1.5em]"
                 >
                   {pin.name}
                 </text>

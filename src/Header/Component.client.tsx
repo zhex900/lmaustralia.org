@@ -18,7 +18,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   const [theme] = useState<string | null>(null)
 
   return (
-    <header className="px-5 md:px-10 py-8 z-20 " {...(theme ? { 'data-theme': theme } : {})}>
+    <header className="px-5 md:px-10 py-5 z-20 " {...(theme ? { 'data-theme': theme } : {})}>
       <div className="grid grid-cols-[auto_1fr_auto] items-center gap-4">
         {/* Left: Logo */}
         <Link href="/">

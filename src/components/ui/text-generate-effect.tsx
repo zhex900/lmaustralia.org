@@ -1,7 +1,6 @@
 'use client'
 import * as React from 'react'
 import { motion, stagger, useAnimate } from 'motion/react'
-import { BackgroundGradient } from './background-gradient'
 
 type WordItem = {
   text: string
