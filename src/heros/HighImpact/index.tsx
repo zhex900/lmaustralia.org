@@ -8,7 +8,7 @@ import { AustraliaMap } from '@/components/Maps'
 import { TextGenerateEffect } from '@/components/ui/text-generate-effect'
 
 export const HighImpactHero: React.FC<Page['hero']> = ({ links, media }) => {
-  const andSymbolClassName = 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl 2xl:text-7xl'
+  const andSymbolClassName = 'text-lg sm:text-xl md:text-2xl lg:text-3xl 2xl:text-4xl'
   return (
     <div className="">
       <div className="min-h-[calc(100dvh-112px)] h-auto flex items-center justify-center">
@@ -18,7 +18,7 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media }) => {
               <TextGenerateEffect className="px-10 md:px-10 lg:px-15 text-center font-playfair text-3xl md:text-5xl xl:text-6xl absolute -translate-y-1/4">
                 Be fruitful <span className={andSymbolClassName}>&</span> multiply,{' '}
                 <span className={andSymbolClassName}>&</span>{' '}
-                <span className="text-amber-200 dark:text-teal-700 whitespace-nowrap">
+                <span className="underline-text text-amber-200 dark:text-teal-700 whitespace-nowrap">
                   fill the earth
                 </span>
               </TextGenerateEffect>

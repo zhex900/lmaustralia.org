@@ -1,12 +1,14 @@
 'use client'
 import * as React from 'react'
 import { motion, stagger, useAnimate } from 'motion/react'
+import { BackgroundGradient } from './background-gradient'
 
 type WordItem = {
   text: string
   className?: string
   style?: React.CSSProperties
   isSpan: boolean
+  keepTogether?: boolean // For whitespace-nowrap spans
 }
 
 type TextGenerateEffectProps = Omit<React.ComponentProps<'div'>, 'children'> & {
@@ -45,29 +47,57 @@ function extractWords(children: React.ReactNode): WordItem[] {
       if (node.type === 'span' || (typeof node.type === 'string' && node.type === 'span')) {
         const spanClassName = elementProps.className
         const spanStyle = elementProps.style
+        const hasNowrap = spanClassName?.includes('whitespace-nowrap')
 
         // Process children of the span
         if (elementChildren) {
-          React.Children.forEach(elementChildren, (child) => {
-            if (typeof child === 'string' || typeof child === 'number') {
-              const text = String(child)
-              const textWords = text.split(/(\s+)/)
-              textWords.forEach((word) => {
-                if (word.trim()) {
-                  words.push({
-                    text: word,
-                    className: spanClassName,
-                    style: spanStyle,
-                    isSpan: true,
-                  })
-                } else if (word) {
-                  words.push({ text: word, isSpan: false })
+          if (hasNowrap) {
+            // For whitespace-nowrap, keep all content together as a single word
+            const collectText = (childNode: React.ReactNode): string => {
+              if (typeof childNode === 'string' || typeof childNode === 'number') {
+                return String(childNode)
+              } else if (React.isValidElement(childNode)) {
+                const props = childNode.props as { children?: React.ReactNode }
+                if (props.children) {
+                  const mappedChildren = React.Children.map(props.children, collectText)
+                  return Array.isArray(mappedChildren) ? mappedChildren.join('') : ''
                 }
-              })
-            } else {
-              processNode(child)
+              } else if (Array.isArray(childNode)) {
+                return childNode.map(collectText).join('')
+              }
+              return ''
             }
-          })
+            const fullText = React.Children.map(elementChildren, collectText)?.join('') || ''
+            words.push({
+              text: fullText,
+              className: spanClassName,
+              style: spanStyle,
+              isSpan: true,
+              keepTogether: true,
+            })
+          } else {
+            // Normal processing: split by spaces
+            React.Children.forEach(elementChildren, (child) => {
+              if (typeof child === 'string' || typeof child === 'number') {
+                const text = String(child)
+                const textWords = text.split(/(\s+)/)
+                textWords.forEach((word) => {
+                  if (word.trim()) {
+                    words.push({
+                      text: word,
+                      className: spanClassName,
+                      style: spanStyle,
+                      isSpan: true,
+                    })
+                  } else if (word) {
+                    words.push({ text: word, isSpan: false })
+                  }
+                })
+              } else {
+                processNode(child)
+              }
+            })
+          }
         }
       } else {
         // For other elements, process their children
@@ -126,10 +156,22 @@ function TextGenerateEffect({
             }`}
             style={{
               filter: filter ? 'blur(10px)' : 'none',
+              whiteSpace: word.keepTogether ? 'nowrap' : undefined,
               ...word.style,
             }}
           >
-            {word.text}
+            {word.className?.includes('underline-text') ? (
+              <span className="relative inline-block animate-pulse">
+                {word.text}
+                <BackgroundGradient
+                  containerClassName="absolute bottom-0 left-0 right-0 h-[3px]"
+                  className="h-full"
+                  animate={true}
+                />
+              </span>
+            ) : (
+              word.text
+            )}
           </motion.span>
         ))}
       </motion.div>
