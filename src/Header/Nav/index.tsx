@@ -14,6 +14,28 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
   const navItems = data?.navItems || []
   const [open, setOpen] = React.useState(false)
 
+  // Prevent background scroll when mobile nav is open
+  React.useEffect(() => {
+    if (open) {
+      // Save current scroll position
+      const scrollY = window.scrollY
+      // Apply styles to prevent scrolling
+      document.body.style.position = 'fixed'
+      document.body.style.top = `-${scrollY}px`
+      document.body.style.width = '100%'
+      document.body.style.overflow = 'hidden'
+
+      return () => {
+        // Restore scroll position and styles
+        document.body.style.position = ''
+        document.body.style.top = ''
+        document.body.style.width = ''
+        document.body.style.overflow = ''
+        window.scrollTo(0, scrollY)
+      }
+    }
+  }, [open])
+
   const hasSubs = (item: NavItem) => Array.isArray(item?.subNavItems) && item.subNavItems.length > 0
 
   const SubListDesktop = ({ items }: { items: SubNavItem[] }) => (

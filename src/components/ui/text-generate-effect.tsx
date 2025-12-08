@@ -160,15 +160,8 @@ function TextGenerateEffect({
               ...word.style,
             }}
           >
-            {word.className?.includes('underline-text') ? (
-              <span className="relative inline-block animate-pulse">
-                {word.text}
-                <BackgroundGradient
-                  containerClassName="absolute bottom-0 left-0 right-0 h-[3px]"
-                  className="h-full"
-                  animate={true}
-                />
-              </span>
+            {word.className?.includes('animate') ? (
+              <span className="relative inline-block animate-pulse">{word.text}</span>
             ) : (
               word.text
             )}

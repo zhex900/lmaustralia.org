@@ -18,7 +18,7 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media }) => {
               <TextGenerateEffect className="px-10 md:px-10 lg:px-15 text-center font-playfair text-3xl md:text-5xl xl:text-6xl absolute -translate-y-1/4">
                 Be fruitful <span className={andSymbolClassName}>&</span> multiply,{' '}
                 <span className={andSymbolClassName}>&</span>{' '}
-                <span className="underline-text text-amber-200 dark:text-teal-700 whitespace-nowrap">
+                <span className="animate text-amber-200 dark:text-teal-700 whitespace-nowrap">
                   fill the earth
                 </span>
               </TextGenerateEffect>
