@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import mapboxgl from 'mapbox-gl'
 
 type LayerControlsProps = {
   mapRef: React.RefObject<mapboxgl.Map | null>
@@ -92,90 +91,59 @@ export const LayerControls: React.FC<LayerControlsProps> = ({ mapRef, addressMar
   }, [showHomes, addressMarkersRef])
 
   return (
-    <div
-      style={{
-        position: 'absolute',
-        top: '10px',
-        right: '10px',
-        backgroundColor: 'white',
-        borderRadius: '4px',
-        padding: '10px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-        zIndex: 1000,
-        minWidth: '200px',
-      }}
-    >
-      <div style={{ fontWeight: 'bold', marginBottom: '8px', fontSize: '14px' }}>Captions</div>
+    <div className="absolute top-2.5 right-2.5 bg-white rounded p-2.5 shadow-md z-[1000]">
+      <div className="font-bold mb-2 text-sm">Captions</div>
 
-      <label
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          cursor: 'pointer',
-          marginBottom: '8px',
-          fontSize: '13px',
-        }}
-      >
+      <label className="flex items-center cursor-pointer mb-2 text-[13px]">
         <input
           type="checkbox"
           checked={showCampus}
           onChange={(e) => setShowCampus(e.target.checked)}
-          style={{ marginRight: '8px', cursor: 'pointer' }}
+          className="mr-2 cursor-pointer"
         />
-        <span>1. Closest to Campus</span>
+        <span>
+          <span className="md:hidden">Campus</span>
+          <span className="hidden md:inline">Closest to Campus</span>
+        </span>
       </label>
 
-      <label
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          cursor: 'pointer',
-          marginBottom: '8px',
-          fontSize: '13px',
-        }}
-      >
+      <label className="flex items-center cursor-pointer mb-2 text-[13px]">
         <input
           type="checkbox"
           checked={showSchoolZones}
           onChange={(e) => setShowSchoolZones(e.target.checked)}
-          style={{ marginRight: '8px', cursor: 'pointer' }}
+          className="mr-2 cursor-pointer"
         />
-        <span>2. School Catchments</span>
+        <span>
+          <span className="md:hidden">Catchment</span>
+          <span className="hidden md:inline">School Catchments</span>
+        </span>
       </label>
 
-      <label
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          cursor: 'pointer',
-          marginBottom: '8px',
-          fontSize: '13px',
-        }}
-      >
+      <label className="flex items-center cursor-pointer mb-2 text-[13px]">
         <input
           type="checkbox"
           checked={showHomes}
           onChange={(e) => setShowHomes(e.target.checked)}
-          style={{ marginRight: '8px', cursor: 'pointer' }}
+          className="mr-2 cursor-pointer"
         />
-        <span>3. Nearby Homes</span>
+        <span>
+          <span className="md:hidden">Homes</span>
+          <span className="hidden md:inline">Nearby Homes</span>
+        </span>
       </label>
 
-      <label
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          cursor: 'pointer',
-          fontSize: '13px',
-        }}
-      >
+      <label className="flex items-center cursor-pointer text-[13px]">
         <input
           type="checkbox"
           checked={showNotInCatchment}
           onChange={(e) => setShowNotInCatchment(e.target.checked)}
-          style={{ marginRight: '8px', cursor: 'pointer' }}
+          className="mr-2 cursor-pointer"
         />
-        <span>4. Not in School Catchment</span>
+        <span>
+          <span className="md:hidden">Not in catchment</span>
+          <span className="hidden md:inline">Not in School Catchment</span>
+        </span>
       </label>
     </div>
   )

@@ -59,8 +59,8 @@ export const addUniversityMarker = (map: mapboxgl.Map): mapboxgl.Marker | null =
         src="/logos/university-of-newcastle.svg"
         alt="University of Newcastle"
         style={{
-          width: '60px',
-          height: '60px',
+          width: '40px',
+          height: '40px',
           position: 'relative',
           zIndex: -10,
           objectFit: 'contain',

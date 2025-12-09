@@ -12,7 +12,7 @@ type MarkerLayersProps = {
 
 export const markers = {
   'J & A': {
-    address: '56 fussell street birmingham gardens',
+    address: '55 fussell street birmingham gardens',
     type: 'Home',
     anchor: {
       position: 'right',
@@ -23,7 +23,7 @@ export const markers = {
     },
   },
   'J & T': {
-    address: '85a Main Rd Cardiff Heights NSW 2285',
+    address: '85 Main Rd Cardiff Heights NSW 2285',
     type: 'Home',
     anchor: {
       position: 'bottom-right',
@@ -45,7 +45,7 @@ export const markers = {
     },
   },
   'D & M': {
-    address: '45 Marsden Street, Shortland, NSW 2307',
+    address: '48 Marsden Street, Shortland, NSW 2307',
     type: 'Home',
     anchor: {
       position: 'right',
