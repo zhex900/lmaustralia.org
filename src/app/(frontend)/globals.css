@@ -33,6 +33,12 @@
     font-size: unset;
     font-weight: unset;
   }
+
+  /* Hide Mapbox logo and attribution */
+  .mapboxgl-ctrl-logo,
+  .mapboxgl-ctrl-attrib {
+    display: none !important;
+  }
   /* Hex Colors */
   :root {
     --quote-background: #f5e6aa;
@@ -176,6 +182,12 @@ html[data-theme='light'] {
 
 .grecaptcha-badge {
   visibility: hidden;
+}
+
+/* Hide Mapbox logos and attribution */
+.mapboxgl-ctrl-logo,
+.mapboxgl-ctrl-attrib {
+  display: none !important;
 }
 
 /*
