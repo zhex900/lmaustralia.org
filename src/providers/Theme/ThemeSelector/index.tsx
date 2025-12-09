@@ -13,13 +13,14 @@ interface ThemeSelectorProps {
   className?: string
 }
 
+const defaultMode = 'light'
 export const ThemeSelector: React.FC<ThemeSelectorProps> = ({ className }) => {
   const { setTheme } = useTheme()
-  const [value, setValue] = React.useState<'auto' | Theme>('auto')
+  const [value, setValue] = React.useState<'auto' | Theme>(defaultMode)
 
   const setThemeMode = (mode: 'auto' | Theme) => {
     if (mode === 'auto') {
-      setTheme(null)
+      setTheme('auto')
       setValue('auto')
     } else {
       setTheme(mode)
@@ -33,9 +34,17 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = ({ className }) => {
   }
 
   React.useEffect(() => {
-    const preference = window.localStorage.getItem(themeLocalStorageKey) as Theme | null
-    setValue(preference ?? 'auto')
-  }, [])
+    const preference = window.localStorage.getItem(themeLocalStorageKey)
+    if (preference === 'auto') {
+      setValue('auto')
+    } else if (preference === 'light' || preference === 'dark') {
+      setValue(preference)
+    } else {
+      // If no preference exists, default to light mode explicitly
+      setValue(defaultMode)
+      setTheme(defaultMode)
+    }
+  }, [setTheme])
 
   const label = value === 'auto' ? 'System (Auto)' : value === 'light' ? 'Light' : 'Dark'
   const Icon = value === 'auto' ? Laptop : value === 'light' ? Sun : Moon

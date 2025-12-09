@@ -20,12 +20,18 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     canUseDOM ? (document.documentElement.getAttribute('data-theme') as Theme) : undefined,
   )
 
-  const setTheme = useCallback((themeToSet: Theme | null) => {
-    if (themeToSet === null) {
-      window.localStorage.removeItem(themeLocalStorageKey)
+  const setTheme = useCallback((themeToSet: Theme | 'auto' | null) => {
+    if (themeToSet === null || themeToSet === 'auto') {
+      // Store 'auto' in localStorage to remember user selection
+      if (themeToSet === 'auto') {
+        window.localStorage.setItem(themeLocalStorageKey, 'auto')
+      } else {
+        window.localStorage.removeItem(themeLocalStorageKey)
+      }
       const implicitPreference = getImplicitPreference()
-      document.documentElement.setAttribute('data-theme', implicitPreference || '')
+      document.documentElement.setAttribute('data-theme', implicitPreference || defaultTheme)
       if (implicitPreference) setThemeState(implicitPreference)
+      else setThemeState(defaultTheme)
     } else {
       setThemeState(themeToSet)
       window.localStorage.setItem(themeLocalStorageKey, themeToSet)
@@ -37,15 +43,15 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     let themeToSet: Theme = defaultTheme
     const preference = window.localStorage.getItem(themeLocalStorageKey)
 
-    if (themeIsValid(preference)) {
-      themeToSet = preference
-    } else {
+    if (preference === 'auto') {
+      // User selected auto mode - use system preference
       const implicitPreference = getImplicitPreference()
-
-      if (implicitPreference) {
-        themeToSet = implicitPreference
-      }
+      themeToSet = implicitPreference || defaultTheme
+    } else if (themeIsValid(preference)) {
+      // User selected light or dark explicitly
+      themeToSet = preference
     }
+    // If no preference exists, use defaultTheme (light)
 
     document.documentElement.setAttribute('data-theme', themeToSet)
     setThemeState(themeToSet)
