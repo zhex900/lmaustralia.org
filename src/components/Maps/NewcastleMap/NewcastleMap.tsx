@@ -7,6 +7,7 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import { addAllLayers } from './layers'
 import { useCatchmentHighlight } from './layers/catchment'
 import { showRoute, clearRoute } from './routing'
+import { LayerControls } from './LayerControls'
 
 export const NewcastleMap = () => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null)
@@ -32,7 +33,7 @@ export const NewcastleMap = () => {
     }
 
     // University of Newcastle coordinates
-    const universityCoords: [number, number] = [151.69930743714178, -32.906487503672004]
+    const universityCoords: [number, number] = [151.71786849703244, -32.90489225775947]
 
     // Function to get route from home to university and display it
     const showRouteToUniversity = async (fromCoords: [number, number], label: string) => {
@@ -64,25 +65,25 @@ export const NewcastleMap = () => {
     }
 
     mapboxgl.accessToken = token
-    const initialCenter: [number, number] = [151.70336697072605, -32.90083300347392]
-    const initialZoom = 11.85
+    const initialCenter: [number, number] = [151.71986874228838, -32.8990780958905]
+    const initialZoom = 10.8
 
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
       style: 'mapbox://styles/mapbox/streets-v12', // Single style
       center: initialCenter, // University of Newcastle (Callaghan campus) [lng, lat]
       zoom: initialZoom, // starting zoom
-      //   maxZoom: 16, // Maximum zoom level
+      // minZoom: 10,
       attributionControl: false, // Hide attribution control
       // Allow zoom but prevent panning/moving
       scrollZoom: true, // Enable mouse wheel zoom
       doubleClickZoom: true, // Enable double-click zoom
       touchZoomRotate: true, // Enable touch zoom (but prevent pan via dragPan)
       // Disable interactions that would move the map
-      //   boxZoom: false,
-      //   dragRotate: false,
-      //   dragPan: false, // Prevent panning/dragging
-      //   keyboard: false,
+      // boxZoom: false,
+      // dragRotate: false,
+      // dragPan: false, // Prevent panning/dragging
+      // keyboard: false,
     })
 
     // Log initial map center and zoom
@@ -141,10 +142,13 @@ export const NewcastleMap = () => {
   }, []) // Only run once on mount
 
   return (
-    <div
-      ref={mapContainerRef}
-      style={{ height: '500px', width: '100%' }}
-      className="map-container"
-    />
+    <div style={{ position: 'relative', height: '500px', width: '100%' }}>
+      <div
+        ref={mapContainerRef}
+        style={{ height: '100%', width: '100%' }}
+        className="map-container"
+      />
+      <LayerControls mapRef={mapRef} addressMarkersRef={addressMarkersRef} />
+    </div>
   )
 }
