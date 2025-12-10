@@ -39,6 +39,7 @@ import {
 import { slugField } from 'payload'
 import { TextFontFamilyFeature } from 'payload-lexical-typography'
 import { ProximityMap } from '@/blocks/ProximityMap/config'
+import { Timeline } from '@/blocks/Timeline/config'
 
 export const Posts: CollectionConfig<'posts'> = {
   slug: 'posts',
@@ -109,7 +110,9 @@ export const Posts: CollectionConfig<'posts'> = {
                     ...rootFeatures,
                     ...defaultFeatures,
                     HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                    BlocksFeature({ blocks: [Banner, Code, MediaBlock, Archive, ProximityMap] }),
+                    BlocksFeature({
+                      blocks: [Banner, Code, MediaBlock, Archive, ProximityMap, Timeline],
+                    }),
                     FixedToolbarFeature(),
                     InlineToolbarFeature(),
                     HorizontalRuleFeature(),

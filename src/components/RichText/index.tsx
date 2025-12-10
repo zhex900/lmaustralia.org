@@ -25,6 +25,7 @@ import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { cn } from '@/utilities/ui'
 import { ArchiveBlockClient } from '@/blocks/ArchiveBlock/Component.client'
 import { ProximityMapBlock } from '@/blocks/ProximityMap/Component'
+import { TimelineBlock, TimelineBlockProps } from '@/blocks/Timeline/Component'
 
 type NodeTypes =
   | DefaultNodeTypes
@@ -61,6 +62,9 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
     code: ({ node }) => <CodeBlock className="col-start-2" {...node.fields} />,
     cta: ({ node }) => <CallToActionBlock {...node.fields} />,
     proximityMap: () => <ProximityMapBlock />,
+    timeline: ({ node }: { node: SerializedBlockNode<TimelineBlockProps> }) => (
+      <TimelineBlock {...node.fields} />
+    ),
   },
 })
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { createRoot } from 'react-dom/client'
 import mapboxgl from 'mapbox-gl'
 import { SCHOOLS } from './schools'
@@ -9,45 +9,11 @@ const CatchmentMarker: React.FC<{
   logo?: string
   label: string
   catchment?: string
-  onCatchmentHighlight: (sourceId: string) => void
-  onCatchmentUnhighlight: () => void
   onCatchmentClick: () => void
   markerElement: HTMLElement
-}> = ({
-  logo,
-  label,
-  catchment,
-  onCatchmentHighlight,
-  onCatchmentUnhighlight,
-  onCatchmentClick,
-  markerElement,
-}) => {
-  const [isHovering, setIsHovering] = useState(false)
-
-  // Update z-index on the marker element when hovering
-  React.useEffect(() => {
-    if (markerElement) {
-      markerElement.style.zIndex = isHovering ? '20' : '1'
-    }
-  }, [isHovering, markerElement])
-
-  const handleMouseEnter = () => {
-    setIsHovering(true)
-    if (catchment) {
-      const catchmentSourceId = `catchment-${catchment}`
-      onCatchmentHighlight(catchmentSourceId)
-    }
-  }
-
-  const handleMouseLeave = () => {
-    setIsHovering(false)
-    if (catchment) {
-      onCatchmentUnhighlight()
-    }
-  }
-
+}> = ({ logo, label, onCatchmentClick }) => {
   return (
-    <Tooltip open={isHovering}>
+    <Tooltip>
       <TooltipTrigger asChild>
         <div
           className="custom-marker-wrapper"
@@ -57,8 +23,6 @@ const CatchmentMarker: React.FC<{
             cursor: 'pointer',
           }}
           onClick={onCatchmentClick}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
         >
           {logo && (
             <img
@@ -163,8 +127,6 @@ const addCatchmentMarker = async ({
           logo={logo}
           label={label}
           catchment={catchment}
-          onCatchmentHighlight={onCatchmentHighlight}
-          onCatchmentUnhighlight={onCatchmentUnhighlight}
           onCatchmentClick={handleCatchmentClick}
           markerElement={el}
         />,

@@ -1,16 +1,9 @@
 import React from 'react'
-import mapboxgl from 'mapbox-gl'
+
 import { addCatchmentLayers, addCatchmentMarkers } from './catchment'
 import { addUniversityLayer, addUniversityMarker } from './UniversityLayer'
 import { addZonesLayers } from './ZonesLayer'
 import { addMarkerLayers } from './MarkerLayers'
-
-type Address = {
-  label: string
-  address: string
-  type: string
-  catchment?: string
-}
 
 type LayersProps = {
   map: mapboxgl.Map

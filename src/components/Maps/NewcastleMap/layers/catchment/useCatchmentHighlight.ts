@@ -1,5 +1,5 @@
 import React, { useRef, useCallback } from 'react'
-import mapboxgl from 'mapbox-gl'
+
 import { showCatchmentLayer, hideCatchmentLayer } from './CatchmentLayers'
 
 // React hook for managing catchment highlighting
@@ -26,12 +26,8 @@ export const useCatchmentHighlight = (mapRef: React.RefObject<mapboxgl.Map | nul
     const map = mapRef.current
     if (!map) return
 
-    const catchmentId = highlightedCatchmentRef.current
-      ? highlightedCatchmentRef.current.replace('catchment-', '')
-      : null
-
     // Hide individual catchment and show combined layer
-    hideCatchmentLayer(map, catchmentId)
+    hideCatchmentLayer(map)
 
     highlightedCatchmentRef.current = null
   }, [mapRef])

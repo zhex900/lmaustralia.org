@@ -22,6 +22,7 @@ import { MediaBlock } from '../MediaBlock/config'
 import { Archive } from '../ArchiveBlock/config'
 import { CallToAction } from '../CallToAction/config'
 import { ProximityMap } from '../ProximityMap/config'
+import { Timeline } from '../Timeline/config'
 
 const columnFields: Field[] = [
   {
@@ -69,7 +70,9 @@ const columnFields: Field[] = [
           ...defaultFeatures,
           IndentFeature(),
           HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
-          BlocksFeature({ blocks: [Banner, MediaBlock, Archive, CallToAction, ProximityMap] }),
+          BlocksFeature({
+            blocks: [Banner, MediaBlock, Archive, CallToAction, ProximityMap, Timeline],
+          }),
           FixedToolbarFeature(),
           InlineToolbarFeature(),
           AlignFeature(),

@@ -8,6 +8,7 @@ import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { ProximityMapBlock } from './ProximityMap/Component'
+import { TimelineBlock } from './Timeline/Component'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -16,6 +17,7 @@ const blockComponents = {
   formBlock: FormBlock,
   mediaBlock: MediaBlock,
   proximityMap: ProximityMapBlock,
+  timeline: TimelineBlock,
 }
 
 export const RenderBlocks: React.FC<{

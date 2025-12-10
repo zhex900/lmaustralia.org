@@ -21,20 +21,8 @@ export const addUniversityLayer = ({ map }: UniversityLayerProps) => {
     type: 'fill',
     source: 'university-highlight',
     paint: {
-      'fill-color': '#b669d6',
-      'fill-opacity': 0.2,
-    },
-  })
-
-  // Add outline layer
-  map.addLayer({
-    id: 'university-outline',
-    type: 'line',
-    source: 'university-highlight',
-    paint: {
-      'line-color': '#9909d6',
-      'line-width': 2,
-      'line-opacity': 0.6,
+      'fill-color': '#b669d6', // purple
+      'fill-opacity': 0.7,
     },
   })
 }
@@ -90,7 +78,7 @@ export const addUniversityMarker = (map: mapboxgl.Map): mapboxgl.Marker | null =
     element: el,
     anchor: 'bottom',
   })
-    .setLngLat([151.70515330047283, -32.891143664377395])
+    .setLngLat([151.7024147191538, -32.89485983195183])
     .addTo(map)
 
   return marker

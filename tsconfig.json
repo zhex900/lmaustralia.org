@@ -45,7 +45,7 @@
     "next.config.js",
     "next-sitemap.config.cjs",
     ".next/dev/types/**/*.ts"
-  ],
+, "src/components/ui/timeline.tsx"  ],
   "exclude": [
     "node_modules"
   ]

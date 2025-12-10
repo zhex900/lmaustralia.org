@@ -201,7 +201,15 @@ export interface Page {
       | null;
     media?: (number | null) | Media;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock | ProximityMapBlock)[];
+  layout: (
+    | CallToActionBlock
+    | ContentBlock
+    | MediaBlock
+    | ArchiveBlock
+    | FormBlock
+    | ProximityMapBlock
+    | TimelineBlock
+  )[];
   meta?: {
     title?: string | null;
     /**
@@ -804,6 +812,22 @@ export interface ProximityMapBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TimelineBlock".
+ */
+export interface TimelineBlock {
+  title: string;
+  description: string;
+  timeline: {
+    title: string;
+    content: string;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'timeline';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1112,6 +1136,7 @@ export interface PagesSelect<T extends boolean = true> {
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
         proximityMap?: T | ProximityMapBlockSelect<T>;
+        timeline?: T | TimelineBlockSelect<T>;
       };
   meta?:
     | T
@@ -1219,6 +1244,23 @@ export interface FormBlockSelect<T extends boolean = true> {
  * via the `definition` "ProximityMapBlock_select".
  */
 export interface ProximityMapBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TimelineBlock_select".
+ */
+export interface TimelineBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  timeline?:
+    | T
+    | {
+        title?: T;
+        content?: T;
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }

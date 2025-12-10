@@ -13,7 +13,7 @@ type LayerControlsProps = {
 export const LayerControls: React.FC<LayerControlsProps> = ({ mapRef, addressMarkersRef }) => {
   const [showCampus, setShowCampus] = useState(true)
   const [showSchoolZones, setShowSchoolZones] = useState(true)
-  const [showHomes, setShowHomes] = useState(true)
+  const [showHomes, setShowHomes] = useState(false)
   const [showNotInCatchment, setShowNotInCatchment] = useState(true)
 
   // Toggle zone 1 layers only
