@@ -130,7 +130,7 @@ export const LayerControls: React.FC<LayerControlsProps> = ({ mapRef, addressMar
 
   return (
     <div className="relative md:static w-full md:w-auto">
-      <div className="absolute p-2.5 top-2.5 w-full md:w-auto inset-x-0 md:inset-x-auto md:right-2.5 bg-background/40 backdrop-blur-sm rounded shadow-md z-[1000]">
+      <div className="absolute p-2.5 top-2.5 w-full md:w-auto inset-x-0 md:inset-x-auto md:right-2.5 bg-background/60 backdrop-blur-sm rounded shadow-md z-[1000]">
         <div className="font-bold mb-2 text-sm">
           <span className="md:hidden">Proximity to campus</span>
           <span className="hidden md:inline">

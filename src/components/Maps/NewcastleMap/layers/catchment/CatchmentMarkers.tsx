@@ -77,7 +77,7 @@ const CatchmentMarker: React.FC<{
         </div>
       </TooltipTrigger>
       <TooltipContent
-        sideOffset={10}
+        sideOffset={-20}
         avoidCollisions
         side="top"
         className="bg-background/60 backdrop-blur-sm text-foreground"
