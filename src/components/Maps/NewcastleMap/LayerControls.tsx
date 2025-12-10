@@ -1,5 +1,6 @@
 'use client'
 
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import React, { useState, useEffect } from 'react'
 
 type LayerControlsProps = {
@@ -90,61 +91,81 @@ export const LayerControls: React.FC<LayerControlsProps> = ({ mapRef, addressMar
     })
   }, [showHomes, addressMarkersRef])
 
+  const labelConfigs = [
+    {
+      id: 'campus',
+      checked: showCampus,
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setShowCampus(e.target.checked),
+      label: ' ~4 km',
+      tooltip: '5 min drive',
+      mobileLabel: '~4 km, 5 min drive',
+    },
+    {
+      id: 'schoolZones',
+      checked: showSchoolZones,
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setShowSchoolZones(e.target.checked),
+      label: ' ~8 km',
+      tooltip: 'Within school catchments',
+      mobileLabel: '~8 km, within school catchments',
+    },
+
+    {
+      id: 'notInCatchment',
+      checked: showNotInCatchment,
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setShowNotInCatchment(e.target.checked),
+      label: '~10 km',
+      tooltip: 'Outside school catchments',
+      mobileLabel: '~10 km, outside school catchments',
+    },
+    {
+      id: 'homes',
+      checked: showHomes,
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setShowHomes(e.target.checked),
+      label: 'Homes',
+      tooltip: 'Nearby homes',
+      isLast: true,
+      mobileLabel: 'Nearby homes',
+    },
+  ]
+
   return (
-    <div className="absolute top-2.5 right-2.5 bg-white rounded p-2.5 shadow-md z-[1000]">
-      <div className="font-bold mb-2 text-sm">Captions</div>
+    <div className="relative md:static w-full md:w-auto">
+      <div className="absolute p-2.5 top-2.5 w-full md:w-auto inset-x-0 md:inset-x-auto md:right-2.5 bg-background/40 backdrop-blur-sm rounded shadow-md z-[1000]">
+        <div className="font-bold mb-2 text-sm">
+          <span className="md:hidden">Proximity to campus</span>
+          <span className="hidden md:inline">
+            Proximity
+            <br />
+            to campus
+          </span>
+        </div>
 
-      <label className="flex items-center cursor-pointer mb-2 text-[13px]">
-        <input
-          type="checkbox"
-          checked={showCampus}
-          onChange={(e) => setShowCampus(e.target.checked)}
-          className="mr-2 cursor-pointer"
-        />
-        <span>
-          <span className="md:hidden">Campus</span>
-          <span className="hidden md:inline">Closest to Campus</span>
-        </span>
-      </label>
-
-      <label className="flex items-center cursor-pointer mb-2 text-[13px]">
-        <input
-          type="checkbox"
-          checked={showSchoolZones}
-          onChange={(e) => setShowSchoolZones(e.target.checked)}
-          className="mr-2 cursor-pointer"
-        />
-        <span>
-          <span className="md:hidden">Catchment</span>
-          <span className="hidden md:inline">School Catchments</span>
-        </span>
-      </label>
-
-      <label className="flex items-center cursor-pointer mb-2 text-[13px]">
-        <input
-          type="checkbox"
-          checked={showHomes}
-          onChange={(e) => setShowHomes(e.target.checked)}
-          className="mr-2 cursor-pointer"
-        />
-        <span>
-          <span className="md:hidden">Homes</span>
-          <span className="hidden md:inline">Nearby Homes</span>
-        </span>
-      </label>
-
-      <label className="flex items-center cursor-pointer text-[13px]">
-        <input
-          type="checkbox"
-          checked={showNotInCatchment}
-          onChange={(e) => setShowNotInCatchment(e.target.checked)}
-          className="mr-2 cursor-pointer"
-        />
-        <span>
-          <span className="md:hidden">Not in catchment</span>
-          <span className="hidden md:inline">Not in School Catchment</span>
-        </span>
-      </label>
+        {labelConfigs.map((config) => {
+          return (
+            <Tooltip key={config.id}>
+              <TooltipTrigger asChild>
+                <label
+                  className={`flex items-center cursor-pointer text-[13px] ${config.isLast ? '' : 'mb-2'}`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={config.checked}
+                    onChange={config.onChange}
+                    className="mr-2 cursor-pointer"
+                  />
+                  <span>
+                    <span className="hidden md:inline">{config.label}</span>
+                    <span className="md:hidden">{config.mobileLabel}</span>
+                  </span>
+                </label>
+              </TooltipTrigger>
+              <TooltipContent side="right" className="hidden md:block">
+                <p>{config.tooltip}</p>
+              </TooltipContent>
+            </Tooltip>
+          )
+        })}
+      </div>
     </div>
   )
 }

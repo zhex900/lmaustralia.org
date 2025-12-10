@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import mapboxgl from 'mapbox-gl'
 import { SCHOOLS } from './schools'
-import { MarkerTooltip } from '../MarkerTooltip'
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 
 // Single component for catchment marker with hover state
 const CatchmentMarker: React.FC<{
@@ -47,39 +47,44 @@ const CatchmentMarker: React.FC<{
   }
 
   return (
-    <div
-      className="custom-marker-wrapper"
-      style={{
-        position: 'relative',
-        display: 'inline-block',
-        cursor: 'pointer',
-      }}
-      onClick={onCatchmentClick}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      {logo && (
-        <img
-          src={logo}
-          alt={label}
+    <Tooltip open={isHovering}>
+      <TooltipTrigger asChild>
+        <div
+          className="custom-marker-wrapper"
           style={{
-            width: '30px',
-            height: '30px',
             position: 'relative',
-            zIndex: -10,
-            objectFit: 'contain',
-            filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
+            display: 'inline-block',
+            cursor: 'pointer',
           }}
-        />
-      )}
-      <MarkerTooltip
-        showTooltip={isHovering}
-        wrapperClassName="custom-marker-wrapper"
-        tooltipClassName="marker-tooltip"
+          onClick={onCatchmentClick}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          {logo && (
+            <img
+              src={logo}
+              alt={label}
+              style={{
+                width: '30px',
+                height: '30px',
+                position: 'relative',
+                zIndex: -10,
+                objectFit: 'contain',
+                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
+              }}
+            />
+          )}
+        </div>
+      </TooltipTrigger>
+      <TooltipContent
+        sideOffset={10}
+        avoidCollisions
+        side="top"
+        className="bg-background/60 backdrop-blur-sm text-foreground"
       >
         {label}
-      </MarkerTooltip>
-    </div>
+      </TooltipContent>
+    </Tooltip>
   )
 }
 

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -17,6 +17,7 @@ export const NewcastleMap = () => {
   const routeSourceRef = useRef<string | null>(null) // Track current route source
   const popupRef = useRef<mapboxgl.Popup | null>(null) // Track current popup
   const activeRouteRef = useRef<string | null>(null) // Track which marker's route is active
+  const [isMapLoaded, setIsMapLoaded] = useState(false)
 
   // Use React hook for catchment highlighting
   const { highlightCatchment, unhighlightCatchment, highlightedCatchmentRef } =
@@ -43,7 +44,8 @@ export const NewcastleMap = () => {
         popupRef,
         activeRouteRef,
         fromCoords,
-        toCoords: universityCoords,
+        // uni front gate coords
+        toCoords: [151.69800570206968, -32.895359349770544],
         label,
         token,
       })
@@ -68,22 +70,28 @@ export const NewcastleMap = () => {
     const initialCenter: [number, number] = [151.71986874228838, -32.8990780958905]
     const initialZoom = 10.8
 
+    // Newcastle area bounding box: [[west, south], [east, north]]
+    const maxBounds: [[number, number], [number, number]] = [
+      [151.5, -33.0], // Southwest corner
+      [151.9, -32.7], // Northeast corner
+    ]
+
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
       style: 'mapbox://styles/mapbox/streets-v12', // Single style
       center: initialCenter, // University of Newcastle (Callaghan campus) [lng, lat]
       zoom: initialZoom, // starting zoom
-      // minZoom: 10,
+      minZoom: 10,
+      maxBounds, // Constrain map to Newcastle area
       attributionControl: false, // Hide attribution control
-      // Allow zoom but prevent panning/moving
+      // Allow zoom and panning within bounds
       scrollZoom: true, // Enable mouse wheel zoom
       doubleClickZoom: true, // Enable double-click zoom
-      touchZoomRotate: true, // Enable touch zoom (but prevent pan via dragPan)
-      // Disable interactions that would move the map
-      // boxZoom: false,
-      // dragRotate: false,
-      // dragPan: false, // Prevent panning/dragging
-      // keyboard: false,
+      touchZoomRotate: true, // Enable touch zoom
+      boxZoom: false,
+      dragRotate: false,
+      dragPan: true, // Allow panning within NSW bounds
+      keyboard: false,
     })
 
     // Log initial map center and zoom
@@ -131,6 +139,9 @@ export const NewcastleMap = () => {
           addressMarkersRef,
         })
       }
+
+      // Mark map as loaded
+      setIsMapLoaded(true)
     })
 
     // Cleanup function to prevent memory leaks
@@ -146,9 +157,10 @@ export const NewcastleMap = () => {
       <div
         ref={mapContainerRef}
         style={{ height: '100%', width: '100%' }}
-        className="map-container"
+        className="map-container rounded-lg"
       />
-      <LayerControls mapRef={mapRef} addressMarkersRef={addressMarkersRef} />
+
+      {isMapLoaded && <LayerControls mapRef={mapRef} addressMarkersRef={addressMarkersRef} />}
     </div>
   )
 }

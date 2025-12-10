@@ -16,7 +16,6 @@ import { SentryLoader } from '@/components/SentryLoader'
 
 import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
-import { NewcastleMap } from '@/components/Maps/NewcastleMap/NewcastleMap'
 
 const playfairDisplay = Playfair_Display({
   variable: '--font-playfair-display',
@@ -51,9 +50,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           />
 
           <Header />
-          <div className="w-full h-full">
-            <NewcastleMap />
-          </div>
           <main className="flex-1">{children}</main>
           {/* Debug breakpoint badge (dev only) */}
           {process.env.NODE_ENV === 'development' && (

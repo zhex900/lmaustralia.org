@@ -53,9 +53,8 @@ export const addAllLayers = async ({
   })
 
   // Add home markers
-  await addMarkerLayers({
+  addMarkerLayers({
     map,
-    token,
     onRouteShow,
     addressMarkersRef,
   })

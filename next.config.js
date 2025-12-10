@@ -17,6 +17,13 @@ const nextConfig = {
   turbopack: {
     root: __dirname,
   },
+  webpack: (config, { dev, isServer }) => {
+    // Disable webpack cache to prevent corruption issues
+    if (dev) {
+      config.cache = false
+    }
+    return config
+  },
   images: {
     qualities: [100, 75],
     unoptimized: process.env.NODE_ENV === 'development',

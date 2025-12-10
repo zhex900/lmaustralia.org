@@ -38,6 +38,7 @@ import {
 } from '@payloadcms/plugin-seo/fields'
 import { slugField } from 'payload'
 import { TextFontFamilyFeature } from 'payload-lexical-typography'
+import { ProximityMap } from '@/blocks/ProximityMap/config'
 
 export const Posts: CollectionConfig<'posts'> = {
   slug: 'posts',
@@ -108,7 +109,7 @@ export const Posts: CollectionConfig<'posts'> = {
                     ...rootFeatures,
                     ...defaultFeatures,
                     HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                    BlocksFeature({ blocks: [Banner, Code, MediaBlock, Archive] }),
+                    BlocksFeature({ blocks: [Banner, Code, MediaBlock, Archive, ProximityMap] }),
                     FixedToolbarFeature(),
                     InlineToolbarFeature(),
                     HorizontalRuleFeature(),

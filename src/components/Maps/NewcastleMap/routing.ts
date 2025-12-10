@@ -1,12 +1,11 @@
 import React from 'react'
 import mapboxgl from 'mapbox-gl'
-import { markers } from './layers/MarkerLayers'
 
 type ShowRouteParams = {
   mapRef: React.RefObject<mapboxgl.Map | null>
-  routeSourceRef: React.MutableRefObject<string | null>
-  popupRef: React.MutableRefObject<mapboxgl.Popup | null>
-  activeRouteRef: React.MutableRefObject<string | null> // Track which marker's route is active
+  routeSourceRef: React.RefObject<string | null>
+  popupRef: React.RefObject<mapboxgl.Popup | null>
+  activeRouteRef: React.RefObject<string | null> // Track which marker's route is active
   fromCoords: [number, number]
   toCoords: [number, number]
   label: string
@@ -22,9 +21,9 @@ export const clearRoute = ({
   skipPopupRemove = false,
 }: {
   mapRef: React.RefObject<mapboxgl.Map | null>
-  routeSourceRef: React.MutableRefObject<string | null>
-  popupRef: React.MutableRefObject<mapboxgl.Popup | null>
-  activeRouteRef: React.MutableRefObject<string | null>
+  routeSourceRef: React.RefObject<string | null>
+  popupRef: React.RefObject<mapboxgl.Popup | null>
+  activeRouteRef: React.RefObject<string | null>
   skipPopupRemove?: boolean
 }) => {
   if (!mapRef.current) return
@@ -124,19 +123,13 @@ export const showRoute = async ({
         },
       })
 
-      const markerConfig = markers[label as keyof typeof markers]
-      const xOffset = markerConfig?.anchor?.offset?.x ?? 0
-      const yOffset = markerConfig?.anchor?.offset?.y ?? 0
-      const anchor = (markerConfig?.anchor?.position as mapboxgl.PopupOptions['anchor']) ?? 'bottom'
-      console.log('anchor', markerConfig, anchor)
       // Show popup with distance and travel time
-      // const anchor = markers[label].anchor.position
-      const popup = new mapboxgl.Popup({ closeOnClick: true, anchor })
+      const popup = new mapboxgl.Popup({ closeOnClick: true })
         .setLngLat(fromCoords)
         .setHTML(
-          `<div style="padding: 1px; z-index: 3;">
+          `<div>
             <strong>${label}</strong><br/>
-            <div style="margin-top: 4px;">
+            <div>
               📍 To University of Newcastle<br/>
               🚗 Distance: ${distance} km<br/>
               ⏱️ Travel time: ${duration} min (driving)
