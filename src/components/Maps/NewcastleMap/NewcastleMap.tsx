@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
+import { cleanupMarker } from './markerFactory'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { addAllLayers } from './layers'
@@ -14,9 +15,18 @@ import {
   MIN_ZOOM,
   MAX_BOUNDS,
   NEWCASTLE_BOUNDS,
+  MAX_ZOOM,
+  FIT_BOUNDS_DURATION_INITIAL,
+  FIT_BOUNDS_DURATION_RESIZE,
+  MOBILE_BREAKPOINT,
+  TABLET_BREAKPOINT,
+  PADDING_MOBILE,
+  PADDING_TABLET,
+  PADDING_DESKTOP,
+  DEBOUNCE_DELAY,
 } from './constants'
 
-const MAP_OPTIONS: Omit<mapboxgl.MapOptions, 'container'> = {
+const MAP_OPTIONS: Omit<mapboxgl.MapboxOptions, 'container'> = {
   style: 'mapbox://styles/mapbox/streets-v12',
   minZoom: MIN_ZOOM,
   maxBounds: MAX_BOUNDS,
@@ -28,6 +38,17 @@ const MAP_OPTIONS: Omit<mapboxgl.MapOptions, 'container'> = {
   dragRotate: false,
   dragPan: true,
   keyboard: false,
+}
+
+// Helper to calculate responsive padding
+const getResponsivePadding = () => {
+  if (typeof window === 'undefined') return PADDING_TABLET
+  const width = window.innerWidth
+  return width < MOBILE_BREAKPOINT
+    ? PADDING_MOBILE
+    : width < TABLET_BREAKPOINT
+      ? PADDING_TABLET
+      : PADDING_DESKTOP
 }
 
 export const NewcastleMap = () => {
@@ -44,13 +65,16 @@ export const NewcastleMap = () => {
   const { highlightCatchment, unhighlightCatchment, highlightedCatchmentRef } =
     useCatchmentHighlight(mapRef)
 
+  // Main map initialization effect
   useEffect(() => {
-    if (!mapContainerRef.current) return
-    if (mapRef.current) return // Prevent double initialization
+    if (!mapContainerRef.current || mapRef.current) return
 
     const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
     if (!token) {
-      console.error('NEXT_PUBLIC_MAPBOX_TOKEN is not set')
+      if (process.env.NODE_ENV === 'development') {
+        console.error('NEXT_PUBLIC_MAPBOX_TOKEN is not set')
+      }
+      setMapError(true)
       return
     }
 
@@ -69,13 +93,13 @@ export const NewcastleMap = () => {
 
     const handleMapClick = (e: mapboxgl.MapMouseEvent) => {
       const target = e.originalEvent?.target as HTMLElement
-      if (target) {
-        const isMarker = target.closest('.mapboxgl-marker') || target.closest('.custom-marker')
-        const isPopup = target.closest('.mapboxgl-popup')
+      if (!target) return
 
-        if (target.classList.contains('mapboxgl-canvas') && !isMarker && !isPopup) {
-          clearRoute({ mapRef, routeSourceRef, popupRef, activeRouteRef })
-        }
+      const isMarker = target.closest('.mapboxgl-marker') || target.closest('.custom-marker')
+      const isPopup = target.closest('.mapboxgl-popup')
+
+      if (target.classList.contains('mapboxgl-canvas') && !isMarker && !isPopup) {
+        clearRoute({ mapRef, routeSourceRef, popupRef, activeRouteRef })
       }
     }
 
@@ -87,6 +111,9 @@ export const NewcastleMap = () => {
         ...MAP_OPTIONS,
       })
     } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Failed to initialize map:', error)
+      }
       setMapError(true)
       return
     }
@@ -96,15 +123,14 @@ export const NewcastleMap = () => {
     mapRef.current.on('load', async () => {
       if (!mapRef.current) return
 
-      // Use Mapbox's native fitBounds for accurate initial view
-      const padding = window.innerWidth < 640 ? 20 : window.innerWidth < 1024 ? 40 : 60
-
+      // Fit bounds to Newcastle area with responsive padding
       mapRef.current.fitBounds(NEWCASTLE_BOUNDS, {
-        padding: padding,
-        duration: 0, // Instant on initial load
-        maxZoom: 15, // Prevent zooming in too close
+        padding: getResponsivePadding(),
+        duration: FIT_BOUNDS_DURATION_INITIAL,
+        maxZoom: MAX_ZOOM,
       })
 
+      // Add all map layers and markers
       if (!universityMarkerRef.current) {
         universityMarkerRef.current = await addAllLayers({
           map: mapRef.current,
@@ -121,16 +147,15 @@ export const NewcastleMap = () => {
       setIsMapLoaded(true)
     })
 
+    // Cleanup function
     return () => {
       if (universityMarkerRef.current) {
-        universityMarkerRef.current.remove()
+        cleanupMarker(universityMarkerRef.current)
         universityMarkerRef.current = null
       }
 
-      if (addressMarkersRef.current.length > 0) {
-        addressMarkersRef.current.forEach((marker) => marker.remove())
-        addressMarkersRef.current = []
-      }
+      addressMarkersRef.current.forEach((marker) => cleanupMarker(marker))
+      addressMarkersRef.current = []
 
       if (popupRef.current) {
         popupRef.current.remove()
@@ -146,36 +171,29 @@ export const NewcastleMap = () => {
     }
   }, [highlightCatchment, unhighlightCatchment, highlightedCatchmentRef])
 
-  // Handle window resize to adjust map view
+  // Window resize handler
   useEffect(() => {
     if (!mapRef.current || !isMapLoaded) return
+
+    let resizeTimer: NodeJS.Timeout
 
     const handleResize = () => {
       if (!mapRef.current) return
 
-      // Resize the map container
       mapRef.current.resize()
 
-      // Optionally update view on resize using fitBounds
-      const adjustViewOnResize = true
-
-      if (adjustViewOnResize) {
-        const padding = window.innerWidth < 640 ? 20 : window.innerWidth < 1024 ? 40 : 60
-
-        mapRef.current.fitBounds(NEWCASTLE_BOUNDS, {
-          padding: padding,
-          duration: 1000, // Smooth transition
-          maxZoom: 15, // Prevent zooming in too close
-          essential: true,
-        })
-      }
+      // Re-fit bounds on resize for optimal view
+      mapRef.current.fitBounds(NEWCASTLE_BOUNDS, {
+        padding: getResponsivePadding(),
+        duration: FIT_BOUNDS_DURATION_RESIZE,
+        maxZoom: MAX_ZOOM,
+        essential: true,
+      })
     }
 
-    // Debounce resize handler
-    let resizeTimer: NodeJS.Timeout
     const debouncedResize = () => {
       clearTimeout(resizeTimer)
-      resizeTimer = setTimeout(handleResize, 250)
+      resizeTimer = setTimeout(handleResize, DEBOUNCE_DELAY)
     }
 
     window.addEventListener('resize', debouncedResize)
@@ -188,9 +206,13 @@ export const NewcastleMap = () => {
 
   return (
     <div style={{ position: 'relative', height: '500px', width: '100%' }}>
-      {mapError && process.env.NODE_ENV === 'development' && (
+      {mapError && (
         <div className="absolute inset-0 flex items-center justify-center bg-background/80">
-          <p className="text-sm text-muted-foreground">Map initialization error - refresh page</p>
+          <p className="text-sm text-muted-foreground">
+            {process.env.NODE_ENV === 'development'
+              ? 'Map initialization error - check MAPBOX_TOKEN'
+              : 'Map unavailable'}
+          </p>
         </div>
       )}
       <div

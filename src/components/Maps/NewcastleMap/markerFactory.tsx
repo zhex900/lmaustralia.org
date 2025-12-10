@@ -1,5 +1,5 @@
 import React from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, Root } from 'react-dom/client'
 import mapboxgl from 'mapbox-gl'
 
 export interface CreateMarkerOptions {
@@ -10,6 +10,9 @@ export interface CreateMarkerOptions {
   anchor?: 'center' | 'top' | 'bottom' | 'left' | 'right'
   onAdd?: (marker: mapboxgl.Marker) => void
 }
+
+// Store roots to enable cleanup
+const markerRoots = new WeakMap<mapboxgl.Marker, Root>()
 
 export const createMapMarker = ({
   coordinates,
@@ -32,7 +35,20 @@ export const createMapMarker = ({
     .setLngLat(coordinates)
     .addTo(map)
 
+  // Store root for cleanup
+  markerRoots.set(marker, root)
+
   onAdd?.(marker)
 
   return marker
+}
+
+// Cleanup function to unmount React root when marker is removed
+export const cleanupMarker = (marker: mapboxgl.Marker) => {
+  const root = markerRoots.get(marker)
+  if (root) {
+    root.unmount()
+    markerRoots.delete(marker)
+  }
+  marker.remove()
 }

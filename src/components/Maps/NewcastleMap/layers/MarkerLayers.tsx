@@ -1,4 +1,5 @@
 import React from 'react'
+import type mapboxgl from 'mapbox-gl'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import { HOME_MARKERS } from '../constants'
 import { createMapMarker } from '../markerFactory'

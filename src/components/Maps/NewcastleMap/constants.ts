@@ -11,6 +11,27 @@ export const NEWCASTLE_BOUNDS: [[number, number], [number, number]] = [
 export const MIN_ZOOM = 10
 export const MAX_BOUNDS: [[number, number], [number, number]] = NEWCASTLE_BOUNDS
 
+// Map view configuration
+export const MAX_ZOOM = 15
+export const FIT_BOUNDS_DURATION_INITIAL = 0 // Instant on load
+export const FIT_BOUNDS_DURATION_RESIZE = 1000 // 1 second transition on resize
+
+// Responsive padding breakpoints
+export const MOBILE_BREAKPOINT = 640
+export const TABLET_BREAKPOINT = 1024
+export const PADDING_MOBILE = 20
+export const PADDING_TABLET = 40
+export const PADDING_DESKTOP = 60
+
+// UI timing
+export const TOOLTIP_AUTO_CLOSE_DELAY = 1500 // ms
+export const DEBOUNCE_DELAY = 250 // ms
+
+// Route styling
+export const ROUTE_LINE_WIDTH = 4
+export const ROUTE_LINE_COLOR = '#3b82f6'
+export const ROUTE_LINE_OPACITY = 0.8
+
 export const HOME_MARKERS = [
   {
     label: 'J & A',

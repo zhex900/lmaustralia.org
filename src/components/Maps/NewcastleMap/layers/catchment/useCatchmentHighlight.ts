@@ -1,5 +1,5 @@
 import React, { useRef, useCallback } from 'react'
-
+import type mapboxgl from 'mapbox-gl'
 import { showCatchmentLayer, hideCatchmentLayer } from './CatchmentLayers'
 
 // React hook for managing catchment highlighting

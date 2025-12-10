@@ -1,4 +1,5 @@
 import React from 'react'
+import type mapboxgl from 'mapbox-gl'
 
 import { addCatchmentLayers, addCatchmentMarkers } from './catchment'
 import { addUniversityLayer, addUniversityMarker } from './UniversityLayer'

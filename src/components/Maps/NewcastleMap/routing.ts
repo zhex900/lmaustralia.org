@@ -1,6 +1,7 @@
 import React from 'react'
 import mapboxgl from 'mapbox-gl'
 import type { MapboxDirectionsResponse, RouteFeature } from './types'
+import { ROUTE_LINE_WIDTH, ROUTE_LINE_COLOR, ROUTE_LINE_OPACITY } from './constants'
 
 type ShowRouteParams = {
   mapRef: React.RefObject<mapboxgl.Map | null>
@@ -87,6 +88,9 @@ export const showRoute = async ({
     const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}?access_token=${token}&geometries=geojson&overview=full`
 
     const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
     const data: MapboxDirectionsResponse = await response.json()
 
     if (data.routes && data.routes.length > 0) {
@@ -117,9 +121,9 @@ export const showRoute = async ({
           'line-cap': 'round',
         },
         paint: {
-          'line-color': '#007bff',
-          'line-width': 4,
-          'line-opacity': 0.75,
+          'line-color': ROUTE_LINE_COLOR,
+          'line-width': ROUTE_LINE_WIDTH,
+          'line-opacity': ROUTE_LINE_OPACITY,
         },
       })
 

@@ -1,3 +1,4 @@
+import type mapboxgl from 'mapbox-gl'
 import zone1GeoJSON from '../geojson/zone-1.json'
 import zone2GeoJSON from '../geojson/zone-2.json'
 import type { GeoJSONFeatureCollection } from '../types'

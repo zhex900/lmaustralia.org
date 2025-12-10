@@ -1,8 +1,10 @@
 import React from 'react'
+import type mapboxgl from 'mapbox-gl'
 import { SCHOOLS } from './schools'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import type { MapboxGeocodingResponse } from '../../types'
 import { createMapMarker } from '../../markerFactory'
+import { TOOLTIP_AUTO_CLOSE_DELAY } from '../../constants'
 
 // Single component for catchment marker with hover state
 const CatchmentMarker: React.FC<{
@@ -15,11 +17,10 @@ const CatchmentMarker: React.FC<{
   const handleClick = () => {
     setTooltipOpen(!tooltipOpen)
     onCatchmentClick()
-    //auto close the tooltip after 1.5 seconds
 
     setTimeout(() => {
       setTooltipOpen(false)
-    }, 1500)
+    }, TOOLTIP_AUTO_CLOSE_DELAY)
   }
   return (
     <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
@@ -103,6 +104,9 @@ const addCatchmentMarker = async ({
     const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodedAddress}.json?access_token=${token}&limit=1`
 
     const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
     const data: MapboxGeocodingResponse = await response.json()
 
     if (data.features && data.features.length > 0) {

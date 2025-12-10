@@ -2,6 +2,7 @@
 
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import React, { useState, useEffect } from 'react'
+import type mapboxgl from 'mapbox-gl'
 import { defaultFillColor } from './layers/catchment/schools'
 import { zone1FillColor, zone2FillColor } from './layers/ZonesLayer'
 import { toggleLayerVisibility, toggleMarkersVisibility } from './utils'
@@ -22,11 +23,7 @@ export const LayerControls: React.FC<LayerControlsProps> = ({ mapRef, addressMar
   }, [showCampus])
 
   useEffect(() => {
-    toggleLayerVisibility(
-      mapRef.current,
-      ['zone-2-fill', 'zone-2-outline'],
-      showNotInCatchment,
-    )
+    toggleLayerVisibility(mapRef.current, ['zone-2-fill', 'zone-2-outline'], showNotInCatchment)
   }, [showNotInCatchment])
 
   useEffect(() => {

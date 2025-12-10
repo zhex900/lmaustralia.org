@@ -1,3 +1,4 @@
+import type mapboxgl from 'mapbox-gl'
 import schoolCatchmentsData from '../../geojson/school-catchments.json'
 import combinedCatchmentsData from '../../geojson/combined-school-catchments.json'
 import { defaultFillColor, defaultOutlineColor, getSchoolColors } from './schools'

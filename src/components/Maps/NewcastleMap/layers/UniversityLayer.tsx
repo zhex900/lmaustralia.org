@@ -1,4 +1,5 @@
 import React from 'react'
+import type mapboxgl from 'mapbox-gl'
 import universityGeoJSON from '../geojson/university.json'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import { UNI_MARKER_COORDS } from '../constants'
