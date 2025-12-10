@@ -29,7 +29,7 @@ export const Timeline = ({
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ['start 10%', 'end 50%'],
+    offset: ['start 50%', 'end 20%'],
   })
 
   const heightTransform = useTransform(scrollYProgress, [0, 1], [0, height])
@@ -48,7 +48,7 @@ export const Timeline = ({
             className="flex justify-start md:grid md:grid-cols-[minmax(200px,300px)_1fr] md:gap-10 pt-5 md:pt-10"
           >
             <div className="flex flex-col justify-center">
-              <div className="h-8 w-8 absolute left-3 md:left-3  rounded-full bg-teal-500/80 dark:bg-amber-200/90 flex items-center justify-center">
+              <div className="h-5 w-5 absolute left-4 md:left-4 rounded-full bg-teal-500/80 dark:bg-amber-200/90 flex items-center justify-center">
                 <div className="h-2 w-2 rounded-full bg-amber-200/50 dark:bg-teal-200/50  p-2" />
               </div>
               <div className="flex justify-center md:justify-start items-center">
