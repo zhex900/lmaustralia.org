@@ -2,9 +2,9 @@
 import { useScroll, useTransform, motion } from 'motion/react'
 import React, { useEffect, useRef, useState } from 'react'
 
-interface TimelineEntry {
+export interface TimelineEntry {
   title: string
-  content: string | React.ReactNode
+  content: string //| React.ReactNode
 }
 
 export const Timeline = ({
