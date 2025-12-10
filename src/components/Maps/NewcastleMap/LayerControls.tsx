@@ -4,6 +4,7 @@ import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip
 import React, { useState, useEffect } from 'react'
 import { defaultFillColor } from './layers/catchment/schools'
 import { zone1FillColor, zone2FillColor } from './layers/ZonesLayer'
+import { toggleLayerVisibility, toggleMarkersVisibility } from './utils'
 
 type LayerControlsProps = {
   mapRef: React.RefObject<mapboxgl.Map | null>
@@ -16,82 +17,41 @@ export const LayerControls: React.FC<LayerControlsProps> = ({ mapRef, addressMar
   const [showHomes, setShowHomes] = useState(false)
   const [showNotInCatchment, setShowNotInCatchment] = useState(true)
 
-  // Toggle zone 1 layers only
   useEffect(() => {
-    if (!mapRef.current) return
+    toggleLayerVisibility(mapRef.current, ['zone-1-fill', 'zone-1-outline'], showCampus)
+  }, [showCampus])
 
-    const visibility = showCampus ? 'visible' : 'none'
-
-    // Toggle zone 1 layers
-    if (mapRef.current.getLayer('zone-1-fill')) {
-      mapRef.current.setLayoutProperty('zone-1-fill', 'visibility', visibility)
-    }
-    if (mapRef.current.getLayer('zone-1-outline')) {
-      mapRef.current.setLayoutProperty('zone-1-outline', 'visibility', visibility)
-    }
-  }, [showCampus, mapRef])
-
-  // Toggle zone 2 layers (Not in school catchment)
   useEffect(() => {
-    if (!mapRef.current) return
+    toggleLayerVisibility(
+      mapRef.current,
+      ['zone-2-fill', 'zone-2-outline'],
+      showNotInCatchment,
+    )
+  }, [showNotInCatchment])
 
-    const visibility = showNotInCatchment ? 'visible' : 'none'
-
-    // Toggle zone 2 layers
-    if (mapRef.current.getLayer('zone-2-fill')) {
-      mapRef.current.setLayoutProperty('zone-2-fill', 'visibility', visibility)
-    }
-    if (mapRef.current.getLayer('zone-2-outline')) {
-      mapRef.current.setLayoutProperty('zone-2-outline', 'visibility', visibility)
-    }
-  }, [showNotInCatchment, mapRef])
-
-  // Toggle school zones (catchment layers)
   useEffect(() => {
-    if (!mapRef.current) return
+    toggleLayerVisibility(
+      mapRef.current,
+      ['combined-catchments-fill', 'combined-catchments-outline'],
+      showSchoolZones,
+    )
 
-    const visibility = showSchoolZones ? 'visible' : 'none'
-
-    // Toggle combined catchments
-    if (mapRef.current.getLayer('combined-catchments-fill')) {
-      mapRef.current.setLayoutProperty('combined-catchments-fill', 'visibility', visibility)
-    }
-    if (mapRef.current.getLayer('combined-catchments-outline')) {
-      mapRef.current.setLayoutProperty('combined-catchments-outline', 'visibility', visibility)
-    }
-
-    // Toggle school markers (catchment markers) - they're also in addressMarkersRef
-    // We'll filter them by checking if they have an img element (logo)
     if (addressMarkersRef.current) {
-      addressMarkersRef.current.forEach((marker) => {
-        const element = marker.getElement()
-        if (element) {
-          // Check if this is a school marker (has custom-marker-wrapper with logo img)
-          const isSchoolMarker = element.querySelector('.custom-marker-wrapper img')
-          if (isSchoolMarker) {
-            element.style.display = showSchoolZones ? 'block' : 'none'
-          }
-        }
-      })
+      toggleMarkersVisibility(addressMarkersRef.current, showSchoolZones, (element) =>
+        Boolean(element.querySelector('.custom-marker-wrapper img')),
+      )
     }
-  }, [showSchoolZones, mapRef, addressMarkersRef])
+  }, [showSchoolZones])
 
-  // Toggle home markers (distinguish from school markers by checking for emoji, not img)
   useEffect(() => {
     if (!addressMarkersRef.current) return
 
-    addressMarkersRef.current.forEach((marker) => {
-      const element = marker.getElement()
-      if (element) {
-        // Check if this is a home marker (has emoji, not an img logo)
-        const isSchoolMarker = element.querySelector('.custom-marker-wrapper img')
-        if (!isSchoolMarker) {
-          // This is a home marker (has emoji icon)
-          element.style.display = showHomes ? 'block' : 'none'
-        }
-      }
-    })
-  }, [showHomes, addressMarkersRef])
+    toggleMarkersVisibility(
+      addressMarkersRef.current,
+      showHomes,
+      (element) => !element.querySelector('.custom-marker-wrapper img'),
+    )
+  }, [showHomes])
 
   const labelConfigs = [
     {

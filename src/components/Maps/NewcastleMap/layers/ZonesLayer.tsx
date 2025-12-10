@@ -1,53 +1,47 @@
-import mapboxgl from 'mapbox-gl'
 import zone1GeoJSON from '../geojson/zone-1.json'
 import zone2GeoJSON from '../geojson/zone-2.json'
+import type { GeoJSONFeatureCollection } from '../types'
 
 type ZonesLayerProps = {
   map: mapboxgl.Map
 }
 
-// zone 1 layer
 export const zone1FillColor = '#f58282'
 export const zone1OutlineColor = '#fa3c3c'
 
-// zone 2 layer
 export const zone2FillColor = '#f5b87a'
 export const zone2OutlineColor = '#f57e05'
 
 export const addZonesLayers = ({ map }: ZonesLayerProps) => {
-  // Add GeoJSON source for zone-1
   map.addSource('zone-1', {
     type: 'geojson',
-    data: zone1GeoJSON as any,
+    data: zone1GeoJSON as GeoJSONFeatureCollection,
   })
 
-  // Add fill layer for zone-1 (light red)
   map.addLayer({
     id: 'zone-1-fill',
     type: 'fill',
     source: 'zone-1',
     paint: {
-      'fill-color': zone1FillColor, // Light red
+      'fill-color': zone1FillColor,
       'fill-opacity': 0.4,
     },
   })
 
-  // Add outline layer for zone-1
   map.addLayer({
     id: 'zone-1-outline',
     type: 'line',
     source: 'zone-1',
     paint: {
-      'line-color': zone1OutlineColor, // Slightly darker red for outline
+      'line-color': zone1OutlineColor,
       'line-width': 2,
       'line-opacity': 0.7,
     },
   })
 
-  // Add GeoJSON source for zone-2
   map.addSource('zone-2', {
     type: 'geojson',
-    data: zone2GeoJSON as any,
+    data: zone2GeoJSON as GeoJSONFeatureCollection,
   })
 
   // Add fill layer for zone-2 (light blue)

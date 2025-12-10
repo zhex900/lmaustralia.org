@@ -1,5 +1,6 @@
 import React from 'react'
 import mapboxgl from 'mapbox-gl'
+import type { MapboxDirectionsResponse, RouteFeature } from './types'
 
 type ShowRouteParams = {
   mapRef: React.RefObject<mapboxgl.Map | null>
@@ -86,27 +87,27 @@ export const showRoute = async ({
     const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}?access_token=${token}&geometries=geojson&overview=full`
 
     const response = await fetch(url)
-    const data = await response.json()
+    const data: MapboxDirectionsResponse = await response.json()
 
     if (data.routes && data.routes.length > 0) {
       const route = data.routes[0]
-      const distance = (route.distance / 1000).toFixed(1) // Convert to km
-      const duration = Math.round(route.duration / 60) // Convert to minutes
+      const distance = (route.distance / 1000).toFixed(1)
+      const duration = Math.round(route.duration / 60)
 
-      // Add route source
       const sourceId = `route-${Date.now()}`
       routeSourceRef.current = sourceId
 
+      const routeFeature: RouteFeature = {
+        type: 'Feature',
+        geometry: route.geometry,
+        properties: {},
+      }
+
       mapRef.current.addSource(sourceId, {
         type: 'geojson',
-        data: {
-          type: 'Feature',
-          geometry: route.geometry,
-          properties: {},
-        } as any,
+        data: routeFeature,
       })
 
-      // Add route layer
       mapRef.current.addLayer({
         id: 'route-line',
         type: 'line',
@@ -122,7 +123,6 @@ export const showRoute = async ({
         },
       })
 
-      // Show popup with distance and travel time
       const popup = new mapboxgl.Popup({ closeOnClick: true })
         .setLngLat(fromCoords)
         .setHTML(
@@ -139,15 +139,12 @@ export const showRoute = async ({
 
       popupRef.current = popup
 
-      // Set high z-index on popup container to appear above markers
       const setPopupZIndex = () => {
-        // Try getting element from popup object first
         const popupElement = popup.getElement()
         if (popupElement && popupElement.classList.contains('mapboxgl-popup')) {
           popupElement.style.zIndex = '9999'
           return
         }
-        // // Fallback: query DOM directly for the popup container
         const mapContainer = mapRef.current?.getContainer()
         if (mapContainer) {
           const popupContainer = mapContainer.querySelector('.mapboxgl-popup') as HTMLElement
@@ -157,18 +154,14 @@ export const showRoute = async ({
         }
       }
 
-      // Set z-index when popup opens
       popup.on('open', () => {
         setTimeout(setPopupZIndex, 0)
       })
 
-      // // Also try immediately after adding (in case open event already fired)
       setTimeout(setPopupZIndex, 0)
 
-      // Clear route when popup is closed (skip popup remove to avoid infinite loop)
       popup.on('close', () => {
         clearRoute({ mapRef, routeSourceRef, popupRef, activeRouteRef, skipPopupRemove: true })
-        // Clear popup ref since it's already being removed
         popupRef.current = null
       })
 

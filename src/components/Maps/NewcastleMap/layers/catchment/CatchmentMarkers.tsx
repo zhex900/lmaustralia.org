@@ -1,22 +1,25 @@
 import React from 'react'
-import { createRoot } from 'react-dom/client'
-import mapboxgl from 'mapbox-gl'
 import { SCHOOLS } from './schools'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
+import type { MapboxGeocodingResponse } from '../../types'
+import { createMapMarker } from '../../markerFactory'
 
 // Single component for catchment marker with hover state
 const CatchmentMarker: React.FC<{
   logo?: string
   label: string
-  catchment?: string
   onCatchmentClick: () => void
-  markerElement: HTMLElement
 }> = ({ logo, label, onCatchmentClick }) => {
   const [tooltipOpen, setTooltipOpen] = React.useState(false)
 
   const handleClick = () => {
     setTooltipOpen(!tooltipOpen)
     onCatchmentClick()
+    //auto close the tooltip after 1.5 seconds
+
+    setTimeout(() => {
+      setTooltipOpen(false)
+    }, 1500)
   }
   return (
     <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
@@ -96,21 +99,15 @@ const addCatchmentMarker = async ({
   if (!addressToGeocode.trim()) return
 
   try {
-    // Encode the address for URL
     const encodedAddress = encodeURIComponent(addressToGeocode)
     const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodedAddress}.json?access_token=${token}&limit=1`
 
     const response = await fetch(url)
-    const data = await response.json()
+    const data: MapboxGeocodingResponse = await response.json()
 
     if (data.features && data.features.length > 0) {
       const [longitude, latitude] = data.features[0].center
 
-      // Create custom marker element
-      const el = document.createElement('div')
-      el.className = 'custom-marker'
-
-      // Handler function for catchment click
       const handleCatchmentClick = () => {
         if (!catchment) {
           return
@@ -123,38 +120,30 @@ const addCatchmentMarker = async ({
         }
       }
 
-      // Set initial z-index on marker element
-      el.style.zIndex = '1'
-
-      // Render component into the container
-      const root = createRoot(el)
-      root.render(
-        <CatchmentMarker
-          logo={logo}
-          label={label}
-          catchment={catchment}
-          onCatchmentClick={handleCatchmentClick}
-          markerElement={el}
-        />,
-      )
-
-      // Add marker at the geocoded location
-      const marker = new mapboxgl.Marker({
-        element: el,
-        anchor: 'center',
+      createMapMarker({
+        coordinates: [longitude, latitude],
+        map,
+        component: (
+          <CatchmentMarker logo={logo} label={label} onCatchmentClick={handleCatchmentClick} />
+        ),
+        onAdd: (marker) => {
+          const el = marker.getElement()
+          el.style.zIndex = '1'
+          addressMarkersRef.current?.push(marker)
+        },
       })
-        .setLngLat([longitude, latitude])
-        .addTo(map)
-
-      addressMarkersRef.current?.push(marker)
 
       return { longitude, latitude }
     } else {
-      console.error('No results found for address:', addressToGeocode)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('No results found for address:', addressToGeocode)
+      }
       return null
     }
   } catch (error) {
-    console.error('Error geocoding address:', error)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error geocoding address:', error)
+    }
     return null
   }
 }
@@ -167,9 +156,8 @@ export const addCatchmentMarkers = async ({
   highlightedCatchmentRef,
   addressMarkersRef,
 }: CatchmentMarkersProps) => {
-  // Add markers for catchment addresses
-  for (const { address, label, catchment, logo } of SCHOOLS) {
-    await addCatchmentMarker({
+  const markerPromises = SCHOOLS.map(({ address, label, catchment, logo }) =>
+    addCatchmentMarker({
       addressToGeocode: address,
       label: label || '',
       catchment,
@@ -180,6 +168,8 @@ export const addCatchmentMarkers = async ({
       onCatchmentUnhighlight,
       highlightedCatchmentRef,
       addressMarkersRef,
-    })
-  }
+    }),
+  )
+
+  await Promise.all(markerPromises)
 }

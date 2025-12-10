@@ -1,19 +1,22 @@
 import schoolCatchmentsData from '../../geojson/school-catchments.json'
 import combinedCatchmentsData from '../../geojson/combined-school-catchments.json'
 import { defaultFillColor, defaultOutlineColor, getSchoolColors } from './schools'
+import type { GeoJSONFeatureCollection } from '../../types'
+import type { Feature, GeoJsonProperties } from 'geojson'
+import { toggleLayerVisibility } from '../../utils'
+
+type SchoolFeature = Feature<any, GeoJsonProperties & { catchment?: string }>
 
 type CatchmentLayersProps = {
   map: mapboxgl.Map
 }
 
 export const addCatchmentLayers = ({ map }: CatchmentLayersProps) => {
-  // Add combined catchment layer (default, always visible)
   map.addSource('combined-catchments', {
     type: 'geojson',
-    data: combinedCatchmentsData as any,
+    data: combinedCatchmentsData as GeoJSONFeatureCollection,
   })
 
-  // Add fill layer for combined catchments
   map.addLayer({
     id: 'combined-catchments-fill',
     type: 'fill',
@@ -24,7 +27,6 @@ export const addCatchmentLayers = ({ map }: CatchmentLayersProps) => {
     },
   })
 
-  // Add outline layer for combined catchments
   map.addLayer({
     id: 'combined-catchments-outline',
     type: 'line',
@@ -36,23 +38,20 @@ export const addCatchmentLayers = ({ map }: CatchmentLayersProps) => {
     },
   })
 
-  // Add individual school catchment layers (hidden by default)
   if (Array.isArray(schoolCatchmentsData)) {
-    schoolCatchmentsData.forEach((feature: any) => {
+    (schoolCatchmentsData as SchoolFeature[]).forEach((feature) => {
       const catchmentId = feature.properties?.catchment || 'unknown'
       const sourceId = `catchment-${catchmentId}`
       const colors = getSchoolColors(catchmentId)
 
-      // Create FeatureCollection for this catchment
-      const featureCollection = {
+      const featureCollection: GeoJSONFeatureCollection = {
         type: 'FeatureCollection',
         features: [feature],
       }
 
-      // Add source
       map.addSource(sourceId, {
         type: 'geojson',
-        data: featureCollection as any,
+        data: featureCollection,
       })
 
       // Add fill layer with school-specific color (hidden by default)
@@ -87,49 +86,22 @@ export const addCatchmentLayers = ({ map }: CatchmentLayersProps) => {
   }
 }
 
-// Function to show an individual catchment layer
 export const showCatchmentLayer = (map: mapboxgl.Map, catchmentId: string) => {
   const sourceId = `catchment-${catchmentId}`
 
-  // Hide combined layer
-  if (map.getLayer('combined-catchments-fill')) {
-    map.setLayoutProperty('combined-catchments-fill', 'visibility', 'none')
-  }
-  if (map.getLayer('combined-catchments-outline')) {
-    map.setLayoutProperty('combined-catchments-outline', 'visibility', 'none')
-  }
-
-  // Show individual catchment layer
-  if (map.getLayer(`${sourceId}-fill`)) {
-    map.setLayoutProperty(`${sourceId}-fill`, 'visibility', 'visible')
-  }
-  if (map.getLayer(`${sourceId}-outline`)) {
-    map.setLayoutProperty(`${sourceId}-outline`, 'visibility', 'visible')
-  }
+  toggleLayerVisibility(map, ['combined-catchments-fill', 'combined-catchments-outline'], false)
+  toggleLayerVisibility(map, [`${sourceId}-fill`, `${sourceId}-outline`], true)
 }
 
-// Function to hide individual catchment and show combined layer
 export const hideCatchmentLayer = (map: mapboxgl.Map) => {
-  // Hide all individual catchment layers
   if (Array.isArray(schoolCatchmentsData)) {
-    schoolCatchmentsData.forEach((feature: any) => {
+    (schoolCatchmentsData as SchoolFeature[]).forEach((feature) => {
       const id = feature.properties?.catchment || 'unknown'
       const sourceId = `catchment-${id}`
 
-      if (map.getLayer(`${sourceId}-fill`)) {
-        map.setLayoutProperty(`${sourceId}-fill`, 'visibility', 'none')
-      }
-      if (map.getLayer(`${sourceId}-outline`)) {
-        map.setLayoutProperty(`${sourceId}-outline`, 'visibility', 'none')
-      }
+      toggleLayerVisibility(map, [`${sourceId}-fill`, `${sourceId}-outline`], false)
     })
   }
 
-  // Show combined layer
-  if (map.getLayer('combined-catchments-fill')) {
-    map.setLayoutProperty('combined-catchments-fill', 'visibility', 'visible')
-  }
-  if (map.getLayer('combined-catchments-outline')) {
-    map.setLayoutProperty('combined-catchments-outline', 'visibility', 'visible')
-  }
+  toggleLayerVisibility(map, ['combined-catchments-fill', 'combined-catchments-outline'], true)
 }

@@ -8,24 +8,48 @@ import { addAllLayers } from './layers'
 import { useCatchmentHighlight } from './layers/catchment'
 import { showRoute, clearRoute } from './routing'
 import { LayerControls } from './LayerControls'
+import {
+  UNIVERSITY_COORDS,
+  UNI_FRONT_GATE_COORDS,
+  INITIAL_CENTER,
+  INITIAL_ZOOM,
+  MIN_ZOOM,
+  MAX_BOUNDS,
+} from './constants'
+
+const MAP_OPTIONS: Omit<mapboxgl.MapboxOptions, 'container'> = {
+  style: 'mapbox://styles/mapbox/streets-v12',
+  center: INITIAL_CENTER,
+  zoom: INITIAL_ZOOM,
+  minZoom: MIN_ZOOM,
+  maxBounds: MAX_BOUNDS,
+  attributionControl: false,
+  scrollZoom: false,
+  doubleClickZoom: true,
+  touchZoomRotate: true,
+  boxZoom: false,
+  dragRotate: false,
+  dragPan: true,
+  keyboard: false,
+}
 
 export const NewcastleMap = () => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)
-  const markerRef = useRef<mapboxgl.Marker | null>(null)
+  const universityMarkerRef = useRef<mapboxgl.Marker | null>(null)
   const addressMarkersRef = useRef<mapboxgl.Marker[]>([])
-  const routeSourceRef = useRef<string | null>(null) // Track current route source
-  const popupRef = useRef<mapboxgl.Popup | null>(null) // Track current popup
-  const activeRouteRef = useRef<string | null>(null) // Track which marker's route is active
+  const routeSourceRef = useRef<string | null>(null)
+  const popupRef = useRef<mapboxgl.Popup | null>(null)
+  const activeRouteRef = useRef<string | null>(null)
   const [isMapLoaded, setIsMapLoaded] = useState(false)
+  const [mapError, setMapError] = useState(false)
 
-  // Use React hook for catchment highlighting
   const { highlightCatchment, unhighlightCatchment, highlightedCatchmentRef } =
     useCatchmentHighlight(mapRef)
 
-  // Initialize map (only once)
   useEffect(() => {
     if (!mapContainerRef.current) return
+    if (mapRef.current) return // Prevent double initialization
 
     const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
     if (!token) {
@@ -33,10 +57,6 @@ export const NewcastleMap = () => {
       return
     }
 
-    // University of Newcastle coordinates
-    const universityCoords: [number, number] = [151.71786849703244, -32.90489225775947]
-
-    // Function to get route from home to university and display it
     const showRouteToUniversity = async (fromCoords: [number, number], label: string) => {
       await showRoute({
         mapRef,
@@ -44,19 +64,15 @@ export const NewcastleMap = () => {
         popupRef,
         activeRouteRef,
         fromCoords,
-        // uni front gate coords
-        toCoords: [151.69800570206968, -32.895359349770544],
+        toCoords: UNI_FRONT_GATE_COORDS,
         label,
         token,
       })
     }
 
-    // Function to clear route when clicking outside
     const handleMapClick = (e: mapboxgl.MapMouseEvent) => {
-      // Only clear if clicking on the map itself (not on a marker or popup)
       const target = e.originalEvent?.target as HTMLElement
       if (target) {
-        // Check if click is on map canvas and not on a marker or popup
         const isMarker = target.closest('.mapboxgl-marker') || target.closest('.custom-marker')
         const isPopup = target.closest('.mapboxgl-popup')
 
@@ -67,32 +83,19 @@ export const NewcastleMap = () => {
     }
 
     mapboxgl.accessToken = token
-    const initialCenter: [number, number] = [151.71986874228838, -32.8990780958905]
-    const initialZoom = 10.8
 
-    // Newcastle area bounding box: [[west, south], [east, north]]
-    const maxBounds: [[number, number], [number, number]] = [
-      [151.5, -33.0], // Southwest corner
-      [151.9, -32.7], // Northeast corner
-    ]
-
-    mapRef.current = new mapboxgl.Map({
-      container: mapContainerRef.current,
-      style: 'mapbox://styles/mapbox/streets-v12', // Single style
-      center: initialCenter, // University of Newcastle (Callaghan campus) [lng, lat]
-      zoom: initialZoom, // starting zoom
-      minZoom: 10,
-      maxBounds, // Constrain map to Newcastle area
-      attributionControl: false, // Hide attribution control
-      // Allow zoom and panning within bounds
-      scrollZoom: false, // Enable mouse wheel zoom
-      doubleClickZoom: true, // Enable double-click zoom
-      touchZoomRotate: true, // Enable touch zoom
-      boxZoom: false,
-      dragRotate: false,
-      dragPan: true, // Allow panning within NSW bounds
-      keyboard: false,
-    })
+    try {
+      mapRef.current = new mapboxgl.Map({
+        container: mapContainerRef.current,
+        ...MAP_OPTIONS,
+      })
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Failed to initialize map:', error)
+      }
+      setMapError(true)
+      return
+    }
 
     // Log center and zoom on move/zoom events
     mapRef.current.on('moveend', () => {
@@ -117,19 +120,16 @@ export const NewcastleMap = () => {
       }
     })
 
-    // Add click handler to clear routes when clicking on the map
     mapRef.current.on('click', handleMapClick)
 
-    // Hide Mapbox logo and attribution, and add marker
     mapRef.current.on('load', async () => {
       if (!mapRef.current) return
 
-      // Add all layers using the layer components
-      if (!markerRef.current) {
-        markerRef.current = await addAllLayers({
+      if (!universityMarkerRef.current) {
+        universityMarkerRef.current = await addAllLayers({
           map: mapRef.current,
           token,
-          universityCoords,
+          universityCoords: UNIVERSITY_COORDS,
           onRouteShow: showRouteToUniversity,
           onCatchmentHighlight: highlightCatchment,
           onCatchmentUnhighlight: unhighlightCatchment,
@@ -138,27 +138,50 @@ export const NewcastleMap = () => {
         })
       }
 
-      // Mark map as loaded
       setIsMapLoaded(true)
     })
 
-    // Cleanup function to prevent memory leaks
     return () => {
-      markerRef.current?.remove()
-      addressMarkersRef.current.forEach((marker) => marker.remove())
-      mapRef.current?.remove()
+      if (universityMarkerRef.current) {
+        universityMarkerRef.current.remove()
+        universityMarkerRef.current = null
+      }
+      
+      if (addressMarkersRef.current.length > 0) {
+        addressMarkersRef.current.forEach((marker) => marker.remove())
+        addressMarkersRef.current = []
+      }
+      
+      if (popupRef.current) {
+        popupRef.current.remove()
+        popupRef.current = null
+      }
+      
+      if (mapRef.current) {
+        mapRef.current.remove()
+        mapRef.current = null
+      }
+      
+      setIsMapLoaded(false)
     }
-  }, []) // Only run once on mount
+  }, [highlightCatchment, unhighlightCatchment, highlightedCatchmentRef])
 
   return (
     <div style={{ position: 'relative', height: '500px', width: '100%' }}>
+      {mapError && process.env.NODE_ENV === 'development' && (
+        <div className="absolute inset-0 flex items-center justify-center bg-background/80">
+          <p className="text-sm text-muted-foreground">Map initialization error - refresh page</p>
+        </div>
+      )}
       <div
         ref={mapContainerRef}
         style={{ height: '100%', width: '100%' }}
         className="map-container rounded-lg"
       />
 
-      {isMapLoaded && <LayerControls mapRef={mapRef} addressMarkersRef={addressMarkersRef} />}
+      {isMapLoaded && !mapError && (
+        <LayerControls mapRef={mapRef} addressMarkersRef={addressMarkersRef} />
+      )}
     </div>
   )
 }
