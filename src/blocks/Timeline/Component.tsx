@@ -9,7 +9,6 @@ export type TimelineBlockProps = {
 }
 
 export const TimelineBlock: React.FC<TimelineBlockProps> = ({ title, description, timeline }) => {
-  console.log(timeline)
   return (
     <div className={cn('mx-auto w-full')}>
       <Timeline title={title} description={description} timeline={timeline} />

@@ -58,7 +58,6 @@ export const showRoute = async ({
   token,
 }: ShowRouteParams) => {
   if (!mapRef.current) return
-  console.log('label', label)
   // Create a unique identifier for this route (using label + coordinates)
   const routeId = `${label}-${fromCoords[0]}-${fromCoords[1]}`
 

@@ -94,15 +94,15 @@ export const NewcastleMap = () => {
       keyboard: false,
     })
 
-    // Log initial map center and zoom
-    console.log('Map initialized - Center:', initialCenter, 'Zoom:', initialZoom)
-
     // Log center and zoom on move/zoom events
     mapRef.current.on('moveend', () => {
       if (mapRef.current) {
         const center = mapRef.current.getCenter()
         const zoom = mapRef.current.getZoom()
-        console.log('Map moved - Center:', [center.lng, center.lat], 'Zoom:', zoom.toFixed(2))
+        // in dev mode log the center and zoom
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Map moved - Center:', [center.lng, center.lat], 'Zoom:', zoom.toFixed(2))
+        }
       }
     })
 
@@ -110,7 +110,10 @@ export const NewcastleMap = () => {
       if (mapRef.current) {
         const center = mapRef.current.getCenter()
         const zoom = mapRef.current.getZoom()
-        console.log('Map zoomed - Center:', [center.lng, center.lat], 'Zoom:', zoom.toFixed(2))
+        // in dev mode log the center and zoom
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Map zoomed - Center:', [center.lng, center.lat], 'Zoom:', zoom.toFixed(2))
+        }
       }
     })
 
@@ -120,11 +123,6 @@ export const NewcastleMap = () => {
     // Hide Mapbox logo and attribution, and add marker
     mapRef.current.on('load', async () => {
       if (!mapRef.current) return
-
-      // Log center and zoom after map loads
-      const center = mapRef.current.getCenter()
-      const zoom = mapRef.current.getZoom()
-      console.log('Map loaded - Center:', [center.lng, center.lat], 'Zoom:', zoom.toFixed(2))
 
       // Add all layers using the layer components
       if (!markerRef.current) {
