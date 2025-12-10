@@ -26,12 +26,13 @@ import {
   DEBOUNCE_DELAY,
 } from './constants'
 
-const MAP_OPTIONS: Omit<mapboxgl.MapboxOptions, 'container'> = {
+const MAP_OPTIONS: Omit<mapboxgl.MapOptions, 'container'> = {
   style: 'mapbox://styles/mapbox/streets-v12',
   minZoom: MIN_ZOOM,
+  maxZoom: MAX_ZOOM,
   maxBounds: MAX_BOUNDS,
   attributionControl: false,
-  scrollZoom: true,
+  scrollZoom: false,
   doubleClickZoom: true,
   touchZoomRotate: true,
   boxZoom: false,
