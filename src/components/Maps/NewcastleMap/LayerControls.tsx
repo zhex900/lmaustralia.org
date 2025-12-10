@@ -185,7 +185,7 @@ export const LayerControls: React.FC<LayerControlsProps> = ({ mapRef, addressMar
                   {config.id === 'homes' && <span className="ml-2">🏠</span>}
                 </label>
               </TooltipTrigger>
-              <TooltipContent side="right" className="hidden md:block">
+              <TooltipContent side="right" sideOffset={15} className="hidden md:block">
                 <p>{config.tooltip}</p>
               </TooltipContent>
             </Tooltip>
