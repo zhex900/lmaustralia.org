@@ -12,8 +12,14 @@ const CatchmentMarker: React.FC<{
   onCatchmentClick: () => void
   markerElement: HTMLElement
 }> = ({ logo, label, onCatchmentClick }) => {
+  const [tooltipOpen, setTooltipOpen] = React.useState(false)
+
+  const handleClick = () => {
+    setTooltipOpen(!tooltipOpen)
+    onCatchmentClick()
+  }
   return (
-    <Tooltip>
+    <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
       <TooltipTrigger asChild>
         <div
           className="custom-marker-wrapper"
@@ -22,7 +28,7 @@ const CatchmentMarker: React.FC<{
             display: 'inline-block',
             cursor: 'pointer',
           }}
-          onClick={onCatchmentClick}
+          onClick={handleClick}
         >
           {logo && (
             <img
