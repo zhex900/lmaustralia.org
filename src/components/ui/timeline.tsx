@@ -37,7 +37,7 @@ export const Timeline = ({
 
   return (
     <div className="w-full backdrop-blur-sm " ref={containerRef}>
-      <div className="max-w-7xl mx-auto å px-4 md:px-8 lg:px-10">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-10">
         <h2 className="text-xl md:text-4xl mb-4 max-w-4xl">{title}</h2>
         <p className=" text-sm md:text-base text-justify ">{description}</p>
       </div>
