@@ -1,22 +1,7 @@
 import type { Block, Field } from 'payload'
 
-import {
-  AlignFeature,
-  BlockquoteFeature,
-  FixedToolbarFeature,
-  HeadingFeature,
-  HorizontalRuleFeature,
-  IndentFeature,
-  InlineToolbarFeature,
-  lexicalEditor,
-  ChecklistFeature,
-  UnorderedListFeature,
-  OrderedListFeature,
-  TextStateFeature,
-  BlocksFeature,
-} from '@payloadcms/richtext-lexical'
-import { TextFontFamilyFeature } from 'payload-lexical-typography'
 import { link } from '@/fields/link'
+import { defaultLexicalConfig } from '@/fields/defaultLexicalConfig'
 import { Banner } from '../Banner/config'
 import { MediaBlock } from '../MediaBlock/config'
 import { Archive } from '../ArchiveBlock/config'
@@ -63,28 +48,8 @@ const columnFields: Field[] = [
   {
     name: 'richText',
     type: 'richText',
-    editor: lexicalEditor({
-      features: ({ defaultFeatures, rootFeatures }) => {
-        return [
-          ...rootFeatures,
-          ...defaultFeatures,
-          IndentFeature(),
-          HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
-          BlocksFeature({
-            blocks: [Banner, MediaBlock, Archive, CallToAction, ProximityMap, Timeline],
-          }),
-          FixedToolbarFeature(),
-          InlineToolbarFeature(),
-          AlignFeature(),
-          BlockquoteFeature(),
-          HorizontalRuleFeature(),
-          ChecklistFeature(),
-          OrderedListFeature(),
-          UnorderedListFeature(),
-          TextStateFeature(),
-          TextFontFamilyFeature(),
-        ]
-      },
+    editor: defaultLexicalConfig({
+      blocks: [Banner, MediaBlock, Archive, CallToAction, ProximityMap, Timeline],
     }),
     label: false,
   },
