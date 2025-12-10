@@ -85,7 +85,7 @@ export const NewcastleMap = () => {
       maxBounds, // Constrain map to Newcastle area
       attributionControl: false, // Hide attribution control
       // Allow zoom and panning within bounds
-      scrollZoom: true, // Enable mouse wheel zoom
+      scrollZoom: false, // Enable mouse wheel zoom
       doubleClickZoom: true, // Enable double-click zoom
       touchZoomRotate: true, // Enable touch zoom
       boxZoom: false,
