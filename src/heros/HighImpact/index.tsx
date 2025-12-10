@@ -13,7 +13,7 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media }) => {
     <div className="">
       <div className="min-h-[calc(100dvh-112px)] h-auto flex items-center justify-center">
         <div className="min-h-[calc(100dvh-112px)] h-auto px-5 flex flex-col items-center justify-between ">
-          <div className="z-0 -mt-20 flex-1 flex flex-col items-center justify-center w-full sm:w-[90%] md:w-[70%] xl:w-[75%] pointer-events-none min-h-0">
+          <div className="z-0 -mt-15 flex-1 flex flex-col items-center justify-center w-full sm:w-[90%] md:w-[70%] xl:w-[75%] pointer-events-none min-h-0">
             <AustraliaMap className="px-1">
               <TextGenerateEffect className="px-10 lg:px-15 text-center font-playfair font-semibold text-2xl sm:text-4xl md:text-5xl xl:text-6xl absolute -translate-y-1/4">
                 Be fruitful <span className={andSymbolClassName}>&</span> multiply,{' '}
