@@ -2,6 +2,8 @@
 
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import React, { useState, useEffect } from 'react'
+import { defaultFillColor } from './layers/catchment/schools'
+import { zone1FillColor, zone2FillColor } from './layers/ZonesLayer'
 
 type LayerControlsProps = {
   mapRef: React.RefObject<mapboxgl.Map | null>
@@ -93,6 +95,7 @@ export const LayerControls: React.FC<LayerControlsProps> = ({ mapRef, addressMar
 
   const labelConfigs = [
     {
+      color: zone1FillColor,
       id: 'campus',
       checked: showCampus,
       onChange: (e: React.ChangeEvent<HTMLInputElement>) => setShowCampus(e.target.checked),
@@ -101,6 +104,7 @@ export const LayerControls: React.FC<LayerControlsProps> = ({ mapRef, addressMar
       mobileLabel: '~4 km, 5 min drive',
     },
     {
+      color: defaultFillColor,
       id: 'schoolZones',
       checked: showSchoolZones,
       onChange: (e: React.ChangeEvent<HTMLInputElement>) => setShowSchoolZones(e.target.checked),
@@ -110,6 +114,7 @@ export const LayerControls: React.FC<LayerControlsProps> = ({ mapRef, addressMar
     },
 
     {
+      color: zone2FillColor,
       id: 'notInCatchment',
       checked: showNotInCatchment,
       onChange: (e: React.ChangeEvent<HTMLInputElement>) => setShowNotInCatchment(e.target.checked),
@@ -118,6 +123,7 @@ export const LayerControls: React.FC<LayerControlsProps> = ({ mapRef, addressMar
       mobileLabel: '~10 km, outside school catchments',
     },
     {
+      color: '',
       id: 'homes',
       checked: showHomes,
       onChange: (e: React.ChangeEvent<HTMLInputElement>) => setShowHomes(e.target.checked),
@@ -145,7 +151,7 @@ export const LayerControls: React.FC<LayerControlsProps> = ({ mapRef, addressMar
             <Tooltip key={config.id}>
               <TooltipTrigger asChild>
                 <label
-                  className={`flex items-center cursor-pointer text-[13px] ${config.isLast ? '' : 'mb-2'}`}
+                  className={`flex items-center justify-start md:justify-between cursor-pointer text-[13px] ${config.isLast ? '' : 'mb-2'}`}
                 >
                   <input
                     type="checkbox"
@@ -157,6 +163,14 @@ export const LayerControls: React.FC<LayerControlsProps> = ({ mapRef, addressMar
                     <span className="hidden md:inline">{config.label}</span>
                     <span className="md:hidden">{config.mobileLabel}</span>
                   </span>
+                  {/* put a colour box to show the colour of the layer */}
+                  {config.color && (
+                    <div
+                      className="w-2 h-2 rounded-full ml-2"
+                      style={{ backgroundColor: config.color }}
+                    ></div>
+                  )}
+                  {config.id === 'homes' && <span className="ml-2">🏠</span>}
                 </label>
               </TooltipTrigger>
               <TooltipContent side="right" className="hidden md:block">

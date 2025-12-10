@@ -6,6 +6,14 @@ type ZonesLayerProps = {
   map: mapboxgl.Map
 }
 
+// zone 1 layer
+export const zone1FillColor = '#f58282'
+export const zone1OutlineColor = '#fa3c3c'
+
+// zone 2 layer
+export const zone2FillColor = '#f5b87a'
+export const zone2OutlineColor = '#f57e05'
+
 export const addZonesLayers = ({ map }: ZonesLayerProps) => {
   // Add GeoJSON source for zone-1
   map.addSource('zone-1', {
@@ -19,7 +27,7 @@ export const addZonesLayers = ({ map }: ZonesLayerProps) => {
     type: 'fill',
     source: 'zone-1',
     paint: {
-      'fill-color': '#ffbdbd', // Light red
+      'fill-color': zone1FillColor, // Light red
       'fill-opacity': 0.4,
     },
   })
@@ -30,7 +38,7 @@ export const addZonesLayers = ({ map }: ZonesLayerProps) => {
     type: 'line',
     source: 'zone-1',
     paint: {
-      'line-color': '#fa3c3c', // Slightly darker red for outline
+      'line-color': zone1OutlineColor, // Slightly darker red for outline
       'line-width': 2,
       'line-opacity': 0.7,
     },
@@ -48,7 +56,7 @@ export const addZonesLayers = ({ map }: ZonesLayerProps) => {
     type: 'fill',
     source: 'zone-2',
     paint: {
-      'fill-color': '#67c6e6', // Light blue
+      'fill-color': zone2FillColor, // Light orange
       'fill-opacity': 0.4,
     },
   })
@@ -59,7 +67,7 @@ export const addZonesLayers = ({ map }: ZonesLayerProps) => {
     type: 'line',
     source: 'zone-2',
     paint: {
-      'line-color': '#00a1d6', // Slightly darker blue for outline
+      'line-color': zone2OutlineColor, // Slightly darker orange for outline
       'line-width': 2,
       'line-opacity': 0.7,
     },

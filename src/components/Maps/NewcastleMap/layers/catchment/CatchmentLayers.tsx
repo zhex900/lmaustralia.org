@@ -109,7 +109,7 @@ export const showCatchmentLayer = (map: mapboxgl.Map, catchmentId: string) => {
 }
 
 // Function to hide individual catchment and show combined layer
-export const hideCatchmentLayer = (map: mapboxgl.Map, catchmentId: string | null) => {
+export const hideCatchmentLayer = (map: mapboxgl.Map) => {
   // Hide all individual catchment layers
   if (Array.isArray(schoolCatchmentsData)) {
     schoolCatchmentsData.forEach((feature: any) => {

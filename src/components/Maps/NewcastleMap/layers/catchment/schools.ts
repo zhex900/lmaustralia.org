@@ -8,8 +8,9 @@ export type School = {
   outlineColor?: string
 }
 
-export const defaultFillColor = '#f5b87a' // Light orange
-export const defaultOutlineColor = '#f57e05'
+// combined catchment layer
+export const defaultFillColor = '#76c176' // Light green
+export const defaultOutlineColor = '#008000'
 
 // Fixed array of addresses to add pins for
 export const SCHOOLS: School[] = [
