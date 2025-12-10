@@ -134,6 +134,18 @@ export const LayerControls: React.FC<LayerControlsProps> = ({ mapRef, addressMar
     },
   ]
 
+  const handleZoomIn = () => {
+    if (mapRef.current) {
+      mapRef.current.zoomIn()
+    }
+  }
+
+  const handleZoomOut = () => {
+    if (mapRef.current) {
+      mapRef.current.zoomOut()
+    }
+  }
+
   return (
     <div className="relative md:static w-full md:w-auto">
       <div className="absolute p-2.5 top-2.5 w-full md:w-auto inset-x-0 md:inset-x-auto md:right-2.5 bg-background/60 backdrop-blur-sm rounded shadow-md z-[1000]">
@@ -179,6 +191,24 @@ export const LayerControls: React.FC<LayerControlsProps> = ({ mapRef, addressMar
             </Tooltip>
           )
         })}
+      </div>
+
+      {/* Zoom Controls */}
+      <div className="absolute bottom-2.5 right-2.5 flex flex-col gap-1 z-[1000]">
+        <button
+          onClick={handleZoomIn}
+          className="w-5 h-5 bg-background/60 backdrop-blur-sm rounded shadow-md flex items-center justify-center text-lg font-semibold hover:bg-background/80 transition-colors"
+          aria-label="Zoom in"
+        >
+          +
+        </button>
+        <button
+          onClick={handleZoomOut}
+          className="w-5 h-5 bg-background/60 backdrop-blur-sm rounded shadow-md flex items-center justify-center text-lg font-semibold hover:bg-background/80 transition-colors"
+          aria-label="Zoom out"
+        >
+          −
+        </button>
       </div>
     </div>
   )
