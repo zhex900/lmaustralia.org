@@ -2,13 +2,14 @@ export const UNIVERSITY_COORDS: [number, number] = [151.71786849703244, -32.9048
 export const UNI_FRONT_GATE_COORDS: [number, number] = [151.69800570206968, -32.895359349770544]
 export const UNI_MARKER_COORDS: [number, number] = [151.7024147191538, -32.89485983195183]
 
-export const INITIAL_CENTER: [number, number] = [151.71986874228838, -32.8990780958905]
-export const INITIAL_ZOOM = 10.8
-export const MIN_ZOOM = 10
-export const MAX_BOUNDS: [[number, number], [number, number]] = [
-  [151.5, -33.0],
-  [151.9, -32.7],
+// Newcastle area bounds - [southwest, northeast]
+export const NEWCASTLE_BOUNDS: [[number, number], [number, number]] = [
+  [151.65057615209156, -32.93964019315944], // Southwest corner [west, south]
+  [151.79459561400955, -32.87786655130743], // Northeast corner [east, north]
 ]
+
+export const MIN_ZOOM = 10
+export const MAX_BOUNDS: [[number, number], [number, number]] = NEWCASTLE_BOUNDS
 
 export const HOME_MARKERS = [
   {

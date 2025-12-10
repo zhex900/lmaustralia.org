@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -11,20 +11,17 @@ import { LayerControls } from './LayerControls'
 import {
   UNIVERSITY_COORDS,
   UNI_FRONT_GATE_COORDS,
-  INITIAL_CENTER,
-  INITIAL_ZOOM,
   MIN_ZOOM,
   MAX_BOUNDS,
+  NEWCASTLE_BOUNDS,
 } from './constants'
 
-const MAP_OPTIONS: Omit<mapboxgl.MapboxOptions, 'container'> = {
+const MAP_OPTIONS: Omit<mapboxgl.MapOptions, 'container'> = {
   style: 'mapbox://styles/mapbox/streets-v12',
-  center: INITIAL_CENTER,
-  zoom: INITIAL_ZOOM,
   minZoom: MIN_ZOOM,
   maxBounds: MAX_BOUNDS,
   attributionControl: false,
-  scrollZoom: false,
+  scrollZoom: true,
   doubleClickZoom: true,
   touchZoomRotate: true,
   boxZoom: false,
@@ -90,40 +87,23 @@ export const NewcastleMap = () => {
         ...MAP_OPTIONS,
       })
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Failed to initialize map:', error)
-      }
       setMapError(true)
       return
     }
-
-    // Log center and zoom on move/zoom events
-    mapRef.current.on('moveend', () => {
-      if (mapRef.current) {
-        const center = mapRef.current.getCenter()
-        const zoom = mapRef.current.getZoom()
-        // in dev mode log the center and zoom
-        if (process.env.NODE_ENV === 'development') {
-          console.log('Map moved - Center:', [center.lng, center.lat], 'Zoom:', zoom.toFixed(2))
-        }
-      }
-    })
-
-    mapRef.current.on('zoomend', () => {
-      if (mapRef.current) {
-        const center = mapRef.current.getCenter()
-        const zoom = mapRef.current.getZoom()
-        // in dev mode log the center and zoom
-        if (process.env.NODE_ENV === 'development') {
-          console.log('Map zoomed - Center:', [center.lng, center.lat], 'Zoom:', zoom.toFixed(2))
-        }
-      }
-    })
 
     mapRef.current.on('click', handleMapClick)
 
     mapRef.current.on('load', async () => {
       if (!mapRef.current) return
+
+      // Use Mapbox's native fitBounds for accurate initial view
+      const padding = window.innerWidth < 640 ? 20 : window.innerWidth < 1024 ? 40 : 60
+
+      mapRef.current.fitBounds(NEWCASTLE_BOUNDS, {
+        padding: padding,
+        duration: 0, // Instant on initial load
+        maxZoom: 15, // Prevent zooming in too close
+      })
 
       if (!universityMarkerRef.current) {
         universityMarkerRef.current = await addAllLayers({
@@ -165,6 +145,46 @@ export const NewcastleMap = () => {
       setIsMapLoaded(false)
     }
   }, [highlightCatchment, unhighlightCatchment, highlightedCatchmentRef])
+
+  // Handle window resize to adjust map view
+  useEffect(() => {
+    if (!mapRef.current || !isMapLoaded) return
+
+    const handleResize = () => {
+      if (!mapRef.current) return
+
+      // Resize the map container
+      mapRef.current.resize()
+
+      // Optionally update view on resize using fitBounds
+      const adjustViewOnResize = true
+
+      if (adjustViewOnResize) {
+        const padding = window.innerWidth < 640 ? 20 : window.innerWidth < 1024 ? 40 : 60
+
+        mapRef.current.fitBounds(NEWCASTLE_BOUNDS, {
+          padding: padding,
+          duration: 1000, // Smooth transition
+          maxZoom: 15, // Prevent zooming in too close
+          essential: true,
+        })
+      }
+    }
+
+    // Debounce resize handler
+    let resizeTimer: NodeJS.Timeout
+    const debouncedResize = () => {
+      clearTimeout(resizeTimer)
+      resizeTimer = setTimeout(handleResize, 250)
+    }
+
+    window.addEventListener('resize', debouncedResize)
+
+    return () => {
+      window.removeEventListener('resize', debouncedResize)
+      clearTimeout(resizeTimer)
+    }
+  }, [isMapLoaded])
 
   return (
     <div style={{ position: 'relative', height: '500px', width: '100%' }}>
