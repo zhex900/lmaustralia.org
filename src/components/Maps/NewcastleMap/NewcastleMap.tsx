@@ -146,22 +146,22 @@ export const NewcastleMap = () => {
         universityMarkerRef.current.remove()
         universityMarkerRef.current = null
       }
-      
+
       if (addressMarkersRef.current.length > 0) {
         addressMarkersRef.current.forEach((marker) => marker.remove())
         addressMarkersRef.current = []
       }
-      
+
       if (popupRef.current) {
         popupRef.current.remove()
         popupRef.current = null
       }
-      
+
       if (mapRef.current) {
         mapRef.current.remove()
         mapRef.current = null
       }
-      
+
       setIsMapLoaded(false)
     }
   }, [highlightCatchment, unhighlightCatchment, highlightedCatchmentRef])
@@ -178,7 +178,6 @@ export const NewcastleMap = () => {
         style={{ height: '100%', width: '100%' }}
         className="map-container rounded-lg"
       />
-
       {isMapLoaded && !mapError && (
         <LayerControls mapRef={mapRef} addressMarkersRef={addressMarkersRef} />
       )}

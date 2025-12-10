@@ -16,13 +16,12 @@ const NEXT_PUBLIC_SERVER_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
 const nextConfig = {
   turbopack: {
     root: __dirname,
-  },
-  webpack: (config, { dev, isServer }) => {
-    // Disable webpack cache to prevent corruption issues
-    if (dev) {
-      config.cache = false
-    }
-    return config
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
+      },
+    },
   },
   images: {
     qualities: [100, 75],
@@ -50,48 +49,34 @@ const nextConfig = {
   },
   reactStrictMode: true,
   redirects,
+  experimental: {
+    optimizePackageImports: [
+      'lucide-react',
+      '@radix-ui/react-tooltip',
+      '@radix-ui/react-select',
+      '@radix-ui/react-checkbox',
+      '@radix-ui/react-label',
+      '@radix-ui/react-slot',
+    ],
+  },
+  transpilePackages: ['@payloadcms/ui'],
 }
 
-// Wrap with Payload first
 const configWithPayload = withPayload(nextConfig, { devBundleServerPackages: false })
 
-// Only wrap with Sentry in production
 export default process.env.NODE_ENV === 'production'
   ? withSentryConfig(
       configWithPayload,
       {
-        // For all available options, see:
-        // https://www.npmjs.com/package/@sentry/webpack-plugin#options
-
         org: 'jakehe',
         project: 'lmaustralia-org',
-
-        // Only print logs for uploading source maps in CI
         silent: !process.env.CI,
-
-        // Disable telemetry to prevent errors (as shown in error message)
         telemetry: false,
       },
       {
-        // For all available options, see:
-        // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
-
-        // Upload a larger set of source maps for prettier stack traces (increases build time)
         widenClientFileUpload: true,
-
-        // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
-        // This can increase your server load as well as your hosting bill.
-        // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
-        // side errors will fail.
         tunnelRoute: '/monitoring',
-
-        // Automatically tree-shake Sentry logger statements to reduce bundle size
         disableLogger: true,
-
-        // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
-        // See the following for more information:
-        // https://docs.sentry.io/product/crons/
-        // https://vercel.com/docs/cron-jobs
         automaticVercelMonitors: true,
       },
     )
