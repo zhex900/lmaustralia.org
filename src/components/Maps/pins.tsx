@@ -12,7 +12,7 @@ export const pinPositions: {
     href: '/posts/newcastle',
     lat: -32.9283, // Newcastle, NSW latitude
     lng: 151.7817, // Newcastle, NSW longitude
-    labelOffsetX: -55,
+    labelOffsetX: -2,
   },
   {
     name: 'Cairns',
