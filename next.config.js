@@ -43,6 +43,11 @@ const nextConfig = {
   },
   reactStrictMode: true,
   redirects,
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '1gb',
+    },
+  },
 }
 
 // Wrap with Payload first
