@@ -9,8 +9,6 @@ import * as migration_20251205_004522 from './20251205_004522'
 import * as migration_20251210_001615 from './20251210_001615'
 import * as migration_20251210_060407 from './20251210_060407'
 import * as migration_20251211_004731 from './20251211_004731'
-import * as migration_20251211_021150 from './20251211_021150'
-import * as migration_20251211_114451_timeline_richtext from './20251211_114451_timeline_richtext'
 
 export const migrations = [
   {
