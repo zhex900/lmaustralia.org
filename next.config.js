@@ -49,6 +49,7 @@ const nextConfig = {
   },
   reactStrictMode: true,
   redirects,
+  serverExternalPackages: ['@payloadcms/storage-vercel-blob'],
   experimental: {
     optimizePackageImports: [
       'lucide-react',

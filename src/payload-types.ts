@@ -815,11 +815,25 @@ export interface ProximityMapBlock {
  * via the `definition` "TimelineBlock".
  */
 export interface TimelineBlock {
-  title: string;
-  description: string;
+  title?: string | null;
+  description?: string | null;
   timeline: {
     title: string;
-    content: string;
+    content?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
     id?: string | null;
   }[];
   id?: string | null;

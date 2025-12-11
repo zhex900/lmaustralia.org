@@ -1,10 +1,10 @@
 'use client'
 import { useScroll, useTransform, motion } from 'motion/react'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export interface TimelineEntry {
   title: string
-  content: string //| React.ReactNode
+  content: string | React.ReactNode
 }
 
 export const Timeline = ({
@@ -12,8 +12,8 @@ export const Timeline = ({
   description,
   timeline,
 }: {
-  title: string
-  description: string
+  title?: string
+  description?: string
   timeline: TimelineEntry[]
 }) => {
   const ref = useRef<HTMLDivElement>(null)
@@ -38,21 +38,21 @@ export const Timeline = ({
   return (
     <div className="w-full backdrop-blur-sm " ref={containerRef}>
       <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-10">
-        <h2 className="text-xl md:text-4xl mb-4 max-w-4xl">{title}</h2>
-        <p className=" text-sm md:text-base text-justify ">{description}</p>
+        {title && <h2 className="text-xl md:text-4xl mb-4 max-w-4xl">{title}</h2>}
+        {description && <p className=" text-sm md:text-base text-justify ">{description}</p>}
       </div>
-      <div ref={ref} className="relative max-w-7xl mx-auto pb-10">
+      <div ref={ref} className="relative max-w-7xl mx-auto">
         {timeline.map((item, index) => (
           <div
             key={index}
-            className="flex justify-start md:grid md:grid-cols-[minmax(200px,300px)_1fr] md:gap-10 pt-5 md:pt-10"
+            className="flex justify-start md:grid md:grid-cols-[fit-content(300px)_1fr] md:gap-10 pt-5 md:pt-10"
           >
             <div className="flex flex-col justify-center">
               <div className="h-5 w-5 absolute left-4 md:left-4 rounded-full bg-teal-500/80 dark:bg-amber-200/90 flex items-center justify-center">
                 <div className="h-2 w-2 rounded-full bg-amber-200/50 dark:bg-teal-200/50  p-2" />
               </div>
               <div className="flex justify-center md:justify-start items-center">
-                <h3 className="mt-[20px] hidden md:block text-xl md:pl-20 md:text-3xl font-bold ">
+                <h3 className="mt-[19px] hidden md:block text-xl md:pl-20 md:text-2xl font-bold ">
                   {item.title}
                 </h3>
               </div>

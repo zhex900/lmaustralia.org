@@ -1,4 +1,6 @@
 import type { Block } from 'payload'
+import { defaultLexicalConfig } from '@/fields/defaultLexicalConfig'
+import { MediaBlock } from '../MediaBlock/config'
 
 export const Timeline: Block = {
   slug: 'timeline',
@@ -6,12 +8,12 @@ export const Timeline: Block = {
     {
       name: 'title',
       type: 'text',
-      required: true,
+      required: false,
     },
     {
       name: 'description',
       type: 'textarea',
-      required: true,
+      required: false,
     },
     {
       name: 'timeline',
@@ -25,8 +27,11 @@ export const Timeline: Block = {
         },
         {
           name: 'content',
-          type: 'textarea',
-          required: true,
+          type: 'richText',
+          editor: defaultLexicalConfig({
+            blocks: [MediaBlock],
+          }),
+          label: 'content',
         },
       ],
     },
