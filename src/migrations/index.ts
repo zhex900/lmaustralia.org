@@ -1,16 +1,16 @@
-import * as migration_20251121_102631 from './20251121_102631';
-import * as migration_20251121_103000 from './20251121_103000';
-import * as migration_20251121_104000 from './20251121_104000';
-import * as migration_20251122_125018 from './20251122_125018';
-import * as migration_20251122_132510 from './20251122_132510';
-import * as migration_20251204_004831 from './20251204_004831';
-import * as migration_20251204_005549 from './20251204_005549';
-import * as migration_20251205_004522 from './20251205_004522';
-import * as migration_20251210_001615 from './20251210_001615';
-import * as migration_20251210_060407 from './20251210_060407';
-import * as migration_20251211_004731 from './20251211_004731';
-import * as migration_20251211_021150 from './20251211_021150';
-import * as migration_20251211_114451_timeline_richtext from './20251211_114451_timeline_richtext';
+import * as migration_20251121_102631 from './20251121_102631'
+import * as migration_20251121_103000 from './20251121_103000'
+import * as migration_20251121_104000 from './20251121_104000'
+import * as migration_20251122_125018 from './20251122_125018'
+import * as migration_20251122_132510 from './20251122_132510'
+import * as migration_20251204_004831 from './20251204_004831'
+import * as migration_20251204_005549 from './20251204_005549'
+import * as migration_20251205_004522 from './20251205_004522'
+import * as migration_20251210_001615 from './20251210_001615'
+import * as migration_20251210_060407 from './20251210_060407'
+import * as migration_20251211_004731 from './20251211_004731'
+import * as migration_20251211_021150 from './20251211_021150'
+import * as migration_20251211_114451_timeline_richtext from './20251211_114451_timeline_richtext'
 
 export const migrations = [
   {
@@ -68,14 +68,4 @@ export const migrations = [
     down: migration_20251211_004731.down,
     name: '20251211_004731',
   },
-  {
-    up: migration_20251211_021150.up,
-    down: migration_20251211_021150.down,
-    name: '20251211_021150',
-  },
-  {
-    up: migration_20251211_114451_timeline_richtext.up,
-    down: migration_20251211_114451_timeline_richtext.down,
-    name: '20251211_114451_timeline_richtext'
-  },
-];
+]
