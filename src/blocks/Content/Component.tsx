@@ -46,7 +46,7 @@ export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
                   {media && <Media resource={media} />}
                   {richText && <RichText data={richText} enableGutter={false} />}
                 </div>
-                {enableLink && <CMSLink {...link} className="mt-auto" />}
+                {enableLink && <CMSLink {...link} className="mt-auto md:w-fit" />}
               </div>
             )
           })}

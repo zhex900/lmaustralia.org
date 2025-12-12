@@ -69,6 +69,14 @@ const nextConfig = {
   transpilePackages: ['@payloadcms/ui'],
 }
 
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '1gb',
+    },
+  },
+}
+
+// Wrap with Payload first
 const configWithPayload = withPayload(nextConfig, { devBundleServerPackages: false })
 
 export default process.env.NODE_ENV === 'production'

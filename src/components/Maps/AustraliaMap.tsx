@@ -129,28 +129,30 @@ export const AustraliaMap = React.forwardRef<HTMLDivElement, AustraliaMapProps>(
 
         {/* Pin labels rendered separately on top layer for clickability */}
         {showPinLabel && (
-          <svg
-            width="100%"
-            height="100%"
-            viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
-            preserveAspectRatio="xMidYMid meet"
-            className="absolute inset-0 w-full h-full"
-            style={{ pointerEvents: 'none', zIndex: 20 }}
+          <div
+            className="absolute inset-0 w-full h-full pointer-events-none right-20"
+            style={{ zIndex: 20 }}
           >
-            {pinNodes.map((pin) => (
-              <a key={pin.name} href={pin.href} style={{ pointerEvents: 'all', cursor: 'pointer' }}>
-                <text
-                  x={pin.x + pin.labelOffsetX}
-                  y={pin.y - pinRadius - 15}
-                  fill="currentColor"
-                  textAnchor="middle"
-                  className="dark:text-white font-semibold text-[2.3em] sm:text-[2em] lg:text-[1.5em]"
+            {pinNodes.map((pin) => {
+              // Convert SVG coordinates to percentage positions
+              const xPercent = ((pin.x + pin.labelOffsetX) / SVG_WIDTH) * 100 + pin.labelOffsetX
+              const yPercent = ((pin.y - pinRadius - 15) / SVG_HEIGHT) * 100 - 1.5
+
+              return (
+                <a
+                  key={pin.name}
+                  href={pin.href}
+                  className="link-underline link-underline-black dark:text-white font-semibold text-sm sm:text-lg lg:text-xl pointer-events-auto cursor-pointer absolute -translate-x-1/2 -translate-y-1/2 no-underline whitespace-nowrap"
+                  style={{
+                    left: `${xPercent}%`,
+                    top: `${yPercent}%`,
+                  }}
                 >
                   {pin.name}
-                </text>
-              </a>
-            ))}
-          </svg>
+                </a>
+              )
+            })}
+          </div>
         )}
         {children && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-auto">
