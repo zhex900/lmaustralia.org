@@ -57,6 +57,9 @@ const nextConfig = {
     'payload-authjs',
   ],
   experimental: {
+    serverActions: {
+      bodySizeLimit: '1gb',
+    },
     optimizePackageImports: [
       'lucide-react',
       '@radix-ui/react-tooltip',
@@ -67,13 +70,6 @@ const nextConfig = {
     ],
   },
   transpilePackages: ['@payloadcms/ui'],
-}
-
-  experimental: {
-    serverActions: {
-      bodySizeLimit: '1gb',
-    },
-  },
 }
 
 // Wrap with Payload first
