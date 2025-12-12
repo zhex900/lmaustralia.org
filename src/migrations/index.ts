@@ -56,7 +56,6 @@ export const migrations = [
     up: migration_20251211_173433.up,
     down: migration_20251211_173433.down,
     name: '20251211_173433',
-    name: '20251205_004522',
   },
   {
     up: migration_20251210_001615.up,
@@ -73,5 +72,4 @@ export const migrations = [
     down: migration_20251211_004731.down,
     name: '20251211_004731',
   },
-]
 ]
