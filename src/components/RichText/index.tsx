@@ -26,6 +26,10 @@ import { cn } from '@/utilities/ui'
 import { ArchiveBlockClient } from '@/blocks/ArchiveBlock/Component.client'
 import { ProximityMapBlock } from '@/blocks/ProximityMap/Component'
 import { TimelineBlock, TimelineBlockProps } from '@/blocks/Timeline/Component'
+import {
+  NestedDonutChartBlock,
+  NestedDonutChartBlockProps,
+} from '@/blocks/NestedDonutChart/Component'
 
 type NodeTypes =
   | DefaultNodeTypes
@@ -64,6 +68,9 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
     proximityMap: () => <ProximityMapBlock />,
     timeline: ({ node }: { node: SerializedBlockNode<TimelineBlockProps> }) => (
       <TimelineBlock {...node.fields} />
+    ),
+    nestedDonutChart: ({ node }: { node: SerializedBlockNode<NestedDonutChartBlockProps> }) => (
+      <NestedDonutChartBlock {...node.fields} />
     ),
   },
 })

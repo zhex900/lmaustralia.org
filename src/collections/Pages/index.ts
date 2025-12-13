@@ -22,6 +22,7 @@ import {
 } from '@payloadcms/plugin-seo/fields'
 import { ProximityMap } from '@/blocks/ProximityMap/config'
 import { Timeline } from '@/blocks/Timeline/config'
+import { NestedDonutChart } from '@/blocks/NestedDonutChart/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -82,6 +83,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 FormBlock,
                 ProximityMap,
                 Timeline,
+                NestedDonutChart,
               ],
               required: true,
               admin: {

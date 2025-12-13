@@ -22,6 +22,7 @@ import {
 } from '@payloadcms/plugin-seo/fields'
 import { slugField } from 'payload'
 import { defaultLexicalConfig } from '@/fields/defaultLexicalConfig'
+import { NestedDonutChart } from '@/blocks/NestedDonutChart/config'
 
 export const Posts: CollectionConfig<'posts'> = {
   slug: 'posts',
@@ -87,7 +88,15 @@ export const Posts: CollectionConfig<'posts'> = {
               name: 'content',
               type: 'richText',
               editor: defaultLexicalConfig({
-                blocks: [Banner, Code, MediaBlock, Archive, ProximityMap, Timeline],
+                blocks: [
+                  Banner,
+                  Code,
+                  MediaBlock,
+                  Archive,
+                  ProximityMap,
+                  Timeline,
+                  NestedDonutChart,
+                ],
               }),
               label: false,
               required: true,

@@ -8,6 +8,7 @@ import { Archive } from '../ArchiveBlock/config'
 import { CallToAction } from '../CallToAction/config'
 import { ProximityMap } from '../ProximityMap/config'
 import { Timeline } from '../Timeline/config'
+import { NestedDonutChart } from '../NestedDonutChart/config'
 
 const columnFields: Field[] = [
   {
@@ -49,7 +50,7 @@ const columnFields: Field[] = [
     name: 'richText',
     type: 'richText',
     editor: defaultLexicalConfig({
-      blocks: [Banner, MediaBlock, Archive, CallToAction, ProximityMap, Timeline],
+      blocks: [Banner, MediaBlock, Archive, CallToAction, ProximityMap, Timeline, NestedDonutChart],
     }),
     label: false,
   },
