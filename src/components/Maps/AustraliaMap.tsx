@@ -5,7 +5,6 @@ import { PinName, pinPositions } from './pins'
 import { SVG_WIDTH, SVG_HEIGHT } from './constants'
 import australiaGeoJSON from './geojson/australia.json'
 import australiaStatesGeoJSON from './geojson/australian-states.json'
-import Link from 'next/link'
 
 type AustraliaMapProps = {
   showPinLabel?: boolean

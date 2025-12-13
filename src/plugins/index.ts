@@ -6,7 +6,6 @@ import { searchPlugin } from '@payloadcms/plugin-search'
 import { Plugin } from 'payload'
 import { revalidateRedirects } from '@/hooks/revalidateRedirects'
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
-import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import { searchFields } from '@/search/fieldOverrides'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
@@ -16,6 +15,7 @@ import { site } from '@/constants'
 import { authjsPlugin } from 'payload-authjs'
 import { authConfig } from '@/auth.config'
 import { getMinScore, verifyRecaptcha } from '@/hooks/verifyRecaptcha'
+import { defaultLexicalConfig } from '@/fields/defaultLexicalConfig'
 
 const generateTitle: GenerateTitle<Post | Page> = ({ doc }) => {
   return doc?.title ? `${doc.title} | ${site.name}` : site.title
@@ -77,15 +77,7 @@ export const plugins: Plugin[] = [
           if ('name' in field && field.name === 'confirmationMessage') {
             return {
               ...field,
-              editor: lexicalEditor({
-                features: ({ rootFeatures }) => {
-                  return [
-                    ...rootFeatures,
-                    FixedToolbarFeature(),
-                    HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                  ]
-                },
-              }),
+              editor: defaultLexicalConfig(),
             }
           }
           return field
