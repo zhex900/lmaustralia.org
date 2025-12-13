@@ -1,6 +1,6 @@
 'use client'
 import { useScroll, useTransform, motion } from 'motion/react'
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 export interface TimelineEntry {
   title: string
@@ -29,7 +29,7 @@ export const Timeline = ({
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ['start 70%', 'end 20%'],
+    offset: ['start 50%', 'end 30%'],
   })
 
   const heightTransform = useTransform(scrollYProgress, [0, 1], [0, height])
@@ -42,28 +42,27 @@ export const Timeline = ({
         {description && <p className=" text-sm md:text-base text-justify ">{description}</p>}
       </div>
       <div ref={ref} className="relative max-w-7xl mx-auto">
-        {timeline.map((item, index) => (
-          <div
-            key={index}
-            className="flex justify-start md:grid md:grid-cols-[fit-content(300px)_1fr] md:gap-10 pt-5 md:pt-10"
-          >
-            <div className="flex flex-col justify-center">
-              <div className="h-5 w-5 absolute left-4 md:left-4 rounded-full bg-teal-500/80 dark:bg-amber-200/90 flex items-center justify-center">
-                <div className="h-2 w-2 rounded-full bg-amber-200/50 dark:bg-teal-200/50  p-2" />
+        <div className="md:grid md:grid-cols-[fit-content(300px)_1fr] md:gap-10 pt-5 md:pt-10">
+          {timeline.map((item, index) => (
+            <div key={index} className="flex md:contents">
+              <div className="flex flex-col justify-center">
+                <div className="h-5 w-5 absolute left-4 md:left-4 rounded-full bg-teal-500/80 dark:bg-amber-200/90 flex items-center justify-center">
+                  <div className="h-2 w-2 rounded-full bg-amber-200/50 dark:bg-teal-200/50  p-2" />
+                </div>
+                <div className="flex justify-center md:justify-start items-center">
+                  <h3 className="mt-[19px] hidden md:block text-xl md:pl-20 md:text-2xl font-bold ">
+                    {item.title}
+                  </h3>
+                </div>
               </div>
-              <div className="flex justify-center md:justify-start items-center">
-                <h3 className="mt-[19px] hidden md:block text-xl md:pl-20 md:text-2xl font-bold ">
-                  {item.title}
-                </h3>
-              </div>
-            </div>
 
-            <div className="relative pl-20 pr-4 md:pl-0 w-full flex flex-col justify-center">
-              <h3 className="md:hidden block text-2xl text-left font-bold">{item.title}</h3>
-              {item.content}
+              <div className="relative pl-20 pr-4 md:pl-0 w-full flex flex-col justify-center">
+                <h3 className="md:hidden block text-2xl text-left font-bold">{item.title}</h3>
+                {item.content}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
         <div
           style={{
             height: height + 'px',
