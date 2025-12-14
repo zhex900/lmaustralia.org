@@ -47,7 +47,7 @@ export const createMapMarker = ({
 export const cleanupMarker = (marker: mapboxgl.Marker) => {
   const root = markerRoots.get(marker)
   marker.remove()
-  
+
   if (root) {
     // Defer unmount to avoid race conditions during React render
     setTimeout(() => {

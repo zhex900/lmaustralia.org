@@ -1,6 +1,6 @@
 export const UNIVERSITY_COORDS: [number, number] = [151.71786849703244, -32.90489225775947]
 export const UNI_FRONT_GATE_COORDS: [number, number] = [151.69800570206968, -32.895359349770544]
-export const UNI_MARKER_COORDS: [number, number] = [151.7024147191538, -32.89485983195183]
+export const UNI_MARKER_COORDS: [number, number] = [151.7024147191538, -32.89685983195183]
 
 // Newcastle area bounds - [southwest, northeast]
 export const NEWCASTLE_BOUNDS: [[number, number], [number, number]] = [
