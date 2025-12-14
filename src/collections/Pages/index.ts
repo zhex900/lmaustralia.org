@@ -20,6 +20,9 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
+import { ProximityMap } from '@/blocks/ProximityMap/config'
+import { Timeline } from '@/blocks/Timeline/config'
+import { NestedDonutChart } from '@/blocks/NestedDonutChart/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -72,7 +75,16 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock],
+              blocks: [
+                CallToAction,
+                Content,
+                MediaBlock,
+                Archive,
+                FormBlock,
+                ProximityMap,
+                Timeline,
+                NestedDonutChart,
+              ],
               required: true,
               admin: {
                 initCollapsed: true,

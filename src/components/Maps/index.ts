@@ -1,4 +1,5 @@
 import { CityMap } from './CityMap'
 import { AustraliaMap } from './AustraliaMap'
+import { NewcastleMap } from './NewcastleMap/NewcastleMap'
 
-export { CityMap, AustraliaMap }
+export { CityMap, AustraliaMap, NewcastleMap }

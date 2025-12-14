@@ -201,7 +201,16 @@ export interface Page {
       | null;
     media?: (number | null) | Media;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
+  layout: (
+    | CallToActionBlock
+    | ContentBlock
+    | MediaBlock
+    | ArchiveBlock
+    | FormBlock
+    | ProximityMapBlock
+    | TimelineBlock
+    | NestedDonutChartBlock
+  )[];
   meta?: {
     title?: string | null;
     /**
@@ -795,6 +804,66 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProximityMapBlock".
+ */
+export interface ProximityMapBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'proximityMap';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TimelineBlock".
+ */
+export interface TimelineBlock {
+  title?: string | null;
+  description?: string | null;
+  timeline: {
+    title: string;
+    content?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'timeline';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NestedDonutChartBlock".
+ */
+export interface NestedDonutChartBlock {
+  outerRadiusData: {
+    name: string;
+    value: number;
+    fill: string;
+    id?: string | null;
+  }[];
+  innerRadiusData: {
+    name: string;
+    value: number;
+    fill: string;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'nestedDonutChart';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1102,6 +1171,9 @@ export interface PagesSelect<T extends boolean = true> {
         mediaBlock?: T | MediaBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
+        proximityMap?: T | ProximityMapBlockSelect<T>;
+        timeline?: T | TimelineBlockSelect<T>;
+        nestedDonutChart?: T | NestedDonutChartBlockSelect<T>;
       };
   meta?:
     | T
@@ -1201,6 +1273,55 @@ export interface FormBlockSelect<T extends boolean = true> {
   form?: T;
   enableIntro?: T;
   introContent?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProximityMapBlock_select".
+ */
+export interface ProximityMapBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TimelineBlock_select".
+ */
+export interface TimelineBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  timeline?:
+    | T
+    | {
+        title?: T;
+        content?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NestedDonutChartBlock_select".
+ */
+export interface NestedDonutChartBlockSelect<T extends boolean = true> {
+  outerRadiusData?:
+    | T
+    | {
+        name?: T;
+        value?: T;
+        fill?: T;
+        id?: T;
+      };
+  innerRadiusData?:
+    | T
+    | {
+        name?: T;
+        value?: T;
+        fill?: T;
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }
