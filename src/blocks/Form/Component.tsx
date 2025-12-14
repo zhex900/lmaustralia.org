@@ -11,7 +11,6 @@ import type { DefaultTypedEditorState } from '@payloadcms/richtext-lexical'
 import { fields } from './fields'
 import { getClientSideURL } from '@/utilities/getURL'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
-import { ReCaptchaProvider } from '@/providers/ReCaptcha'
 
 export type FormBlockType = {
   blockName?: string
@@ -194,13 +193,11 @@ export const FormBlock: React.FC<
   })
 
   return (
-    <ReCaptchaProvider>
-      <FormContent
-        formFromProps={formFromProps}
-        formMethods={formMethods}
-        enableIntro={enableIntro}
-        introContent={introContent}
-      />
-    </ReCaptchaProvider>
+    <FormContent
+      formFromProps={formFromProps}
+      formMethods={formMethods}
+      enableIntro={enableIntro}
+      introContent={introContent}
+    />
   )
 }
