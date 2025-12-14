@@ -18,7 +18,8 @@ const nextConfig = {
     root: __dirname,
   },
   images: {
-    qualities: [100, 75],
+    qualities: [75, 85],
+    formats: ['image/avif', 'image/webp'],
     unoptimized: process.env.NODE_ENV === 'development',
     remotePatterns: [
       {
