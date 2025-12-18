@@ -44,19 +44,6 @@ const nextConfig = {
   },
   reactStrictMode: true,
   redirects,
-  async headers() {
-    return [
-      {
-        source: '/:path*',
-        headers: [
-          {
-            key: 'Strict-Transport-Security',
-            value: 'max-age=0',
-          },
-        ],
-      },
-    ]
-  },
   experimental: {
     serverActions: {
       bodySizeLimit: '1gb',
