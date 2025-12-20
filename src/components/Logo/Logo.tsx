@@ -1,8 +1,15 @@
 import React from 'react'
+import { cn } from '@/utilities/ui'
 
-export const Logo = () => {
+export const Logo = ({ darkMode = false }: { darkMode?: boolean }) => {
   return (
-    <div className="flex flex-col justify-center items-center text-teal-950 dark:text-stone-50 ">
+    <div
+      className={cn(
+        'flex flex-col justify-center items-center ',
+        darkMode && 'text-stone-50',
+        !darkMode && 'text-[var(--title-text)] dark:text-stone-50',
+      )}
+    >
       <div className="flex flex-1 justify-between text-2xl md:text-3xl font-bold text-center w-full">
         {'LMAU'.split('').map((letter, index) => (
           <span key={index} className="leading-none">
