@@ -35,13 +35,15 @@
   }
   /* Hex Colors */
   :root {
+    --title-text: #000b58;
+
     --quote-background: #f5e6aa;
     --quote-foreground: #ffffff;
 
     --background: #ffffff;
     --foreground: #0a0a0a;
 
-    --card: #f6f6f5;
+    --card: #000b58;
     --card-foreground: #0a0a0a;
 
     --popover: #ffffff;
@@ -87,6 +89,8 @@
   }
 
   [data-theme='dark'] {
+    --title-text: #fff;
+
     --quote-background: #219187;
     --quote-foreground: #fde68a;
 
@@ -167,6 +171,14 @@
 
 html {
   opacity: 0;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--title-text);
+  }
 }
 
 html[data-theme='dark'],
@@ -176,6 +188,18 @@ html[data-theme='light'] {
 
 .grecaptcha-badge {
   visibility: hidden;
+}
+
+.bg-card {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: #fff;
+  }
+  color: #fff;
 }
 
 /*

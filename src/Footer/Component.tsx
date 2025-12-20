@@ -13,7 +13,7 @@ export async function Footer() {
   const navItems = footerData?.navItems || []
 
   return (
-    <footer className="dark:bg-gray-900 bg-gray-50 dark:text-white text-gray-900 mt-auto">
+    <footer className="dark:bg-gray-900 bg-[var(--title-text)] text-white  mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <Link className="flex items-center" href="/">

@@ -34,9 +34,11 @@ export const RenderBlocks: React.FC<{
 
             if (Block) {
               return (
-                <div className="px-2 md:px-4 lg:px-6 py-10" key={index}>
-                  {/* @ts-expect-error there may be some mismatch between the expected types here */}
-                  <Block {...block} disableInnerContainer />
+                <div className="container" key={index}>
+                  <div className="py-10 max-w-3xl mx-auto" key={index}>
+                    {/* @ts-expect-error there may be some mismatch between the expected types here */}
+                    <Block {...block} disableInnerContainer />
+                  </div>
                 </div>
               )
             }

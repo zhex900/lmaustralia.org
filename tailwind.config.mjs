@@ -103,6 +103,7 @@ const config = {
       fontFamily: {
         playfair: ['var(--font-playfair-display)'],
         montserrat: ['var(--font-montserrat)'],
+        georgia: ['Georgia', 'Times New Roman', 'serif'],
         sans: ['var(--font-montserrat)'],
         mono: ['var(--font-montserrat)'],
       },

@@ -18,7 +18,7 @@ export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
   }
   return (
     <div
-      className={cn('container', className)}
+      className={cn('', className)}
       {...(blockName ? { id: blockName.toLowerCase().replace(/ /g, '-') } : {})}
     >
       <div className="grid grid-cols-4 lg:grid-cols-12 gap-y-8 gap-x-16">
