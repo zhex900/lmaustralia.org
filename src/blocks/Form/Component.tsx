@@ -45,15 +45,23 @@ const FormContent: React.FC<{
   const [isLoading, setIsLoading] = useState(false)
   const [hasSubmitted, setHasSubmitted] = useState<boolean>()
   const [error, setError] = useState<{ message: string; status?: string } | undefined>()
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const { executeRecaptcha } = useGoogleReCaptcha()
 
   const onSubmit = useCallback(
     (data: Record<string, any>) => {
+      // Prevent multiple submissions
+      if (isSubmitting || isLoading || hasSubmitted) {
+        return
+      }
+
+      setIsSubmitting(true)
       let loadingTimerID: ReturnType<typeof setTimeout>
       const submitForm = async () => {
         setError(undefined)
         if (!executeRecaptcha) {
+          setIsSubmitting(false)
           setError({
             message: 'reCAPTCHA not available. Please try again.',
           })
@@ -65,6 +73,7 @@ const FormContent: React.FC<{
           recaptchaToken = await executeRecaptcha('form_submit')
         } catch (err) {
           console.warn('reCAPTCHA error:', err)
+          setIsSubmitting(false)
           setError({
             message: 'reCAPTCHA verification failed. Please try again.',
           })
@@ -99,6 +108,7 @@ const FormContent: React.FC<{
 
           if (req.status >= 400) {
             setIsLoading(false)
+            setIsSubmitting(false)
 
             setError({
               message: res.errors?.[0]?.message || 'Internal Server Error',
@@ -109,6 +119,7 @@ const FormContent: React.FC<{
           }
 
           setIsLoading(false)
+          setIsSubmitting(false)
           setHasSubmitted(true)
 
           if (confirmationType === 'redirect' && redirect) {
@@ -121,6 +132,7 @@ const FormContent: React.FC<{
         } catch (err) {
           console.warn(err)
           setIsLoading(false)
+          setIsSubmitting(false)
           setError({
             message: 'Something went wrong.',
           })
@@ -129,7 +141,7 @@ const FormContent: React.FC<{
 
       void submitForm()
     },
-    [router, formID, redirect, confirmationType, executeRecaptcha],
+    [router, formID, redirect, confirmationType, executeRecaptcha, isSubmitting, isLoading, hasSubmitted],
   )
 
   return (
@@ -170,7 +182,7 @@ const FormContent: React.FC<{
                   })}
               </div>
 
-              <Button form={formID} type="submit" variant="default">
+              <Button form={formID} type="submit" variant="default" disabled={isSubmitting || isLoading}>
                 {submitButtonLabel}
               </Button>
             </form>
