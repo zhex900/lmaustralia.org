@@ -49,4 +49,8 @@ export const HOME_MARKERS = [
     coordinates: [151.690008262567, -32.87665511446352] as [number, number],
     label: 'D & M',
   },
+  {
+    coordinates: [151.71507900373572, -32.914323733560735] as [number, number],
+    label: 'B & L',
+  },
 ]
