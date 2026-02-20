@@ -142,7 +142,6 @@
     @apply border-border;
   }
   html {
-    overscroll-behavior-y: none;
     overscroll-behavior-x: none;
     overflow-x: hidden;
     width: 100%;
@@ -151,7 +150,6 @@
   }
   body {
     @apply bg-background text-foreground min-h-screen flex flex-col;
-    overscroll-behavior-y: none;
     overscroll-behavior-x: none;
     overflow-x: hidden;
     width: 100%;
