@@ -5,7 +5,7 @@ module.exports = {
   siteUrl: `https://${SITE_URL}`,
   generateRobotsTxt: true,
   generateIndexSitemap: false,
-  // exclude: ['/posts-sitemap.xml', '/pages-sitemap.xml', '/*', '/posts/*'],
+  exclude: ['/posts/*draft*', '/admin/*'],
   robotsTxtOptions: {
     policies: [
       {
@@ -13,6 +13,5 @@ module.exports = {
         disallow: '/admin/*',
       },
     ],
-    // additionalSitemaps: [`${SITE_URL}/pages-sitemap.xml`, `${SITE_URL}/posts-sitemap.xml`],
   },
 }

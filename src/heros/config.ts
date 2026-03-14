@@ -1,19 +1,7 @@
 import type { Field } from 'payload'
 
-import {
-  AlignFeature,
-  BlockquoteFeature,
-  ChecklistFeature,
-  FixedToolbarFeature,
-  HeadingFeature,
-  InlineToolbarFeature,
-  lexicalEditor,
-  OrderedListFeature,
-  TextStateFeature,
-  UnorderedListFeature,
-} from '@payloadcms/richtext-lexical'
-
 import { linkGroup } from '@/fields/linkGroup'
+import { defaultLexicalConfig } from '@/fields/defaultLexicalConfig'
 
 export const hero: Field = {
   name: 'hero',
@@ -53,22 +41,7 @@ export const hero: Field = {
     {
       name: 'richText',
       type: 'richText',
-      editor: lexicalEditor({
-        features: ({ rootFeatures }) => {
-          return [
-            ...rootFeatures,
-            HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-            FixedToolbarFeature(),
-            InlineToolbarFeature(),
-            AlignFeature(),
-            BlockquoteFeature(),
-            ChecklistFeature(),
-            OrderedListFeature(),
-            UnorderedListFeature(),
-            TextStateFeature(),
-          ]
-        },
-      }),
+      editor: defaultLexicalConfig(),
       label: false,
     },
     linkGroup({

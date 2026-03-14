@@ -15,7 +15,7 @@ export async function Footer() {
   return (
     <footer className="dark:bg-gray-900 bg-gray-50 dark:text-white text-gray-900 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <Link className="flex items-center" href="/">
             <Logo />
           </Link>
@@ -36,7 +36,7 @@ export async function Footer() {
           </div>
 
           <div>
-            <h4 className="text-white font-semibold mb-4">Participation</h4>
+            <h4 className="font-semibold mb-4">Participation</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/contact" className="hover:text-sky-400 transition-colors text-sm">

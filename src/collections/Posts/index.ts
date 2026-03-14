@@ -1,33 +1,17 @@
 import type { CollectionConfig } from 'payload'
 
-import {
-  BlocksFeature,
-  AlignFeature,
-  FixedToolbarFeature,
-  HeadingFeature,
-  HorizontalRuleFeature,
-  InlineToolbarFeature,
-  lexicalEditor,
-  IndentFeature,
-  ParagraphFeature,
-  TextStateFeature,
-  ChecklistFeature,
-  OrderedListFeature,
-  UnorderedListFeature,
-  LinkFeature,
-  BlockquoteFeature,
-} from '@payloadcms/richtext-lexical'
-
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
-import { Banner } from '../../blocks/Banner/config'
-import { Code } from '../../blocks/Code/config'
-import { Archive } from '../../blocks/ArchiveBlock/config'
-import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { populateAuthors } from './hooks/populateAuthors'
 import { revalidateDelete, revalidatePost } from './hooks/revalidatePost'
 import { syncMetaImage } from './hooks/syncMetaImage'
+import { Banner } from '../../blocks/Banner/config'
+import { Code } from '../../blocks/Code/config'
+import { Archive } from '../../blocks/ArchiveBlock/config'
+import { MediaBlock } from '../../blocks/MediaBlock/config'
+import { ProximityMap } from '@/blocks/ProximityMap/config'
+import { Timeline } from '@/blocks/Timeline/config'
 
 import {
   MetaDescriptionField,
@@ -37,7 +21,8 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { slugField } from 'payload'
-import { TextFontFamilyFeature } from 'payload-lexical-typography'
+import { defaultLexicalConfig } from '@/fields/defaultLexicalConfig'
+import { NestedDonutChart } from '@/blocks/NestedDonutChart/config'
 
 export const Posts: CollectionConfig<'posts'> = {
   slug: 'posts',
@@ -102,28 +87,16 @@ export const Posts: CollectionConfig<'posts'> = {
             {
               name: 'content',
               type: 'richText',
-              editor: lexicalEditor({
-                features: ({ defaultFeatures, rootFeatures }) => {
-                  return [
-                    ...rootFeatures,
-                    ...defaultFeatures,
-                    HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                    BlocksFeature({ blocks: [Banner, Code, MediaBlock, Archive] }),
-                    FixedToolbarFeature(),
-                    InlineToolbarFeature(),
-                    HorizontalRuleFeature(),
-                    IndentFeature(),
-                    ParagraphFeature(),
-                    TextStateFeature(),
-                    ChecklistFeature(),
-                    OrderedListFeature(),
-                    UnorderedListFeature(),
-                    LinkFeature(),
-                    BlockquoteFeature(),
-                    AlignFeature(),
-                    TextFontFamilyFeature() as any,
-                  ]
-                },
+              editor: defaultLexicalConfig({
+                blocks: [
+                  Banner,
+                  Code,
+                  MediaBlock,
+                  Archive,
+                  ProximityMap,
+                  Timeline,
+                  NestedDonutChart,
+                ],
               }),
               label: false,
               required: true,

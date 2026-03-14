@@ -1,17 +1,7 @@
 import type { Block } from 'payload'
 
-import {
-  FixedToolbarFeature,
-  HeadingFeature,
-  InlineToolbarFeature,
-  lexicalEditor,
-  AlignFeature,
-  IndentFeature,
-  BlockquoteFeature,
-  ChecklistFeature,
-} from '@payloadcms/richtext-lexical'
-
 import { linkGroup } from '../../fields/linkGroup'
+import { defaultLexicalConfig } from '@/fields/defaultLexicalConfig'
 
 export const CallToAction: Block = {
   slug: 'cta',
@@ -20,20 +10,7 @@ export const CallToAction: Block = {
     {
       name: 'richText',
       type: 'richText',
-      editor: lexicalEditor({
-        features: ({ rootFeatures }) => {
-          return [
-            ...rootFeatures,
-            IndentFeature(),
-            HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-            FixedToolbarFeature(),
-            InlineToolbarFeature(),
-            AlignFeature(),
-            BlockquoteFeature(),
-            ChecklistFeature(),
-          ]
-        },
-      }),
+      editor: defaultLexicalConfig(),
       label: false,
     },
     linkGroup({
