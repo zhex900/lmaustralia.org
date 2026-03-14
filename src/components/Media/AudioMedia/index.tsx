@@ -38,6 +38,7 @@ export const AudioMedia: React.FC<MediaProps> = (props) => {
   const audioRef = useRef<HTMLAudioElement>(null)
   const { registerAudio, unregisterAudio, pauseAllExcept } = useAudioContext()
   const [isReady, setIsReady] = useState(false)
+  const [hasError, setHasError] = useState(false)
 
   useEffect(() => {
     // Register this audio player
@@ -76,8 +77,28 @@ export const AudioMedia: React.FC<MediaProps> = (props) => {
     setIsReady(true)
   }
 
+  const handleError = () => {
+    setHasError(true)
+    setIsReady(true)
+  }
+
+  const getMimeType = (name: string): string | undefined => {
+    const extension = name.split('.').pop()?.toLowerCase()
+
+    if (extension === 'm4a') return 'audio/mp4'
+    if (extension === 'mp3') return 'audio/mpeg'
+    if (extension === 'wav') return 'audio/wav'
+    if (extension === 'ogg' || extension === 'oga') return 'audio/ogg'
+
+    return undefined
+  }
+
   if (resource && typeof resource === 'object') {
     const { filename, alt } = resource
+    if (!filename) return null
+
+    const src = getMediaUrl(`/api/media/file/${filename}`)
+    const mimeType = getMimeType(filename)
 
     return (
       <div className="relative inline-block w-full md:max-w-md">
@@ -88,16 +109,23 @@ export const AudioMedia: React.FC<MediaProps> = (props) => {
         )}
         <audio
           ref={audioRef}
-          className={cn('w-full', !isReady && 'opacity-0 pointer-events-none')}
+          className={cn('w-full', className, !isReady && 'opacity-0 pointer-events-none')}
           controls
           preload="metadata"
           onPlay={handlePlay}
           onLoadedData={handleLoadedData}
+          onError={handleError}
           aria-label={alt || 'Audio playback'}
         >
-          <source src={getMediaUrl(`/api/media/file/${filename}`)} />
+          <source src={src} type={mimeType} />
+          <source src={src} />
           Your browser does not support the audio element.
         </audio>
+        {hasError && (
+          <p className="mt-2 text-sm text-destructive">
+            We could not load this audio file. Please try refreshing the page.
+          </p>
+        )}
       </div>
     )
   }
